@@ -1,4 +1,4 @@
-# Quy chuẩn thiết kế giao diện [TÊN THƯƠNG HIỆU]
+# Quy chuẩn thiết kế giao diện LoyalCine
 
 > - Các giá trị trong file là **bắt buộc**, không phải gợi ý. Không dùng màu, font, cỡ chữ, khoảng cách hay độ bo góc nào khác.
 > - Gặp chỗ ghi "CHƯA QUYẾT", hoặc cần một giá trị chưa có ở đây: **hỏi người phụ trách giao diện** (Khánh Lâm), không tự chọn.
@@ -9,28 +9,22 @@
 ## 1. Thương hiệu
 
 **Web này dành cho ai, để làm gì** (1–2 câu, viết như đang nói với người lạ):
-[ ... ]
-VD: Tiệm sửa xe đạp ở quận 3, khách là dân văn phòng đạp xe đi làm. Web để xem bảng giá và đặt lịch sửa.
+LoyalCine là app thành viên của một rạp chiếu phim (tên hư cấu, làm cho đồ án NoSQL). Khách xem phim mở app để xem thẻ thành viên, điểm và hạng, mua vé hoặc combo bắp nước rồi đổi điểm lấy quà; nhân viên rạp dùng trang quản trị để tra cứu khách, xử lý giao dịch và xem thống kê.
 
 **Ba tính từ** (tránh "hiện đại / chuyên nghiệp / tối giản": chữ chung chung thì kết quả chung chung):
-[ ... ], [ ... ], [ ... ]
-VD: mộc, thật thà, nhanh gọn
+rõ số, nhanh gọn, có chất giấy
 
 **Không phải là:**
-[ ... ]
-VD: không bóng bẩy kiểu startup công nghệ, không sang chảnh, không dễ thương.
+không bóng bẩy kiểu app ngân hàng, không neon kiểu game, không dễ thương kiểu app trẻ em, không sang chảnh.
 
 **Web nên gợi cảm giác giống thứ gì ngoài đời:**
-[ ... ]
-VD: tờ phiếu sửa chữa viết tay dán trên tường xưởng. Rõ ràng, có số, hơi thô.
+tấm vé giấy in nhiệt xé ở quầy soát vé: con số in to và rõ (giờ chiếu, hàng ghế, giá tiền), mực đen trên giấy trắng ngà, một con dấu đỏ, đường răng cưa ngăn phần cuống vé.
 
 **Chất liệu, màu sắc, đồ vật đặc trưng của lĩnh vực này** (nguồn để lấy màu, hình ảnh, họa tiết):
-[ ... ]
-VD: dầu máy, xích thép, băng keo điện nhiều màu, bảng giá viết phấn, phiếu biên nhận giấy than.
+vé giấy in nhiệt, cuống vé xé theo đường răng cưa, con dấu đỏ "đã soát vé", bảng giờ chiếu ở quầy, số ghế in trên lưng ghế, hộp bắp giấy.
 
 **Giọng văn:**
-[ ... ]
-VD: nói thẳng, câu ngắn, có con số cụ thể ("Vá săm 30.000đ, xong trong 15 phút"). Không dùng từ hoa mỹ.
+nói thẳng, câu ngắn, có con số cụ thể ("Còn 150.000đ nữa là lên hạng Bạc", "2 vé 2D: +190 điểm"). Gọi khách là "bạn". Nút nói rõ việc sẽ xảy ra. Không dùng từ hoa mỹ.
 
 ---
 
@@ -40,90 +34,101 @@ Tối đa 6 màu. Màu nào cũng phải có lý do.
 
 | Vai trò   | Mã hex  | Dùng ở đâu                     | Lấy từ đâu / vì sao |
 |-----------|---------|--------------------------------|---------------------|
-| Nền chính | #______ | Nền toàn trang                 | [ ... ]             |
-| Nền phụ   | #______ | Khối cần tách biệt, chân trang | [ ... ]             |
-| Chữ chính | #______ | Tiêu đề và nội dung            | [ ... ]             |
-| Chữ phụ   | #______ | Chú thích, ghi chú nhỏ         | [ ... ]             |
-| Màu nhấn  | #______ | Chỉ nút chính và link          | [ ... ]             |
-| Viền      | #______ | Đường kẻ, viền ô nhập liệu     | [ ... ]             |
-
-VD (cột "Lấy từ đâu" của màu nhấn): màu băng keo điện vàng quấn trên ghi-đông xe trong xưởng.
+| Nền chính | #F5F4F0 | Nền toàn trang                 | Giấy vé in nhiệt: trắng ngà hơi lạnh, không phải màu kem |
+| Nền phụ   | #E8E5DD | Tấm vé thành viên, rãnh thanh tiến độ, hàng tiêu đề bảng, chân trang | Phần cuống vé, giấy dày hơn và hơi xám |
+| Chữ chính | #1A1A1A | Tiêu đề và nội dung            | Mực in đen trên vé (15,8:1 trên nền chính) |
+| Chữ phụ   | #5C5852 | Chú thích, ghi chú nhỏ         | Mực in đã nhạt trên vé cũ (6,4:1 trên nền chính, 5,6:1 trên nền phụ) |
+| Màu nhấn  | #B42318 | Chỉ nút chính và link          | Mực đỏ con dấu "đã soát vé" (chữ trắng trên màu này 6,6:1) |
+| Viền      | #CFCAC0 | Đường kẻ, viền ô nhập liệu, đường răng cưa | Đường răng cưa xé cuống vé |
 
 Quy tắc:
-- Màu nhấn chiếm tối đa khoảng [ 10 ]% diện tích một màn hình.
-- Không gradient. Không dùng màu nào ngoài bảng này.
-- Trạng thái hover / nhấn của nút: [ ... ] VD: nền tối hơn một bậc, không đổi sang màu khác.
+- Màu nhấn chiếm tối đa khoảng 10% diện tích một màn hình.
+- Không gradient. Không dùng màu nào ngoài bảng này và bảng màu chức năng ngay bên dưới.
+- Trạng thái hover / nhấn của nút: nút chính có nền tối hơn một bậc #8F1B12 (cùng màu đỏ dấu, đậm hơn); nút phụ có nền chuyển sang Nền phụ #E8E5DD. Không đổi sang màu khác.
 - Chữ trên nền đạt độ tương phản tối thiểu 4.5:1 (chuẩn WCAG AA).
+
+**Màu chức năng** (thêm theo quyết định ngày 16/11/2026): chỉ dùng cho nhãn nhỏ, thông báo và biểu đồ, luôn đi kèm chữ, không dùng làm nền cho khối lớn.
+
+| Vai trò       | Mã hex  | Dùng ở đâu                                  | Vì sao |
+|---------------|---------|---------------------------------------------|--------|
+| Hạng Đồng     | #8A5A3B | Chấm màu cạnh chữ "Đồng"                    | Màu đồng xu (5,3:1 trên nền chính) |
+| Hạng Bạc      | #5B6068 | Chấm màu cạnh chữ "Bạc"                     | Bạc xỉn (5,8:1) |
+| Hạng Vàng     | #7A5B10 | Chấm màu cạnh chữ "Vàng"                    | Vàng đồng thau, đủ tối để đọc được (5,7:1) |
+| Thành công    | #2F6B3A | Giao dịch thành công, đổi quà xong          | Mực dấu xanh "đã thanh toán" (5,8:1) |
+| Đang chờ      | #8A5A00 | Giao dịch chờ thanh toán                    | Mực vàng nâu (5,4:1) |
+| Lỗi, thất bại | #B42318 | Lỗi nhập liệu, giao dịch thất bại           | Dùng chung Màu nhấn, luôn kèm biểu tượng và chữ |
+
+- Biểu đồ ở trang quản trị: cột và thanh dùng Chữ chính #1A1A1A; cột cần làm nổi (tháng hiện tại hoặc tháng cao nhất) dùng Màu nhấn; phân bố khách theo hạng dùng 3 màu hạng.
 
 ---
 
 ## 3. Chữ (typography)
 
-| Vai trò  | Font    | Độ đậm (weight) | Nguồn                |
-|----------|---------|-----------------|----------------------|
-| Tiêu đề  | [ ... ] | [ ... ]         | [Google Fonts / ...] |
-| Nội dung | [ ... ] | [ ... ]         | [ ... ]              |
+| Vai trò  | Font             | Độ đậm (weight)                       | Nguồn                |
+|----------|------------------|---------------------------------------|----------------------|
+| Tiêu đề  | Barlow Condensed | 600; con số lớn 700                   | Google Fonts, lưu sẵn trong project qua gói @fontsource/barlow-condensed (chạy được khi không có mạng) |
+| Nội dung | Be Vietnam Pro   | 400 nội dung, 500 nhãn, 600 nút       | Google Fonts, lưu sẵn qua gói @fontsource/be-vietnam-pro |
 
 - Một font cho tất cả cũng được. Nếu dùng hai font thì hai font phải khác nhau rõ rệt.
-- Web có tiếng Việt: đã gõ thử "ắ ẳ ẵ ặ ữ ỹ ợ Đ" với font đã chọn, dấu hiển thị đúng font, không bị vá bằng font khác: [ ĐÃ KIỂM TRA / CHƯA ]
+- Web có tiếng Việt: đã gõ thử "ắ ẳ ẵ ặ ữ ỹ ợ Đ" với font đã chọn, dấu hiển thị đúng font, không bị vá bằng font khác: ĐÃ KIỂM TRA (16/11/2026, Chrome: cả 8 chữ ở cả hai font đều do đúng font vẽ)
 
 **Thang cỡ chữ:**
 
 | Cấp      | Desktop | Mobile | Line-height | Letter-spacing |
 |----------|---------|--------|-------------|----------------|
-| H1       | [ ]px   | [ ]px  | [ ]         | [ ]            |
-| H2       | [ ]px   | [ ]px  | [ ]         | [ ]            |
-| H3       | [ ]px   | [ ]px  | [ ]         | [ ]            |
-| Nội dung | [ ]px   | [ ]px  | [ ]         | 0              |
-| Chữ nhỏ  | [ ]px   | [ ]px  | [ ]         | [ ]            |
+| H1       | 40px    | 32px   | 1.05        | -0.01em        |
+| H2       | 28px    | 24px   | 1.1         | 0              |
+| H3       | 20px    | 20px   | 1.2         | 0              |
+| Nội dung | 16px    | 16px   | 1.55        | 0              |
+| Chữ nhỏ  | 13px    | 13px   | 1.4         | 0.01em         |
 
-VD: H1 72px / 40px, line-height 1.0, letter-spacing -0.02em. Nội dung 18px / 16px, line-height 1.6.
-
-- Độ dài một dòng chữ tối đa: [ 65 ] ký tự.
-- Căn lề: [ ... ] VD: mọi thứ căn trái; chỉ căn giữa ở [ ... ].
+- Con số lớn (điểm trên thẻ, tổng tiền khi thanh toán): Barlow Condensed 700, 56px máy tính / 48px điện thoại, line-height 1.0. Số xếp thành cột trong bảng dùng chữ số đều nhau (tabular-nums).
+- Độ dài một dòng chữ tối đa: 65 ký tự.
+- Căn lề: mọi thứ căn trái; chỉ căn giữa ở mã QR, mã vạch và màn hình kết quả thanh toán.
 - Tiêu đề, nút và nhãn viết như câu bình thường (chỉ hoa chữ đầu), không viết hoa toàn bộ.
 
 ---
 
 ## 4. Khoảng cách và bố cục
 
-- Đơn vị cơ sở: [ 8 ]px. Chỉ dùng các bước: [ 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 ]px.
-- Chiều rộng nội dung tối đa: [ ... ]px. Lề hai bên: [ ... ]px trên điện thoại, [ ... ]px trên máy tính.
-- Lưới: [ 12 ] cột, khoảng cách giữa các cột [ 24 ]px.
+- Đơn vị cơ sở: 8px. Chỉ dùng các bước: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128px.
+- Chiều rộng nội dung tối đa: app khách hàng 440px (khung điện thoại, trên máy tính đặt giữa màn hình); trang quản trị 1280px. Lề hai bên: 16px trên điện thoại, 32px trên máy tính.
+- Lưới: 12 cột, khoảng cách giữa các cột 24px (trang quản trị). App khách hàng dùng một cột.
 
 **Nhịp khoảng cách, cố tình không đều:**
-- Các thứ thuộc về nhau (tiêu đề và đoạn văn của nó): đặt sát, [ ... ]px
-- Giữa các nhóm trong cùng một phần: [ ... ]px
-- Giữa các phần lớn của trang: [ ... ]px. Phần quan trọng nhất được nhiều khoảng trống nhất.
+- Các thứ thuộc về nhau (tiêu đề và đoạn văn của nó): đặt sát, 8px
+- Giữa các nhóm trong cùng một phần: 24px
+- Giữa các phần lớn của trang: 48px. Phần quan trọng nhất được nhiều khoảng trống nhất: tấm vé thành viên có 64px phía dưới.
 
 **Phần đầu trang (hero):** mở đầu bằng thứ đặc trưng nhất của lĩnh vực này, không mặc định là khẩu hiệu to đặt giữa.
-[ mô tả, hoặc vẽ sơ đồ chữ ]
+App khách hàng mở đầu bằng chính tấm vé thành viên (tên, hạng, điểm, mã QR, số tiền còn thiếu để lên hạng), vì đó là thứ khách đưa cho nhân viên quầy và là phần đặc trưng nhất của chương trình thành viên. Trang quản trị không mở đầu bằng một hàng con số lớn (xem phần 7); bố cục cụ thể của từng màn hình được duyệt bằng sơ đồ chữ trước khi làm.
 
-VD: mở đầu bằng chính bảng giá, vì đó là thứ khách cần nhất và đặc trưng nhất của tiệm.
-
-    +--------------------------------------------------+
-    | Xe Đạp Ba Tư                  Bảng giá  Đặt lịch |
-    |--------------------------------------------------|
-    | Vá săm .............................. 30.000đ    |
-    | Thay xích .......................... 150.000đ    |
-    | Chỉnh phanh ......................... 40.000đ    |
-    |                                                  |
-    | [Đặt lịch sửa]     Mở 7:00–19:00, nghỉ thứ Hai   |
-    +--------------------------------------------------+
+    +------------------------------------+
+    | LoyalCine                Đăng xuất |
+    | +--------------------------------+ |
+    | | Thẻ thành viên       Hạng Đồng | |
+    | | Trần Minh Anh                  | |
+    | | 9.500 điểm                     | |
+    | |- - - - - - - - - - - - - - - - | |
+    | | [QR]  Còn 150.000đ nữa là lên  | |
+    | |       hạng Bạc                 | |
+    | +--------------------------------+ |
+    | Mua vé   Bắp nước   Đổi quà        |
+    +------------------------------------+
 
 ---
 
 ## 5. Thành phần giao diện
 
-- **Bo góc:** [ ... ]px cho [ ... ], [ ... ]px cho [ ... ]. Độ bo theo vai trò của từng thứ, không dùng một con số cho mọi thứ.
-- **Bóng đổ:** [ không dùng ] hoặc [ chỉ dùng cho ... với giá trị ... ].
-- **Nút chính:** nền [màu nhấn], chữ [ ... ], cao [ 48 ]px, đệm ngang [ 24 ]px, bo [ ... ]px. Không phát sáng.
-- **Nút phụ:** [ ... ]
-- **Chữ trên nút và link:** nói rõ bấm vào thì chuyện gì xảy ra. VD: "Đặt lịch sửa", không phải "Khám phá ngay".
-- **Thẻ (card):** [ dùng / không dùng ]. Nếu dùng thì cho nội dung nào: [ ... ]
-- **Ảnh:** [ ảnh thật của ... ]. Tỉ lệ [ ... ]. Bo góc [ ... ]. VD: ảnh chụp thật tay thợ đang làm, không dùng ảnh stock.
-- **Icon:** bộ [ ... ], nét [ ... ]px. Không đặt icon trong vòng tròn màu nhạt, không dùng emoji thay icon.
-- **Chuyển động:** [ ... ] VD: không có hiệu ứng khi cuộn; menu mở/đóng 200ms; nút đổi màu khi rê chuột 150ms.
+- **Bo góc:** 2px cho nút, ô nhập và nhãn (góc vé in gần vuông); 8px cho tấm vé thành viên, vé, voucher và hộp thoại; 0 cho bảng và hàng danh sách. Độ bo theo vai trò của từng thứ, không dùng một con số cho mọi thứ.
+- **Bóng đổ:** chỉ dùng cho hộp thoại và menu nổi, giá trị 0 8px 24px rgba(26, 26, 26, 0.16). Mọi khối khác tách lớp bằng Nền phụ và Viền.
+- **Nút chính:** nền màu nhấn #B42318, chữ trắng Be Vietnam Pro 600 16px, cao 48px, đệm ngang 24px, bo 2px. Không phát sáng.
+- **Nút phụ:** nền trong suốt, viền 1px Chữ chính #1A1A1A, chữ Chữ chính, cao 48px, bo 2px; hover nền Nền phụ #E8E5DD. Nút nhỏ trong bảng của trang quản trị cao 32px.
+- **Chữ trên nút và link:** nói rõ bấm vào thì chuyện gì xảy ra, ví dụ "Thanh toán 190.000đ bằng MoMo", "Đổi voucher với 450 điểm". Link màu nhấn, có gạch chân.
+- **Thẻ (card):** dùng cho những thứ ngoài đời là một tấm vé: thẻ thành viên, vé đã mua, voucher và từng món quà. Mỗi "vé" có Nền phụ hoặc viền 1px, bo 8px, một đường răng cưa nét đứt ngăn phần cuống. Danh sách (lịch sử điểm, giao dịch, bảng quản trị) là các hàng, không bọc từng hàng trong thẻ.
+- **Ảnh:** chưa có ảnh thật. Poster phim tạm dùng poster dạng chữ (tên phim in Barlow Condensed trên Nền phụ, tỉ lệ 2:3, bo 2px), không dùng emoji. [CẦN NỘI DUNG: poster phim hoặc ảnh rạp thật được phép dùng, nếu nhóm có]
+- **Icon:** bộ @ant-design/icons kiểu Outlined (đã có sẵn trong project, không cài thêm), nét mảnh khoảng 1px ở cỡ 16px, cùng màu với chữ đi kèm. Không đặt icon trong vòng tròn màu nhạt, không dùng emoji thay icon.
+- **Chuyển động:** không có hiệu ứng khi cuộn; nút đổi màu khi rê chuột 150ms; hộp thoại mở và đóng 200ms; thanh tiến độ lên hạng chạy 400ms khi điểm thay đổi; tắt hết khi người dùng bật chế độ giảm chuyển động (prefers-reduced-motion).
 
 ---
 
@@ -133,11 +138,10 @@ Mỗi web chỉ học **một** điều cụ thể. Ghi luôn điều không h�
 
 | Website  | Học điều này | Không học điều này |
 |----------|--------------|--------------------|
-| [ link ] | [ ... ]      | [ ... ]            |
-| [ link ] | [ ... ]      | [ ... ]            |
-| [ link ] | [ ... ]      | [ ... ]            |
-
-VD: một trang tạp chí ảnh. Học: ảnh lớn tràn mép, chú thích nhỏ đặt sát dưới ảnh. Không học: màu đen trắng và font của họ.
+| a24films.com | Tiết chế: nhiều khoảng trắng, mỗi màn hình chỉ một điểm nhấn | Font chữ riêng của họ và hiệu ứng đĩa CD trượt |
+| picturehouses.com | Lõi đen trắng, màu chỉ dùng để phân nhóm (ở đây là màu hạng) | Logo và bộ màu riêng của từng rạp |
+| Starbucks Rewards (app) | Điểm, hạng và thanh tiến độ thấy ngay ở trang chủ; quà chưa đủ điểm hiện số điểm còn thiếu | Màu xanh thương hiệu và giọng quảng cáo |
+| Shaw Theatres (bài phân tích của filmgrail.com) | Nút giờ chiếu to và rõ; chọn ngày bằng một hàng | Bố cục và màu của họ |
 
 ---
 
