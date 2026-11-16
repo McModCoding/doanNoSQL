@@ -1,0 +1,23 @@
+flowchart TB
+  subgraph ND["NGƯỜI DÙNG"]
+    direction LR
+    KH["Khách hàng<br/>Customer App (điện thoại)"] ~~~ QT["Quản trị viên<br/>Admin Dashboard (máy tính)"]
+  end
+  subgraph FE["TẦNG GIAO DIỆN · React + Vite · Lâm"]
+    direction LR
+    UI["Màn hình<br/>thẻ, mua vé, MoMo,<br/>đổi quà, biểu đồ"] --> API["Tầng gọi API<br/>src/api (axios)"]
+    API -. "khi phát triển:<br/>VITE_USE_MOCK=true" .-> MOCK["API giả – MSW<br/>src/mocks"]
+  end
+  subgraph BE["TẦNG XỬ LÝ · Node.js/Express · Tính, Linh"]
+    direction LR
+    R["Routes /api/..."] --> S["Logic nghiệp vụ<br/>tích điểm, thăng hạng,<br/>đổi quà"]
+    R --> AG["Truy vấn &<br/>Aggregation thống kê"]
+  end
+  subgraph DL["TẦNG DỮ LIỆU"]
+    direction LR
+    ST["Studio 3T<br/>IntelliShell,<br/>Visual Query Builder"] --- DB[("MongoDB<br/>8 collection")]
+    DB -. "mongodump /<br/>mongorestore" .- BK[("Sao lưu<br/>dump, CSV")]
+  end
+  ND --> FE
+  FE -- "REST/JSON qua /api" --> BE
+  BE -- "MongoDB driver" --> DL

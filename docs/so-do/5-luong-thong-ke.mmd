@@ -1,0 +1,18 @@
+sequenceDiagram
+  actor QT as Quản trị viên
+  participant FE as Admin Dashboard (React)
+  participant API as Express API
+  participant DB as MongoDB
+  QT->>FE: Mở Dashboard, chọn năm 2026
+  par Điểm phát hành theo tháng
+    FE->>API: GET /api/thong-ke/diem-phat-hanh-theo-thang?nam=2026
+    API->>DB: aggregate bien_dong_diem ($match EARN → $group $month → $sort)
+    DB-->>API: 12 dòng (thang, tongDiem)
+    API-->>FE: JSON
+  and Top 10 khách đổi quà
+    FE->>API: GET /api/thong-ke/top-doi-qua?limit=10&nam=2026
+    API->>DB: aggregate doi_thuong ($group MaKH → $sort → $limit → $lookup)
+    DB-->>API: 10 khách
+    API-->>FE: JSON
+  end
+  FE->>QT: Biểu đồ cột + bảng xếp hạng (có chế độ xem dạng bảng)
