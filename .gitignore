@@ -1,0 +1,6 @@
+# Engine của Impeccable: tự tải về theo từng hệ điều hành ở lần chạy đầu, không commit
+.claude/skills/impeccable/scripts/bin/
+**/.impeccable/hook.cache.json
+
+# Profile Chrome mà bộ kiểm tra của Taste Skill tạo ra khi chạy
+.taste-skill/chrome*/
