@@ -1,61 +1,90 @@
-import { WarningOutlined } from '@ant-design/icons'
-import { Table, Tag } from 'antd'
+import { ClockCircleOutlined, WarningOutlined } from '@ant-design/icons'
+import { Table } from 'antd'
 import { layDsPhanThuong } from '../../api/phanThuong.js'
 import { ErrorState } from '../../components/ErrorState.jsx'
+import { MAU } from '../../design/tokens.js'
 import { useApi } from '../../hooks/useApi.js'
 import { formatDiem, formatVND } from '../../utils/format.js'
 import { NHAN_LOAI_PHAN_THUONG } from '../../utils/nhan.js'
 
+const NGUONG_SAP_HET = 30
+
+function TonKho({ soLuong }) {
+  if (soLuong <= 0)
+    return (
+      <span className="nhan-trang-thai" style={{ color: MAU.loi }}>
+        <WarningOutlined /> Hết quà
+      </span>
+    )
+  if (soLuong < NGUONG_SAP_HET)
+    return (
+      <span className="nhan-trang-thai" style={{ color: MAU.dangCho }}>
+        <ClockCircleOutlined /> Còn {formatDiem(soLuong)}, sắp hết
+      </span>
+    )
+  return formatDiem(soLuong)
+}
+
 export default function PhanThuongAdmin() {
   const ds = useApi(() => layDsPhanThuong({}), [])
-  if (ds.error && !ds.data) return <ErrorState error={ds.error} onRetry={ds.reload} />
+  const data = ds.data ?? []
+  const soHet = data.filter((p) => p.SoLuongTon <= 0).length
+
   return (
-    <div className="admin-page">
-      <Table
-        rowKey="MaPhanThuong"
-        loading={ds.loading}
-        dataSource={ds.data}
-        pagination={false}
-        scroll={{ x: 900 }}
-        columns={[
-          { title: 'Mã', dataIndex: 'MaPhanThuong', width: 80 },
-          {
-            title: 'Phần thưởng',
-            dataIndex: 'TenPhanThuong',
-            render: (t, r) => (
-              <span className="reward-cell">
-                <span aria-hidden>{r.HinhAnh}</span>
+    <div className="qt-trang" style={{ gap: 24 }}>
+      <div className="cap">
+        <h1>Phần thưởng</h1>
+        {ds.data && (
+          <p>
+            {data.length} phần thưởng, {soHet ? `${soHet} đang hết quà` : 'tất cả còn quà'}. Khách đổi bằng điểm, voucher có
+            hạn dùng tính từ ngày đổi.
+          </p>
+        )}
+      </div>
+
+      {ds.error && !ds.data ? (
+        <ErrorState error={ds.error} onRetry={ds.reload} />
+      ) : (
+        <Table
+          rowKey="MaPhanThuong"
+          loading={ds.loading}
+          dataSource={data}
+          pagination={false}
+          scroll={{ x: 960 }}
+          columns={[
+            { title: 'Mã', dataIndex: 'MaPhanThuong', width: 88 },
+            {
+              title: 'Phần thưởng',
+              dataIndex: 'TenPhanThuong',
+              render: (t, r) => (
                 <span>
                   {t}
-                  <small className="muted">{r.MoTa}</small>
+                  <span className="o-chu-phu">{r.MoTa}</span>
                 </span>
-              </span>
-            ),
-          },
-          { title: 'Loại', dataIndex: 'LoaiPhanThuong', width: 170, render: (l) => <Tag variant="filled">{NHAN_LOAI_PHAN_THUONG[l] ?? l}</Tag> },
-          { title: 'Điểm cần đổi', dataIndex: 'DiemCanDoi', align: 'right', width: 120, render: formatDiem },
-          { title: 'Giá trị', dataIndex: 'GiaTri', align: 'right', width: 110, render: formatVND },
-          {
-            title: 'Tồn kho',
-            dataIndex: 'SoLuongTon',
-            align: 'right',
-            width: 140,
-            render: (n) =>
-              n <= 0 ? (
-                <Tag color="error" icon={<WarningOutlined />}>
-                  Hết hàng
-                </Tag>
-              ) : n < 30 ? (
-                <span>
-                  {n} <Tag color="warning">Sắp hết</Tag>
-                </span>
-              ) : (
-                formatDiem(n)
               ),
-          },
-          { title: 'Hạn dùng (ngày)', dataIndex: 'HanSuDungNgay', align: 'right', width: 130 },
-        ]}
-      />
+            },
+            { title: 'Loại', dataIndex: 'LoaiPhanThuong', width: 176, render: (l) => NHAN_LOAI_PHAN_THUONG[l] ?? l },
+            {
+              title: 'Điểm cần đổi',
+              dataIndex: 'DiemCanDoi',
+              align: 'right',
+              width: 152,
+              sorter: (a, b) => a.DiemCanDoi - b.DiemCanDoi,
+              render: formatDiem,
+            },
+            { title: 'Giá trị', dataIndex: 'GiaTri', align: 'right', width: 112, render: formatVND },
+            {
+              title: 'Tồn kho',
+              dataIndex: 'SoLuongTon',
+              align: 'right',
+              width: 176,
+              sorter: (a, b) => a.SoLuongTon - b.SoLuongTon,
+              render: (n) => <TonKho soLuong={n} />,
+            },
+            { title: 'Hạn dùng', dataIndex: 'HanSuDungNgay', align: 'right', width: 112, render: (n) => `${n} ngày` },
+          ]}
+        />
+      )}
     </div>
   )
 }

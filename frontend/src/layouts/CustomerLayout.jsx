@@ -18,22 +18,22 @@ export function CustomerLayout() {
   let noiDung
   if (loi && !khachHang) {
     noiDung = (
-      <div className="phone-content">
+      <div className="khung__noi-dung">
         <ErrorState error={loi} onRetry={taiLai} />
-        <Button block type="link" onClick={dangXuat}>
+        <Button block onClick={dangXuat}>
           Đăng xuất
         </Button>
       </div>
     )
   } else if (!khachHang || dsHang.length === 0) {
     noiDung = (
-      <div className="phone-content phone-content--center">
+      <div className="khung__noi-dung khung__noi-dung--giua">
         <Spin size="large" />
       </div>
     )
   } else {
     noiDung = (
-      <main className="phone-content">
+      <main className="khung__noi-dung">
         <Outlet />
       </main>
     )
@@ -42,10 +42,10 @@ export function CustomerLayout() {
   return (
     <PhoneFrame>
       {noiDung}
-      <nav className="tabbar" aria-label="Điều hướng chính">
+      <nav className="thanh-tab" aria-label="Điều hướng chính">
         {TAB.map((t) => (
-          <NavLink key={t.to} to={t.to} end={t.end} className={({ isActive }) => `tabbar__item${isActive ? ' is-active' : ''}`}>
-            <span className="tabbar__icon">{t.icon}</span>
+          <NavLink key={t.to} to={t.to} end={t.end} className={({ isActive }) => `thanh-tab__muc${isActive ? ' is-dang-mo' : ''}`}>
+            {t.icon}
             <span>{t.nhan}</span>
           </NavLink>
         ))}

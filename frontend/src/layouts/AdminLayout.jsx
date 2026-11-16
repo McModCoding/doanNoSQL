@@ -1,58 +1,48 @@
-import {
-  DashboardOutlined,
-  GiftOutlined,
-  MobileOutlined,
-  ShoppingCartOutlined,
-  TeamOutlined,
-  TrophyOutlined,
-} from '@ant-design/icons'
-import { Button, Layout, Menu } from 'antd'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import { MockControls } from '../components/MockControls.jsx'
 import { APP_NAME } from '../config.js'
 
 const MENU = [
-  { key: '/admin', icon: <DashboardOutlined />, label: 'Dashboard', title: 'Tổng quan & thống kê' },
-  { key: '/admin/khach-hang', icon: <TeamOutlined />, label: 'Khách hàng', title: 'Quản lý khách hàng' },
-  { key: '/admin/giao-dich', icon: <ShoppingCartOutlined />, label: 'Giao dịch', title: 'Giao dịch vé & bắp nước' },
-  { key: '/admin/doi-thuong', icon: <GiftOutlined />, label: 'Đổi thưởng', title: 'Lịch sử đổi thưởng' },
-  { key: '/admin/phan-thuong', icon: <TrophyOutlined />, label: 'Phần thưởng', title: 'Danh mục phần thưởng' },
+  { to: '/admin', end: true, nhan: 'Tổng quan' },
+  { to: '/admin/khach-hang', nhan: 'Khách hàng' },
+  { to: '/admin/giao-dich', nhan: 'Giao dịch' },
+  { to: '/admin/doi-thuong', nhan: 'Đổi thưởng' },
+  { to: '/admin/phan-thuong', nhan: 'Phần thưởng' },
 ]
 
+/** Trang quản trị: thanh điều hướng trên nền giấy, mục đang mở được gạch chân. */
 export function AdminLayout() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const hienTai = MENU.find((m) => m.key === location.pathname) ?? MENU[0]
-
   return (
-    <Layout className="admin">
-      <Layout.Sider breakpoint="lg" collapsedWidth={0} width={220} className="admin__sider">
-        <Link to="/" className="admin__brand">
-          🎬 {APP_NAME}
-          <small>Admin</small>
-        </Link>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[hienTai.key]}
-          items={MENU.map(({ key, icon, label }) => ({ key, icon, label }))}
-          onClick={({ key }) => navigate(key)}
-        />
-      </Layout.Sider>
-      <Layout>
-        <Layout.Header className="admin__header">
-          <h1>{hienTai.title}</h1>
-          <div className="admin__header-actions">
+    <div className="qt">
+      <a href="#noi-dung" className="bo-qua">
+        Bỏ qua thanh điều hướng
+      </a>
+      <header className="qt-dau">
+        <div className="qt-dau__trong">
+          <span className="qt-ten">
+            <Link to="/" className="qt-ten__link">
+              {APP_NAME}
+            </Link>
+            <small>quản trị</small>
+          </span>
+          <nav className="qt-dieu-huong" aria-label="Các trang quản trị">
+            {MENU.map((m) => (
+              <NavLink key={m.to} to={m.to} end={m.end} className={({ isActive }) => (isActive ? 'is-dang-mo' : '')}>
+                {m.nhan}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="qt-dau__phai">
             <MockControls />
-            <Button icon={<MobileOutlined />} href="/app" target="_blank">
-              Mở Customer App
-            </Button>
+            <a href="/app" target="_blank" rel="noreferrer">
+              Mở app khách hàng
+            </a>
           </div>
-        </Layout.Header>
-        <Layout.Content className="admin__content">
-          <Outlet />
-        </Layout.Content>
-      </Layout>
-    </Layout>
+        </div>
+      </header>
+      <main className="qt-noi-dung" id="noi-dung">
+        <Outlet />
+      </main>
+    </div>
   )
 }

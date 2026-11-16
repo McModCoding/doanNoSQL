@@ -21,7 +21,7 @@ http.interceptors.response.use(
     const body = res.data
     const loaiNoiDung = String(res.headers?.['content-type'] ?? '')
     if (typeof body === 'string' && loaiNoiDung.includes('text/html')) {
-      throw new ApiError('API trả về trang HTML thay vì JSON – kiểm tra lại đường dẫn /api và cấu hình proxy.', res.status)
+      throw new ApiError('API trả về trang HTML thay vì JSON. Hãy kiểm tra đường dẫn /api và cấu hình proxy.', res.status)
     }
     // Đúng hợp đồng: bóc lớp { success, data, message }
     if (body && typeof body === 'object' && 'success' in body) {

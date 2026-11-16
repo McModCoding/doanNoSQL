@@ -32,14 +32,14 @@
 | Bước | Ai | Thao tác | Lời thoại gợi ý | Kết quả mong đợi |
 |---|---|---|---|---|
 | 1 | Lâm | Customer App → bấm tài khoản demo `0901000001` | "Đăng nhập bằng số điện thoại của thành viên Trần Minh Anh." | Thẻ thành viên **Đồng**, **9.500 điểm**, QR/Barcode |
-| 2 | Lâm | Chỉ vào thanh tiến trình; bấm chuyển QR ↔ Mã vạch | "Hệ thống tính từ `TongChiTieu` và ngưỡng trong `hang_thanh_vien`: còn **150.000đ** nữa là lên Bạc." | Dòng chữ "Bạn cần chi tiêu thêm 150.000đ để lên hạng Bạc" |
+| 2 | Lâm | Chỉ vào thanh tiến trình; bấm chuyển QR ↔ Mã vạch | "Hệ thống tính từ `TongChiTieu` và ngưỡng trong `hang_thanh_vien`: còn **150.000đ** nữa là lên Bạc." | Dòng chữ "Còn 150.000đ nữa là lên hạng Bạc" |
 | 3 | Linh | IntelliShell: chạy lệnh **(A)** | "Đây là document gốc trong MongoDB trước khi giao dịch." | `DiemHienTai: 9500`, `TongChiTieu: 9850000`, `MaHangHienTai: "DONG"` |
-| 4 | Lâm | Mua vé → *Hành Tinh Cuối Cùng*, 2D, chọn suất, **2 vé** → "Thanh toán MoMo" | "Tạo giao dịch ở trạng thái PENDING, chưa cộng điểm." | Màn hình MoMo **190.000đ**, QR, đếm ngược |
+| 4 | Lâm | Mua vé → *Hành Tinh Cuối Cùng*, 2D, chọn suất, **2 vé** → "Thanh toán 190.000đ bằng MoMo" | "Tạo giao dịch ở trạng thái PENDING, chưa cộng điểm." | Hóa đơn MoMo (mô phỏng) **190.000đ**, QR, đếm ngược |
 | 5 | Tính | Chỉ vào terminal server | "Server vừa nhận `POST /api/giao-dich`." | Log request 201 |
-| 6 | Lâm | Bấm **"Xác nhận thanh toán 190.000đ"** | "Khi trạng thái chuyển sang COMPLETED, API tự cộng điểm và xét hạng." | **+190 điểm**, popup **"Chúc mừng thăng hạng! Đồng → Bạc"** |
+| 6 | Lâm | Bấm **"Xác nhận thanh toán 190.000đ"** | "Khi trạng thái chuyển sang COMPLETED, API tự cộng điểm và xét hạng." | **+190 điểm**, hộp thoại **"Bạn vừa lên hạng Bạc"** |
 | 7 | Tính | Chỉ vào terminal | "Đây là request PATCH đổi trạng thái, xử lý thành công." | Log `PATCH .../trang-thai` 200 |
 | 8 | Linh | IntelliShell: chạy lại **(A)**, rồi **(B)** và **(C)** | "Ngay lập tức điểm tăng lên 9.690, tổng chi tiêu 10.040.000đ và hạng chuyển sang BAC. Có thêm 1 dòng EARN trong `bien_dong_diem` và 1 dòng `lich_su_hang`." | Dữ liệu khớp với màn hình app |
-| 9 | Lâm | (Tùy thời gian) Đổi quà → *Voucher giảm 50.000đ* (450 điểm) → xác nhận | "Đổi quà trừ điểm nhưng không làm tụt hạng." | Mã voucher + QR; điểm còn **9.240**; hạng vẫn **Bạc** |
+| 9 | Lâm | (Tùy thời gian) Đổi quà → bấm **Đổi** ở dòng 450 điểm (*Voucher giảm 50.000đ*) → **Đổi với 450 điểm** | "Đổi quà trừ điểm nhưng không làm tụt hạng." | Mã voucher + QR; điểm còn **9.240**; hạng vẫn **Bạc** |
 | 10 | Lâm | Admin Dashboard: biểu đồ theo tháng, Top 10; Khách hàng → tìm "minh anh" | "Các biểu đồ này là kết quả của 2 pipeline aggregation." | KH001 hiện hạng Bạc; tháng hiện tại tăng thêm 190 điểm |
 | 11 | Linh | (Nếu cần) `mongorestore --drop` | "Nếu dữ liệu thử bị hỏng, nhóm khôi phục về trạng thái chuẩn trong vài giây." | Dữ liệu quay về như bước 1 |
 
