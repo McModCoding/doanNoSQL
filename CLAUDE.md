@@ -4,8 +4,8 @@
 
 ## Dự án
 
-- Web của: [tên thương hiệu]. [Mô tả 1 câu: web dành cho ai, để làm gì]
-- Công nghệ: [VD: HTML/CSS/JS thuần, hoặc React, Next.js...]. Giữ nguyên công nghệ này. Không chuyển sang framework khác.
+- Web của: LoyalCine (rạp chiếu phim hư cấu, đồ án NoSQL). App thành viên cho khách xem phim: xem thẻ, điểm và hạng, mua vé, đổi quà; kèm trang quản trị cho nhân viên rạp.
+- Công nghệ: React 19 + Vite 8 + Ant Design 6 (thư mục frontend/), lấy dữ liệu qua API REST (Node.js/Express + MongoDB). Giữ nguyên công nghệ này. Không chuyển sang framework khác.
 - Không cài thêm thư viện giao diện (bộ UI, bộ icon, thư viện hiệu ứng) khi chưa hỏi tôi.
 
 ## Thứ tự ưu tiên khi các nguồn mâu thuẫn nhau
@@ -22,7 +22,7 @@ Cần một giá trị chưa có trong DESIGN.md, gặp chỗ ghi "CHƯA QUYẾT
 
 - DESIGN.md là hướng thiết kế MỚI do tôi viết, không phải mô tả giao diện cũ. Không thay thế, không viết lại DESIGN.md, không chạy /impeccable document.
 - Taste Skill: dùng khi xây mới hoặc làm lại giao diện.
-  Núm điều chỉnh (1 đến 10): VARIANCE = [ ], MOTION = [ ], DENSITY = [ ]
+  Núm điều chỉnh (1 đến 10): VARIANCE = 4, MOTION = 3, DENSITY = 6
 - Impeccable: dùng để đánh giá (critique, audit), kiểm lỗi tự động (detect) và hoàn thiện (polish).
 - Không dùng skill thiết kế nào khác.
 
