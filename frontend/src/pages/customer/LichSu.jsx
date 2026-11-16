@@ -1,78 +1,95 @@
-import { ArrowDownOutlined, ArrowUpOutlined, RightOutlined } from '@ant-design/icons'
-import { Button, Empty, Modal, QRCode, Skeleton, Tabs, Tag, Timeline, Typography } from 'antd'
+import { Modal, Skeleton, Tabs } from 'antd'
 import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { layBienDongDiem, layDoiThuongCuaKhach, layGiaoDichCuaKhach, layLichSuHang } from '../../api/khachHang.js'
 import { ErrorState } from '../../components/ErrorState.jsx'
 import { StatusTag } from '../../components/StatusTag.jsx'
 import { TierTag } from '../../components/TierTag.jsx'
+import { VeVoucher } from '../../components/VeVoucher.jsx'
 import { useKhachHang } from '../../context/khachHangContext.js'
 import { useApi } from '../../hooks/useApi.js'
-import { formatDiem, formatDiemCoDau, formatNgay, formatNgayGio, formatVND } from '../../utils/format.js'
+import {
+  formatDiem,
+  formatDiemCoDau,
+  formatNgay,
+  formatNgayNgan,
+  formatVND,
+  nhomTheoThang,
+} from '../../utils/format.js'
 import { nhanTrangThaiDoiThuong, tomTatChiTiet } from '../../utils/nhan.js'
 
+/** Lo phần đang tải, lỗi và danh sách rỗng cho mọi tab. */
 function KhungDuLieu({ api, children, rong }) {
   if (api.error && !api.data) return <ErrorState error={api.error} onRetry={api.reload} compact />
   if (api.loading && !api.data) return <Skeleton active paragraph={{ rows: 5 }} />
-  if (!api.data?.length) return <Empty description={rong} />
+  if (!api.data?.length) return <p>{rong}</p>
   return children(api.data)
+}
+
+/** Sổ ghi chia theo tháng: tiêu đề tháng, rồi các hàng ngày, nội dung, con số. */
+function SoTheoThang({ ds, layNgay, renderHang, ...rest }) {
+  return (
+    <div className="nhom" {...rest}>
+      {nhomTheoThang(ds, layNgay).map((t) => (
+        <section key={t.khoa} className="cap" aria-labelledby={`thang-${t.khoa}`}>
+          <h2 id={`thang-${t.khoa}`}>{t.nhan}</h2>
+          <ol className="so-cai">{t.ds.map(renderHang)}</ol>
+        </section>
+      ))}
+    </div>
+  )
 }
 
 function TabDiem({ maKH }) {
   const api = useApi(() => layBienDongDiem(maKH), [maKH])
   return (
-    <KhungDuLieu api={api} rong="Chưa có biến động điểm">
+    <KhungDuLieu api={api} rong="Bạn chưa có biến động điểm nào.">
       {(ds) => (
-        <ul className="history-list" data-testid="points-history">
-          {ds.map((b) => (
-            <li key={b.MaBienDong ?? b._id}>
-              <span className={`history-list__icon ${b.SoDiem > 0 ? 'is-up' : 'is-down'}`}>
-                {b.SoDiem > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-              </span>
-              <span className="history-list__main">
+        <SoTheoThang
+          data-testid="points-history"
+          ds={ds}
+          layNgay={(b) => b.NgayTao}
+          renderHang={(b) => (
+            <li key={b.MaBienDong ?? b._id} className="so-cai__hang">
+              <span className="so-cai__ngay">{formatNgayNgan(b.NgayTao)}</span>
+              <span className="so-cai__noi-dung">
                 {b.MoTa}
-                <small>{formatNgayGio(b.NgayTao)}</small>
+                {b.SoDuSau !== undefined && <small>Số dư {formatDiem(b.SoDuSau)} điểm</small>}
               </span>
-              <span className="history-list__value">
-                <b className={b.SoDiem > 0 ? 'points-up' : 'points-down'}>{formatDiemCoDau(b.SoDiem)}</b>
-                {b.SoDuSau !== undefined && <small>Số dư {formatDiem(b.SoDuSau)}</small>}
-              </span>
+              <span className="so-cai__so">{formatDiemCoDau(b.SoDiem)}</span>
             </li>
-          ))}
-        </ul>
+          )}
+        />
       )}
     </KhungDuLieu>
   )
 }
 
 function TabGiaoDich({ maKH }) {
-  const navigate = useNavigate()
   const api = useApi(() => layGiaoDichCuaKhach(maKH), [maKH])
   return (
-    <KhungDuLieu api={api} rong="Chưa có giao dịch">
+    <KhungDuLieu api={api} rong="Bạn chưa có giao dịch nào.">
       {(ds) => (
-        <ul className="history-list">
-          {ds.map((g) => (
-            <li key={g.MaGiaoDich}>
-              <span className="history-list__main">
+        <SoTheoThang
+          ds={ds}
+          layNgay={(g) => g.NgayTao}
+          renderHang={(g) => (
+            <li key={g.MaGiaoDich} className="so-cai__hang">
+              <span className="so-cai__ngay">{formatNgayNgan(g.NgayTao)}</span>
+              <span className="so-cai__noi-dung">
                 <span>
                   <b>{g.MaGiaoDich}</b> <StatusTag trangThai={g.TrangThai} />
                 </span>
-                {tomTatChiTiet(g.ChiTiet)}
-                <small>{formatNgayGio(g.NgayTao)}</small>
-                {g.TrangThai === 'PENDING' && (
-                  <Button size="small" type="link" onClick={() => navigate(`/app/thanh-toan/${g.MaGiaoDich}`)}>
-                    Tiếp tục thanh toán <RightOutlined />
-                  </Button>
-                )}
+                <small>{tomTatChiTiet(g.ChiTiet)}</small>
+                {g.TrangThai === 'PENDING' && <Link to={`/app/thanh-toan/${g.MaGiaoDich}`}>Tiếp tục thanh toán</Link>}
               </span>
-              <span className="history-list__value">
-                <b>{formatVND(g.TongTien)}</b>
-                {g.TrangThai === 'COMPLETED' && <small className="points-up">+{formatDiem(g.DiemCong)} điểm</small>}
+              <span className="so-cai__noi-dung" style={{ alignItems: 'flex-end' }}>
+                <span className="so-cai__so">{formatVND(g.TongTien)}</span>
+                {g.TrangThai === 'COMPLETED' && <small>+{formatDiem(g.DiemCong)} điểm</small>}
               </span>
             </li>
-          ))}
-        </ul>
+          )}
+        />
       )}
     </KhungDuLieu>
   )
@@ -83,41 +100,33 @@ function TabQua({ maKH }) {
   const [dangXem, setDangXem] = useState(null)
   return (
     <>
-      <KhungDuLieu api={api} rong="Bạn chưa đổi quà nào">
+      <KhungDuLieu api={api} rong="Bạn chưa đổi quà nào.">
         {(ds) => (
-          <ul className="history-list">
-            {ds.map((d) => (
-              <li key={d.MaDoiThuong} className="is-clickable" onClick={() => setDangXem(d)}>
-                <span className="history-list__main">
+          <SoTheoThang
+            ds={ds}
+            layNgay={(d) => d.NgayDoi}
+            renderHang={(d) => (
+              <li key={d.MaDoiThuong} className="so-cai__hang">
+                <span className="so-cai__ngay">{formatNgayNgan(d.NgayDoi)}</span>
+                <span className="so-cai__noi-dung">
                   <b>{d.TenPhanThuong}</b>
-                  <span>
-                    Mã: <Typography.Text code>{d.MaVoucher}</Typography.Text>
-                  </span>
                   <small>
-                    Đổi ngày {formatNgay(d.NgayDoi)} · HSD {formatNgay(d.HanSuDung)}
+                    {nhanTrangThaiDoiThuong(d)}, hạn dùng đến {formatNgay(d.HanSuDung)}
                   </small>
                 </span>
-                <span className="history-list__value">
-                  <b>−{formatDiem(d.DiemDaDoi)}</b>
-                  <Tag variant="filled">{nhanTrangThaiDoiThuong(d)}</Tag>
+                <span className="so-cai__noi-dung" style={{ alignItems: 'flex-end' }}>
+                  <span className="so-cai__so">{formatDiemCoDau(-d.DiemDaDoi)}</span>
+                  <button type="button" className="nut-link" onClick={() => setDangXem(d)}>
+                    Xem mã
+                  </button>
                 </span>
               </li>
-            ))}
-          </ul>
+            )}
+          />
         )}
       </KhungDuLieu>
-      <Modal open={Boolean(dangXem)} footer={null} centered width={340} onCancel={() => setDangXem(null)} title={dangXem?.TenPhanThuong}>
-        {dangXem && (
-          <div className="voucher">
-            <QRCode value={dangXem.MaVoucher} size={160} bordered={false} />
-            <Typography.Text copyable strong className="voucher__code">
-              {dangXem.MaVoucher}
-            </Typography.Text>
-            <small>
-              {nhanTrangThaiDoiThuong(dangXem)} · Hạn dùng đến {formatNgay(dangXem.HanSuDung)}
-            </small>
-          </div>
-        )}
+      <Modal open={Boolean(dangXem)} footer={null} centered width={400} onCancel={() => setDangXem(null)}>
+        {dangXem && <VeVoucher doiThuong={dangXem} hienTrangThai />}
       </Modal>
     </>
   )
@@ -125,32 +134,23 @@ function TabQua({ maKH }) {
 
 function TabHang({ maKH, dsHang }) {
   const api = useApi(() => layLichSuHang(maKH), [maKH])
+  const tenHang = (ma) => dsHang.find((h) => h.MaHang === ma)?.TenHang ?? ma
   return (
-    <KhungDuLieu api={api} rong="Chưa có lịch sử hạng">
+    <KhungDuLieu api={api} rong="Chưa có lịch sử hạng.">
       {(ds) => (
-        <Timeline
-          className="tier-timeline"
-          items={ds.map((l) => ({
-            key: l._id ?? `${l.NgayThayDoi}-${l.HangMoi}`,
-            title: formatNgay(l.NgayThayDoi),
-            content: (
-              <div>
-                <div>
-                  {l.HangCu ? (
-                    <>
-                      <TierTag maHang={l.HangCu} dsHang={dsHang} /> → <TierTag maHang={l.HangMoi} dsHang={dsHang} />
-                    </>
-                  ) : (
-                    <>
-                      Bắt đầu ở hạng <TierTag maHang={l.HangMoi} dsHang={dsHang} />
-                    </>
-                  )}
-                </div>
-                <small>{l.LyDo}</small>
-              </div>
-            ),
-          }))}
-        />
+        <ol className="so-cai">
+          {ds.map((l) => (
+            <li key={l._id ?? `${l.NgayThayDoi}-${l.HangMoi}`} className="so-cai__hang so-cai__hang--rong">
+              <span className="so-cai__noi-dung">
+                <TierTag maHang={l.HangMoi} dsHang={dsHang} />
+                <small>
+                  {l.HangCu ? `Lên từ hạng ${tenHang(l.HangCu)}. ${l.LyDo}.` : `${l.LyDo}.`}
+                </small>
+              </span>
+              <span className="so-cai__ngay">{formatNgay(l.NgayThayDoi)}</span>
+            </li>
+          ))}
+        </ol>
       )}
     </KhungDuLieu>
   )
@@ -163,10 +163,12 @@ export default function LichSu() {
   const maKH = khachHang.MaKH
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <h1 className="page-header__title">Lịch sử</h1>
-        <span className="points-chip">{formatDiem(khachHang.DiemHienTai)} điểm</span>
+    <div className="trang" style={{ gap: 24 }}>
+      <header className="dau-trang">
+        <h1>Lịch sử</h1>
+        <span>
+          <span className="so-vua">{formatDiem(khachHang.DiemHienTai)}</span> điểm
+        </span>
       </header>
       <Tabs
         activeKey={tab}

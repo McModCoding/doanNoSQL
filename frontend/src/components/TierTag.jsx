@@ -1,13 +1,13 @@
-import { TIER_STYLE, TIER_STYLE_MAC_DINH } from '../config.js'
+import { MAU, MAU_HANG } from '../design/tokens.js'
 
-/** Nhãn hạng: chấm màu + tên hạng (nhận diện bằng chữ, không chỉ bằng màu). */
-export function TierTag({ maHang, dsHang = [], tenHang }) {
+/** Nhãn hạng: ô vuông màu hạng + chữ (nhận diện bằng chữ, không chỉ bằng màu). */
+export function TierTag({ maHang, dsHang = [], tenHang, coChuHang = true, ...rest }) {
   const hang = dsHang.find((h) => h.MaHang === maHang)
-  const mau = hang?.MauSac ?? (TIER_STYLE[maHang] ?? TIER_STYLE_MAC_DINH).color
+  const ten = tenHang ?? hang?.TenHang ?? maHang ?? 'Chưa có'
   return (
-    <span className="tier-tag">
-      <span className="tier-tag__dot" style={{ background: mau }} />
-      {tenHang ?? hang?.TenHang ?? maHang ?? '—'}
+    <span className="nhan-hang" {...rest}>
+      <span className="nhan-hang__o" style={{ background: MAU_HANG[maHang] ?? MAU.chuPhu }} aria-hidden />
+      {coChuHang ? `Hạng ${ten}` : ten}
     </span>
   )
 }

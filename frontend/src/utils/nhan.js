@@ -13,6 +13,8 @@ export const NHAN_LOAI_GIAO_DICH = {
 
 export const NHAN_PTTT = { MOMO: 'Ví MoMo', TAI_QUAY: 'Tại quầy' }
 
+export const NHAN_LOAI_BIEN_DONG = { EARN: 'Tích điểm', REDEEM: 'Đổi quà' }
+
 export const NHAN_TRANG_THAI_KH = { ACTIVE: 'Đang hoạt động', INACTIVE: 'Ngừng hoạt động' }
 
 export function nhanTrangThaiDoiThuong(dt) {
@@ -21,9 +23,9 @@ export function nhanTrangThaiDoiThuong(dt) {
   return dt.LoaiPhanThuong === 'QUA_HIEN_VAT' ? 'Chờ nhận quà' : 'Chưa sử dụng'
 }
 
-/** "Vé 2D – Hành Tinh... (suất 19:30)" + 2 dòng khác -> "Vé 2D – Hành Tinh... và 2 sản phẩm khác" */
+/** "2 × Vé 2D Hành Tinh..., suất 19:30" + 2 dòng khác -> "... và 2 sản phẩm khác" */
 export function tomTatChiTiet(chiTiet = []) {
-  if (!chiTiet.length) return '—'
+  if (!chiTiet.length) return 'Không có sản phẩm'
   const dau = `${chiTiet[0].SoLuong} × ${chiTiet[0].TenSanPham}`
   return chiTiet.length > 1 ? `${dau} và ${chiTiet.length - 1} sản phẩm khác` : dau
 }

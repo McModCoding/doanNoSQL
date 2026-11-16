@@ -145,12 +145,12 @@ Các điểm đảm bảo tính nhất quán:
 | Màn hình | Chức năng | API sử dụng |
 |---|---|---|
 | Đăng nhập | Đăng nhập mô phỏng bằng SĐT, chọn nhanh tài khoản demo | `GET /khach-hang?soDienThoai=` |
-| Trang chủ | Thẻ thành viên điện tử (QR/Barcode), điểm, hạng, thanh tiến trình "cần chi tiêu thêm … để lên hạng …", ưu đãi, biến động gần đây | `GET /khach-hang/:maKH`, `/hang-thanh-vien`, `/khuyen-mai`, `/bien-dong-diem` |
-| Mua vé / Bắp nước | Chọn phim, suất, định dạng, combo; xem điểm dự kiến | `POST /giao-dich` |
-| Thanh toán MoMo (mô phỏng) | QR, đếm ngược 15 phút, xác nhận hoặc hủy, popup thăng hạng | `GET /giao-dich/:maGD`, `PATCH /giao-dich/:maGD/trang-thai` |
-| Đổi quà | Lọc theo loại; khóa nút khi thiếu điểm hoặc hết quà; hiện mã voucher + QR | `GET /phan-thuong`, `POST /doi-thuong` |
-| Lịch sử | Tab Điểm, Giao dịch, Quà của tôi, Hạng | các API `/khach-hang/:maKH/...` |
-| Admin › Dashboard | Ô KPI, phân bố khách theo hạng, biểu đồ điểm theo tháng (có chế độ xem dạng bảng), top 10 đổi quà | `/thong-ke/*` |
+| Trang chủ | Tấm vé thành viên (QR/mã vạch), điểm, hạng, thanh tiến trình "Còn … nữa là lên hạng …", các việc hay làm, ưu đãi, điểm gần đây | `GET /khach-hang/:maKH`, `/hang-thanh-vien`, `/khuyen-mai`, `/bien-dong-diem` |
+| Mua vé / Bắp nước | Bảng giờ chiếu: chọn ngày, phim, định dạng, suất, số vé hoặc combo; xem tổng tiền và điểm dự kiến | `POST /giao-dich` |
+| Thanh toán MoMo (mô phỏng) | Hóa đơn: QR, đếm ngược 15 phút, xác nhận hoặc hủy; màn kết quả và hộp thoại lên hạng | `GET /giao-dich/:maGD`, `PATCH /giao-dich/:maGD/trang-thai` |
+| Đổi quà | Bảng giá bằng điểm: nhóm "Đủ điểm đổi ngay" và "Chưa đổi được" (ghi số điểm còn thiếu hoặc hết quà); voucher dạng vé có mã và QR | `GET /phan-thuong`, `POST /doi-thuong` |
+| Lịch sử | Sổ điểm chia theo tháng, có số dư sau mỗi lần; tab Giao dịch, Quà của tôi, Hạng | các API `/khach-hang/:maKH/...` |
+| Admin › Tổng quan | Câu tóm tắt tháng, giao dịch chờ thanh toán (xác nhận hoặc hủy ngay), biểu đồ điểm theo tháng (có chế độ xem dạng bảng), top 10 đổi quà, phân bố khách theo hạng | `/thong-ke/*` |
 | Admin › Khách hàng | Tìm kiếm, lọc, thêm, sửa, xóa; xem chi tiết và lịch sử | CRUD `/khach-hang` |
 | Admin › Giao dịch | Lọc theo trạng thái; chuyển `PENDING → COMPLETED` để minh họa cơ chế tự cộng điểm | `GET /giao-dich`, `PATCH .../trang-thai` |
 | Admin › Đổi thưởng, Phần thưởng | Danh sách lượt đổi; tồn kho quà | `GET /doi-thuong`, `GET /phan-thuong` |
@@ -159,18 +159,18 @@ Nguyên tắc thiết kế frontend:
 
 - **Một nơi duy nhất biết URL** (`src/api`). **Một nơi duy nhất chuyển đổi tên trường** (`src/api/mappers.js`). Khi backend đổi tên trường, các màn hình không phải sửa.
 - **API giả bằng MSW:** chặn request `/api/...` ngay trong trình duyệt, trả dữ liệu đúng hợp đồng và mô phỏng logic. Dữ liệu giả lưu ở localStorage, có nút "Khôi phục dữ liệu mẫu" tương tự `mongorestore`.
+- **Giao diện theo `docs/06-quy-chuan-giao-dien.md` (hướng "Vé giấy"):** nền giấy vé in nhiệt, chữ mực đen, đỏ con dấu chỉ dùng cho nút chính và link; font Barlow Condensed cho tiêu đề và con số, Be Vietnam Pro cho nội dung (cả hai lưu sẵn trong project, hiển thị đủ dấu tiếng Việt). Màu, cỡ chữ, khoảng cách lấy từ một chỗ (`src/design/tokens.js`, `src/index.css`).
 - **Biểu đồ:**
-  - Một chuỗi số liệu thì dùng một màu. Hạng có thứ tự nên tô theo dải màu nhạt → đậm.
-  - Chỉ ghi số trên cột cao nhất. Các tháng khác xem qua tooltip hoặc chế độ **xem dạng bảng**.
-  - Bảng màu đã được kiểm tra độ tương phản và khả năng phân biệt cho người mù màu.
+  - Cột màu mực. Chỉ cột tháng hiện tại (hoặc tháng cao nhất khi xem năm cũ) màu đỏ dấu và có ghi số; các tháng khác xem qua gợi ý khi rê chuột hoặc chế độ **xem dạng bảng**.
+  - Phân bố khách theo hạng dùng 3 màu hạng (Đồng, Bạc, Vàng), luôn kèm chữ và số khách.
 
 ![Hình 7. Customer App – thẻ thành viên và tiến độ lên hạng](hinh/02-trang-chu-the-thanh-vien.png)
 
-*Hình 7. Customer App – thẻ thành viên, QR và thanh tiến trình lên hạng (dữ liệu giả)*
+*Hình 7. Customer App – tấm vé thành viên, QR và thanh tiến trình lên hạng (dữ liệu giả)*
 
 ![Hình 8. Admin Dashboard](hinh/11-admin-dashboard.png)
 
-*Hình 8. Admin Dashboard – thống kê điểm phát hành theo tháng và top 10 khách đổi quà (dữ liệu giả)*
+*Hình 8. Admin Dashboard – giao dịch chờ xử lý, điểm phát hành theo tháng và top 10 khách đổi quà (dữ liệu giả)*
 
 ## 8. Triển khai và vận hành
 

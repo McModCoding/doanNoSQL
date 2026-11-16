@@ -1,26 +1,20 @@
-import { TableOutlined, BarChartOutlined } from '@ant-design/icons'
-import { Card, Col, Empty, Row, Segmented, Select, Skeleton, Table } from 'antd'
+import { App, Button, Popconfirm, Segmented, Select, Skeleton, Table } from 'antd'
 import { useMemo, useState } from 'react'
-import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Link } from 'react-router-dom'
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { capNhatTrangThaiGiaoDich, layDsGiaoDich } from '../../api/giaoDich.js'
 import { layDsHang } from '../../api/hangThanhVien.js'
+import { timKhachHang } from '../../api/khachHang.js'
 import { layDiemPhatHanhTheoThang, layKhachHangTheoHang, layTongQuan, layTopDoiQua } from '../../api/thongKe.js'
 import { ErrorState } from '../../components/ErrorState.jsx'
 import { TierTag } from '../../components/TierTag.jsx'
+import { SO_TIEN_MOI_DIEM } from '../../config.js'
+import { MAU, MAU_HANG } from '../../design/tokens.js'
 import { useApi } from '../../hooks/useApi.js'
-import { formatDiem, formatVND } from '../../utils/format.js'
+import { formatDiem, formatNgayGio, formatVND } from '../../utils/format.js'
+import { tomTatChiTiet } from '../../utils/nhan.js'
 
-// Màu biểu đồ (đã kiểm tra bằng bộ validate bảng màu: độ tương phản, mù màu)
-const MAU = {
-  series: '#2a78d6', // 1 chuỗi số liệu -> 1 màu
-  hangOrdinal: ['#86b6ef', '#2a78d6', '#104281'], // hạng có thứ tự: nhạt -> đậm
-  grid: '#e1e0d9',
-  axis: '#c3c2b7',
-  muted: '#898781',
-  ink: '#0b0b0b',
-  ink2: '#52514e',
-}
-
-/** Số gọn cho ô thống kê: 14.132.000 -> "14,1 triệu" */
+/** Số gọn cho câu tóm tắt: 14.132.000 -> "14,1 triệu" */
 function soGon(n) {
   const v = Number(n) || 0
   if (Math.abs(v) >= 1e9) return `${(v / 1e9).toLocaleString('vi-VN', { maximumFractionDigits: 1 })} tỷ`
@@ -28,10 +22,10 @@ function soGon(n) {
   return v.toLocaleString('vi-VN')
 }
 
-/** Trục: 0 / 5K / 10K / 20K */
+/** Trục: 0, 5K, 10K, 20K */
 const tickGon = (v) => (v >= 1000 ? `${(v / 1000).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}K` : String(v))
 
-/** Mốc trục tròn (bước 1/2/2,5/5 × 10^n), khoảng 4 vạch: 0 / 10K / 20K / 30K */
+/** Mốc trục tròn (bước 1, 2, 2,5, 5 nhân 10^n), khoảng 4 vạch */
 function mocTruc(max) {
   if (!(max > 0)) return { dinh: 1, moc: [0, 1] }
   const tho = max / 4
@@ -41,110 +35,163 @@ function mocTruc(max) {
   return { dinh, moc: Array.from({ length: Math.round(dinh / buoc) + 1 }, (_, i) => i * buoc) }
 }
 
-function StatTile({ nhan, giaTri, phu, title }) {
-  return (
-    <div className="stat-tile" title={title}>
-      <span className="stat-tile__label">{nhan}</span>
-      <span className="stat-tile__value">{giaTri}</span>
-      {phu && <span className="stat-tile__sub">{phu}</span>}
-    </div>
-  )
-}
+const phanTram = (a, tong) => (tong ? Math.round((a / tong) * 100) : 0)
 
-/** Thanh phân đoạn cao: 1 tổng (tất cả khách hàng) chia theo hạng. */
-function PhanBoHang({ data }) {
-  const tong = data.reduce((s, d) => s + d.soKhachHang, 0)
-  if (!tong) return <Empty description="Chưa có khách hàng" />
+/** Giao dịch đang chờ thanh toán: xác nhận hoặc hủy ngay tại trang tổng quan. */
+function ViecCanXuLy({ api, tenKhach, dsHang, onXong }) {
+  const { message } = App.useApp()
+  const [dangXuLy, setDangXuLy] = useState(null)
+  const ds = api.data ?? []
+
+  const capNhat = async (g, moi) => {
+    setDangXuLy(g.MaGiaoDich)
+    try {
+      const kq = await capNhatTrangThaiGiaoDich(g.MaGiaoDich, moi)
+      if (moi === 'COMPLETED') {
+        const hangMoi = dsHang.find((h) => h.MaHang === kq.thangHang?.HangMoi)?.TenHang
+        message.success(
+          `Đã xác nhận ${g.MaGiaoDich}: cộng ${formatDiem(kq.diemCong)} điểm cho ${tenKhach(g.MaKH)}${hangMoi ? `, khách lên hạng ${hangMoi}` : ''}.`,
+        )
+      } else {
+        message.info(`Đã hủy ${g.MaGiaoDich}, không cộng điểm.`)
+      }
+    } catch (e) {
+      message.error(e.message)
+    } finally {
+      setDangXuLy(null)
+      onXong()
+    }
+  }
+
   return (
-    <div>
-      <div className="seg-bar" role="img" aria-label={data.map((d) => `${d.TenHang}: ${d.soKhachHang} khách`).join(', ')}>
-        {data.map((d, i) => {
-          if (!d.soKhachHang) return null
-          const ty = (d.soKhachHang / tong) * 100
-          const mau = MAU.hangOrdinal[i] ?? MAU.series
-          return (
-            <div
-              key={d.MaHang}
-              className="seg-bar__part"
-              style={{ flexGrow: d.soKhachHang, background: mau, color: i === 0 ? MAU.ink : '#fff' }}
-              title={`${d.TenHang}: ${d.soKhachHang} khách (${ty.toFixed(0)}%)`}
-            >
-              {ty >= 12 ? `${ty.toFixed(0)}%` : ''}
-            </div>
-          )
-        })}
+    <section className="khoi" aria-labelledby="can-xu-ly">
+      <div className="khoi__dau">
+        <h2 id="can-xu-ly">
+          {ds.length ? `Cần xử lý: ${ds.length} giao dịch chờ thanh toán` : 'Không có giao dịch nào chờ thanh toán'}
+        </h2>
+        <Link to="/admin/giao-dich?trangThai=PENDING">Mở danh sách giao dịch</Link>
       </div>
-      <ul className="seg-legend">
-        {data.map((d, i) => (
-          <li key={d.MaHang}>
-            <span className="seg-legend__swatch" style={{ background: MAU.hangOrdinal[i] ?? MAU.series }} />
-            {d.TenHang}
-            <b>{d.soKhachHang} khách</b>
-          </li>
-        ))}
-      </ul>
-    </div>
+      {api.error && !api.data ? (
+        <ErrorState error={api.error} onRetry={api.reload} compact />
+      ) : api.loading && !api.data ? (
+        <Skeleton active paragraph={{ rows: 3 }} />
+      ) : (
+        ds.length > 0 && (
+          <ul className="ds-hang" data-testid="pending-list">
+            {ds.map((g) => (
+              <li key={g.MaGiaoDich} className="cho-xu-ly">
+                <span className="cap" style={{ gap: 0 }}>
+                  <b>{g.MaGiaoDich}</b>
+                  <small>{formatNgayGio(g.NgayTao)}</small>
+                </span>
+                <span className="cap" style={{ gap: 0, minWidth: 0 }}>
+                  <span>
+                    {tenKhach(g.MaKH)} <small>{g.MaKH}</small>
+                  </span>
+                  <small>{tomTatChiTiet(g.ChiTiet)}</small>
+                </span>
+                <b className="so-cot">{formatVND(g.TongTien)}</b>
+                <span className="cap-nut">
+                  <Popconfirm
+                    title={`Xác nhận ${g.MaGiaoDich} đã thanh toán?`}
+                    description={`Cộng ${formatDiem(Math.floor(g.TongTien / SO_TIEN_MOI_DIEM))} điểm cho ${tenKhach(g.MaKH)} và xét lên hạng.`}
+                    okText="Xác nhận đã thanh toán"
+                    cancelText="Không"
+                    onConfirm={() => capNhat(g, 'COMPLETED')}
+                  >
+                    <Button
+                      size="small"
+                      type="primary"
+                      loading={dangXuLy === g.MaGiaoDich}
+                      disabled={Boolean(dangXuLy)}
+                      aria-label={`Xác nhận thanh toán ${g.MaGiaoDich}`}
+                    >
+                      Xác nhận
+                    </Button>
+                  </Popconfirm>
+                  <Popconfirm
+                    title={`Hủy giao dịch ${g.MaGiaoDich}?`}
+                    okText="Hủy giao dịch"
+                    cancelText="Không"
+                    onConfirm={() => capNhat(g, 'CANCELLED')}
+                  >
+                    <Button size="small" disabled={Boolean(dangXuLy)} aria-label={`Hủy ${g.MaGiaoDich}`}>
+                      Hủy
+                    </Button>
+                  </Popconfirm>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )
+      )}
+    </section>
   )
 }
 
-function TooltipThang({ active, payload, nam }) {
+function GoiYThang({ active, payload, nam }) {
   if (!active || !payload?.length) return null
   const d = payload[0].payload
   return (
-    <div className="chart-tooltip">
-      <span className="chart-tooltip__key" style={{ background: MAU.series }} />
-      <div>
-        <b>{formatDiem(d.tongDiem)} điểm</b>
-        <small>
-          Tháng {d.thang}/{nam} · {formatDiem(d.soGiaoDich)} giao dịch
-        </small>
-      </div>
+    <div className="bieu-do__goi-y">
+      <b>{formatDiem(d.tongDiem)} điểm</b>
+      <small>
+        Tháng {d.thang}/{nam}, {formatDiem(d.soGiaoDich)} giao dịch
+      </small>
     </div>
   )
 }
 
-function BieuDoDiemTheoThang({ data, nam }) {
-  const [kieu, setKieu] = useState('chart')
+/** Cột mực cho mọi tháng; cột cần làm nổi (tháng hiện tại, hoặc tháng cao nhất của năm cũ) màu nhấn. */
+function BieuDoTheoThang({ data, nam, laNamNay, thangHienTai }) {
+  const [kieu, setKieu] = useState('bieu-do')
   const max = Math.max(...data.map((d) => d.tongDiem))
   const tong = data.reduce((s, d) => s + d.tongDiem, 0)
   const truc = mocTruc(max)
-  // Chỉ ghi số trên cột cao nhất (nhãn chọn lọc); các tháng khác xem bằng tooltip hoặc dạng bảng
-  const nhanDinh = ({ x, y, width, value }) =>
-    value === max && value > 0 ? (
-      <text x={x + width / 2} y={y - 8} textAnchor="middle" fontSize={12} fill={MAU.ink2}>
-        {formatDiem(value)}
+  const thangNoiBat = laNamNay ? thangHienTai : (data.find((d) => d.tongDiem === max && max > 0)?.thang ?? null)
+  const giaiThich = thangNoiBat
+    ? `Cột đỏ: tháng ${thangNoiBat}, ${laNamNay ? 'tháng hiện tại' : 'tháng cao nhất'}.`
+    : ''
+
+  const nhanNoiBat = ({ x, y, width, index }) =>
+    data[index]?.thang === thangNoiBat ? (
+      <text x={x + width / 2} y={y - 8} textAnchor="middle" fontSize={13} fontWeight={600} fill={MAU.chu}>
+        {formatDiem(data[index].tongDiem)}
       </text>
     ) : null
 
   return (
-    <Card
-      title={`Điểm thưởng phát hành theo tháng – năm ${nam}`}
-      extra={
+    <section className="khoi" aria-labelledby="bd-thang">
+      <div className="khoi__dau">
+        <div className="cap">
+          <h2 id="bd-thang">Điểm phát hành theo tháng</h2>
+          <small>
+            Năm {nam}, tổng {formatDiem(tong)} điểm. {giaiThich}
+          </small>
+        </div>
         <Segmented
           size="small"
           value={kieu}
           onChange={setKieu}
           options={[
-            { value: 'chart', icon: <BarChartOutlined />, title: 'Biểu đồ' },
-            { value: 'table', icon: <TableOutlined />, title: 'Bảng số liệu' },
+            { label: 'Biểu đồ', value: 'bieu-do' },
+            { label: 'Bảng số', value: 'bang' },
           ]}
+          aria-label="Cách xem số liệu"
         />
-      }
-    >
-      <p className="card-sub">
-        Tổng cả năm: <b>{formatDiem(tong)} điểm</b> (tổng các biến động EARN trong bien_dong_diem)
-      </p>
-      {kieu === 'chart' ? (
-        <div className="chart-box" data-testid="chart-monthly">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data} margin={{ top: 24, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid vertical={false} stroke={MAU.grid} />
+      </div>
+      {kieu === 'bieu-do' ? (
+        <div data-testid="chart-monthly" className="bieu-do-cot">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 24, right: 0, bottom: 0, left: 0 }}>
+              <CartesianGrid vertical={false} stroke={MAU.vien} />
               <XAxis
                 dataKey="thang"
                 tickFormatter={(t) => `T${t}`}
                 tickLine={false}
-                axisLine={{ stroke: MAU.axis }}
-                tick={{ fill: MAU.muted, fontSize: 12 }}
+                axisLine={{ stroke: MAU.chu }}
+                tick={{ fill: MAU.chuPhu, fontSize: 13 }}
+                interval={0}
               />
               <YAxis
                 domain={[0, truc.dinh]}
@@ -152,20 +199,15 @@ function BieuDoDiemTheoThang({ data, nam }) {
                 tickFormatter={tickGon}
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: MAU.muted, fontSize: 12 }}
-                width={44}
+                tick={{ fill: MAU.chuPhu, fontSize: 13 }}
+                width={48}
               />
-              <Tooltip cursor={{ fill: 'rgba(11,11,11,0.04)' }} content={<TooltipThang nam={nam} />} />
-              <Bar
-                dataKey="tongDiem"
-                name="Điểm phát hành"
-                fill={MAU.series}
-                maxBarSize={24}
-                radius={[4, 4, 0, 0]}
-                activeBar={{ fill: '#3987e5' }}
-                isAnimationActive={false}
-              >
-                <LabelList dataKey="tongDiem" content={nhanDinh} />
+              <Tooltip cursor={{ fill: MAU.nenPhu }} content={<GoiYThang nam={nam} />} />
+              <Bar dataKey="tongDiem" name="Điểm phát hành" maxBarSize={32} isAnimationActive={false}>
+                {data.map((d) => (
+                  <Cell key={d.thang} fill={d.thang === thangNoiBat ? MAU.nhan : MAU.chu} />
+                ))}
+                <LabelList dataKey="tongDiem" content={nhanNoiBat} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -184,7 +226,7 @@ function BieuDoDiemTheoThang({ data, nam }) {
           summary={() => (
             <Table.Summary.Row>
               <Table.Summary.Cell index={0}>
-                <b>Tổng</b>
+                <b>Cả năm</b>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={1} align="right">
                 <b>{formatDiem(tong)}</b>
@@ -196,120 +238,170 @@ function BieuDoDiemTheoThang({ data, nam }) {
           )}
         />
       )}
-    </Card>
+    </section>
   )
 }
 
-/** Danh sách xếp hạng: tên + thanh + số liệu trên mỗi dòng (vừa là biểu đồ vừa là bảng). */
-function TopDoiQua({ data, dsHang }) {
-  if (!data.length) return <Empty description="Chưa có lượt đổi quà trong năm này" />
-  const max = Math.max(...data.map((d) => d.soLuotDoi))
+/** Xếp hạng: tên, thanh mực, số lượt trên cùng một hàng (vừa là biểu đồ vừa là bảng). */
+function TopDoiQua({ api, dsHang, nam }) {
+  const data = api.data ?? []
+  const max = Math.max(1, ...data.map((d) => d.soLuotDoi))
   return (
-    <ol className="rank-list" data-testid="top-redeemers">
-      {data.map((d, i) => (
-        <li key={d.MaKH} title={`${d.HoTen}: ${d.soLuotDoi} lượt đổi, ${formatDiem(d.tongDiemDaDoi)} điểm`}>
-          <span className="rank-list__no">{i + 1}</span>
-          <span className="rank-list__name">
-            {d.HoTen}
-            <small>
-              {d.MaKH} · <TierTag maHang={d.MaHangHienTai} dsHang={dsHang} />
-            </small>
-          </span>
-          <span className="rank-list__bar">
-            <span style={{ width: `${(d.soLuotDoi / max) * 100}%`, background: MAU.series }} />
-          </span>
-          <span className="rank-list__value">
-            <b>{d.soLuotDoi} lượt</b>
-            <small>{formatDiem(d.tongDiemDaDoi)} điểm</small>
-          </span>
-        </li>
-      ))}
-    </ol>
+    <section className="khoi" aria-labelledby="top-doi-qua">
+      <div className="cap">
+        <h2 id="top-doi-qua">Top 10 khách đổi quà nhiều nhất</h2>
+        <small>Năm {nam}, xếp theo số lượt đổi.</small>
+      </div>
+      {api.error && !api.data ? (
+        <ErrorState error={api.error} onRetry={api.reload} compact />
+      ) : !api.data ? (
+        <Skeleton active paragraph={{ rows: 8 }} />
+      ) : data.length === 0 ? (
+        <p>Chưa có lượt đổi quà nào trong năm {nam}.</p>
+      ) : (
+        <ol className="xep-hang" data-testid="top-redeemers">
+          {data.map((d, i) => (
+            <li key={d.MaKH}>
+              <span className="xep-hang__so">{i + 1}</span>
+              <span className="xep-hang__ten">
+                {d.HoTen}
+                <small>
+                  <span className="xep-hang__ma">{d.MaKH}</span>
+                  <TierTag maHang={d.MaHangHienTai} dsHang={dsHang} />
+                </small>
+              </span>
+              <span className="xep-hang__thanh" aria-hidden>
+                <span style={{ width: `${(d.soLuotDoi / max) * 100}%` }} />
+              </span>
+              <span className="xep-hang__gia-tri">
+                <b>{d.soLuotDoi} lượt</b>
+                <small>{formatDiem(d.tongDiemDaDoi)} điểm</small>
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  )
+}
+
+/** Một thanh chia theo hạng (màu hạng, có chữ), kèm chú giải số khách. */
+function KhachTheoHang({ api }) {
+  const data = api.data ?? []
+  const tong = data.reduce((s, d) => s + d.soKhachHang, 0)
+  return (
+    <section className="khoi" aria-labelledby="theo-hang">
+      <div className="cap">
+        <h2 id="theo-hang">Khách hàng theo hạng</h2>
+        <small>Tính trên {formatDiem(tong)} khách hàng, kể cả khách ngừng hoạt động.</small>
+      </div>
+      {api.error && !api.data ? (
+        <ErrorState error={api.error} onRetry={api.reload} compact />
+      ) : !api.data ? (
+        <Skeleton active paragraph={{ rows: 2 }} />
+      ) : (
+        <>
+          <div
+            className="thanh-phan-doan"
+            role="img"
+            aria-label={data.map((d) => `Hạng ${d.TenHang}: ${d.soKhachHang} khách`).join(', ')}
+          >
+            {data.map((d) =>
+              d.soKhachHang ? (
+                <div
+                  key={d.MaHang}
+                  className="thanh-phan-doan__khuc"
+                  style={{ flexGrow: d.soKhachHang, background: MAU_HANG[d.MaHang] ?? MAU.chuPhu }}
+                >
+                  {phanTram(d.soKhachHang, tong) >= 12 ? `${d.TenHang} ${phanTram(d.soKhachHang, tong)}%` : ''}
+                </div>
+              ) : null,
+            )}
+          </div>
+          <ul className="chu-giai">
+            {data.map((d) => (
+              <li key={d.MaHang}>
+                <TierTag maHang={d.MaHang} tenHang={d.TenHang} />
+                <b>{d.soKhachHang} khách</b>
+                <small>{phanTram(d.soKhachHang, tong)}%</small>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
   )
 }
 
 export default function Dashboard() {
   const [namHienTai] = useState(() => new Date().getFullYear())
+  const [thangHienTai] = useState(() => new Date().getMonth() + 1)
   const [nam, setNam] = useState(namHienTai)
   const tongQuan = useApi(layTongQuan, [])
+  const choXuLy = useApi(() => layDsGiaoDich({ trangThai: 'PENDING' }), [])
+  const khach = useApi(() => timKhachHang({}), [])
   const theoHang = useApi(layKhachHangTheoHang, [])
   const dsHang = useApi(layDsHang, [])
   const theoThang = useApi(() => layDiemPhatHanhTheoThang(nam), [nam])
   const top = useApi(() => layTopDoiQua({ limit: 10, nam }), [nam])
   const dsNam = useMemo(() => [namHienTai, namHienTai - 1, namHienTai - 2], [namHienTai])
+  const tenTheoMa = useMemo(() => new Map((khach.data ?? []).map((k) => [k.MaKH, k.HoTen])), [khach.data])
+  const tenKhach = (ma) => tenTheoMa.get(ma) ?? ma
   const tq = tongQuan.data
 
+  const taiLaiSauXuLy = () => {
+    choXuLy.reload()
+    tongQuan.reload()
+    theoThang.reload()
+    theoHang.reload()
+  }
+
   return (
-    <div className="dashboard">
-      <section>
-        <h2 className="admin-section-title">Hiện tại</h2>
+    <div className="qt-trang">
+      <section className="cap" aria-labelledby="tieu-de">
+        <h1 id="tieu-de">
+          Tổng quan tháng {thangHienTai}/{namHienTai}
+        </h1>
         {tongQuan.error ? (
           <ErrorState error={tongQuan.error} onRetry={tongQuan.reload} />
+        ) : !tq ? (
+          <Skeleton active paragraph={{ rows: 1 }} />
         ) : (
-          <Row gutter={[16, 16]}>
-            <Col xs={24} xl={14}>
-              <div className="stat-row" data-testid="kpi-row">
-                {!tq ? (
-                  <Skeleton active />
-                ) : (
-                  <>
-                    <StatTile nhan="Khách hàng đang hoạt động" giaTri={formatDiem(tq.khachHangActive)} phu={`trên tổng ${formatDiem(tq.tongKhachHang)} khách`} />
-                    <StatTile nhan="Điểm phát hành tháng này" giaTri={formatDiem(tq.diemPhatHanhThangNay)} phu={`${formatDiem(tq.diemDaDoiThangNay)} điểm đã được đổi`} />
-                    <StatTile nhan="Lượt đổi quà tháng này" giaTri={formatDiem(tq.luotDoiThangNay)} phu={`${formatDiem(tq.giaoDichChoXuLy)} giao dịch đang chờ thanh toán`} />
-                    <StatTile nhan="Doanh thu tháng này" giaTri={`${soGon(tq.doanhThuThangNay)} đ`} phu="giao dịch COMPLETED" title={formatVND(tq.doanhThuThangNay)} />
-                  </>
-                )}
-              </div>
-            </Col>
-            <Col xs={24} xl={10}>
-              <Card title="Khách hàng theo hạng" className="card-fill">
-                {theoHang.data ? <PhanBoHang data={theoHang.data} /> : <Skeleton active />}
-              </Card>
-            </Col>
-          </Row>
+          <p className="tom-tat" data-testid="month-summary">
+            <b>{formatDiem(tq.diemPhatHanhThangNay)} điểm</b> phát hành, <b>{formatDiem(tq.luotDoiThangNay)}</b> lượt
+            đổi quà, doanh thu <b>{soGon(tq.doanhThuThangNay)} đồng</b>. {formatDiem(tq.khachHangActive)} trên{' '}
+            {formatDiem(tq.tongKhachHang)} khách hàng đang hoạt động.
+          </p>
         )}
       </section>
 
-      <div className="filter-row">
-        <span>Năm thống kê</span>
-        <Select
-          value={nam}
-          onChange={setNam}
-          style={{ width: 120 }}
-          options={dsNam.map((n) => ({ value: n, label: `Năm ${n}` }))}
-          aria-label="Chọn năm thống kê"
-        />
-        <small>Áp dụng cho các biểu đồ bên dưới</small>
-      </div>
+      <ViecCanXuLy api={choXuLy} tenKhach={tenKhach} dsHang={dsHang.data ?? []} onXong={taiLaiSauXuLy} />
 
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={14}>
+      <div className="nhom">
+        <div className="hang-loc">
+          <label htmlFor="chon-nam">Số liệu năm</label>
+          <Select
+            id="chon-nam"
+            size="small"
+            value={nam}
+            onChange={setNam}
+            style={{ width: 112 }}
+            options={dsNam.map((n) => ({ value: n, label: String(n) }))}
+          />
+        </div>
+        <div className="qt-luoi-2">
           {theoThang.error ? (
             <ErrorState error={theoThang.error} onRetry={theoThang.reload} />
           ) : theoThang.data ? (
-            <div style={{ opacity: theoThang.loading ? 0.5 : 1, transition: 'opacity .2s' }}>
-              <BieuDoDiemTheoThang data={theoThang.data} nam={nam} />
-            </div>
+            <BieuDoTheoThang data={theoThang.data} nam={nam} laNamNay={nam === namHienTai} thangHienTai={thangHienTai} />
           ) : (
-            <Card>
-              <Skeleton active paragraph={{ rows: 8 }} />
-            </Card>
+            <Skeleton active paragraph={{ rows: 8 }} />
           )}
-        </Col>
-        <Col xs={24} xl={10}>
-          <Card title={`Top 10 khách hàng đổi quà nhiều nhất – năm ${nam}`}>
-            {top.error ? (
-              <ErrorState error={top.error} onRetry={top.reload} compact />
-            ) : top.data ? (
-              <div style={{ opacity: top.loading ? 0.5 : 1, transition: 'opacity .2s' }}>
-                <TopDoiQua data={top.data} dsHang={dsHang.data ?? []} />
-              </div>
-            ) : (
-              <Skeleton active paragraph={{ rows: 8 }} />
-            )}
-          </Card>
-        </Col>
-      </Row>
+          <TopDoiQua api={top} dsHang={dsHang.data ?? []} nam={nam} />
+        </div>
+      </div>
+
+      <KhachTheoHang api={theoHang} />
     </div>
   )
 }

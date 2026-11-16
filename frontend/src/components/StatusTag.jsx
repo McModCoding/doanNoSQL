@@ -1,19 +1,20 @@
 import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, StopOutlined } from '@ant-design/icons'
-import { Tag } from 'antd'
+import { MAU } from '../design/tokens.js'
 
 const TRANG_THAI = {
-  PENDING: { nhan: 'Chờ thanh toán', color: 'warning', icon: <ClockCircleOutlined /> },
-  COMPLETED: { nhan: 'Thành công', color: 'success', icon: <CheckCircleOutlined /> },
-  CANCELLED: { nhan: 'Đã hủy', color: 'default', icon: <StopOutlined /> },
-  FAILED: { nhan: 'Thất bại', color: 'error', icon: <CloseCircleOutlined /> },
+  PENDING: { nhan: 'Chờ thanh toán', mau: MAU.dangCho, icon: <ClockCircleOutlined /> },
+  COMPLETED: { nhan: 'Thành công', mau: MAU.thanhCong, icon: <CheckCircleOutlined /> },
+  CANCELLED: { nhan: 'Đã hủy', mau: MAU.chuPhu, icon: <StopOutlined /> },
+  FAILED: { nhan: 'Thất bại', mau: MAU.loi, icon: <CloseCircleOutlined /> },
 }
 
-/** Trạng thái giao dịch: luôn có biểu tượng + chữ, không chỉ dựa vào màu. */
+/** Trạng thái giao dịch: biểu tượng + chữ cùng màu chức năng. */
 export function StatusTag({ trangThai }) {
-  const t = TRANG_THAI[trangThai] ?? { nhan: trangThai, color: 'default' }
+  const t = TRANG_THAI[trangThai] ?? { nhan: trangThai, mau: MAU.chuPhu }
   return (
-    <Tag color={t.color} icon={t.icon} variant="filled">
+    <span className="nhan-trang-thai" style={{ color: t.mau }}>
+      {t.icon}
       {t.nhan}
-    </Tag>
+    </span>
   )
 }

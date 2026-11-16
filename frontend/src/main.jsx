@@ -1,3 +1,8 @@
+import '@fontsource/barlow-condensed/600.css'
+import '@fontsource/barlow-condensed/700.css'
+import '@fontsource/be-vietnam-pro/400.css'
+import '@fontsource/be-vietnam-pro/500.css'
+import '@fontsource/be-vietnam-pro/600.css'
 import dayjs from 'dayjs'
 import 'dayjs/locale/vi'
 import { StrictMode } from 'react'

@@ -1,12 +1,13 @@
-import { ArrowLeftOutlined, SafetyCertificateOutlined, WalletOutlined } from '@ant-design/icons'
-import { App, Button, ConfigProvider, Modal, Popconfirm, QRCode, Result, Spin, Statistic } from 'antd'
+import { ArrowLeftOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { App, Button, Modal, Popconfirm, QRCode, Spin, Statistic } from 'antd'
 import { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { capNhatTrangThaiGiaoDich, layGiaoDich } from '../../api/giaoDich.js'
 import { ErrorState } from '../../components/ErrorState.jsx'
 import { TierTag } from '../../components/TierTag.jsx'
-import { APP_NAME, MAU_MOMO, SO_TIEN_MOI_DIEM } from '../../config.js'
+import { APP_NAME, SO_TIEN_MOI_DIEM } from '../../config.js'
 import { useKhachHang } from '../../context/khachHangContext.js'
+import { MAU } from '../../design/tokens.js'
 import { useApi } from '../../hooks/useApi.js'
 import { PhoneFrame } from '../../layouts/PhoneFrame.jsx'
 import { formatDiem, formatVND } from '../../utils/format.js'
@@ -16,40 +17,43 @@ const THOI_HAN_THANH_TOAN_MS = 15 * 60 * 1000 // 15 phút
 function KetQuaThanhCong({ gd, ketQua }) {
   const navigate = useNavigate()
   const { khachHang, dsHang } = useKhachHang()
-  const [moChucMung, setMoChucMung] = useState(Boolean(ketQua?.thangHang))
+  const [moThangHang, setMoThangHang] = useState(Boolean(ketQua?.thangHang))
   const kh = ketQua?.khachHang ?? khachHang
   const diemCong = ketQua?.diemCong ?? gd.DiemCong
   const hangMoi = dsHang.find((h) => h.MaHang === ketQua?.thangHang?.HangMoi)
+  const hangCu = dsHang.find((h) => h.MaHang === ketQua?.thangHang?.HangCu)
 
   return (
-    <div className="phone-content">
-      <Result
-        status="success"
-        title="Thanh toán thành công"
-        subTitle={`Mã giao dịch ${gd.MaGiaoDich} · ${formatVND(gd.TongTien)}`}
-      />
-      <div className="earn-box" data-testid="earn-box">
-        <span>Điểm thưởng nhận được</span>
-        <strong data-testid="earn-points">+{formatDiem(diemCong)} điểm</strong>
-        <dl>
-          <div>
-            <dt>Số dư điểm</dt>
-            <dd data-testid="earn-balance">{formatDiem(kh?.DiemHienTai)} điểm</dd>
-          </div>
-          <div>
-            <dt>Tổng chi tiêu</dt>
-            <dd>{formatVND(kh?.TongChiTieu)}</dd>
-          </div>
-          <div>
-            <dt>Hạng hiện tại</dt>
-            <dd>
-              <TierTag maHang={kh?.MaHangHienTai} dsHang={dsHang} />
-            </dd>
-          </div>
-        </dl>
+    <main className="khung__noi-dung trang ket-qua">
+      <span className="trang-thai-lon">
+        <CheckCircleOutlined /> Đã thanh toán
+      </span>
+      <div className="cap" style={{ alignItems: 'center' }} data-testid="earn-box">
+        <span className="so-lon" data-testid="earn-points">
+          +{formatDiem(diemCong)} điểm
+        </span>
+        <p>
+          Giao dịch {gd.MaGiaoDich}, {formatVND(gd.TongTien)}
+        </p>
       </div>
-      <div className="stack">
-        <Button type="primary" size="large" block onClick={() => navigate('/app')}>
+      <dl className="bang-so">
+        <div>
+          <dt>Số dư điểm</dt>
+          <dd data-testid="earn-balance">{formatDiem(kh?.DiemHienTai)} điểm</dd>
+        </div>
+        <div>
+          <dt>Tổng chi tiêu</dt>
+          <dd>{formatVND(kh?.TongChiTieu)}</dd>
+        </div>
+        <div>
+          <dt>Hạng hiện tại</dt>
+          <dd>
+            <TierTag maHang={kh?.MaHangHienTai} dsHang={dsHang} />
+          </dd>
+        </div>
+      </dl>
+      <div className="cot-nut">
+        <Button type="primary" block onClick={() => navigate('/app')}>
           Về trang chủ
         </Button>
         <Button block onClick={() => navigate('/app/lich-su')}>
@@ -57,29 +61,27 @@ function KetQuaThanhCong({ gd, ketQua }) {
         </Button>
       </div>
 
-      <Modal open={moChucMung} footer={null} centered onCancel={() => setMoChucMung(false)} width={360}>
-        <div className="celebrate" data-testid="tier-up-modal">
-          <div className="celebrate__icon" aria-hidden>
-            🎉
-          </div>
-          <h2>Chúc mừng thăng hạng!</h2>
+      <Modal open={moThangHang} footer={null} centered onCancel={() => setMoThangHang(false)} width={380}>
+        <div className="nhom" data-testid="tier-up-modal">
+          <TierTag maHang={ketQua?.thangHang?.HangMoi} dsHang={dsHang} />
+          <h2>Bạn vừa lên hạng {hangMoi?.TenHang}</h2>
           <p>
-            Bạn vừa được nâng từ <TierTag maHang={ketQua?.thangHang?.HangCu} dsHang={dsHang} /> lên{' '}
-            <TierTag maHang={ketQua?.thangHang?.HangMoi} dsHang={dsHang} />
+            Tổng chi tiêu của bạn đã đạt {formatVND(hangMoi?.NguongChiTieu)}, nên thẻ chuyển từ hạng {hangCu?.TenHang}{' '}
+            sang hạng {hangMoi?.TenHang}.
           </p>
           {hangMoi?.QuyenLoi?.length > 0 && (
-            <ul>
+            <ul className="cap" style={{ margin: 0, paddingLeft: 24 }}>
               {hangMoi.QuyenLoi.map((q) => (
                 <li key={q}>{q}</li>
               ))}
             </ul>
           )}
-          <Button type="primary" block size="large" onClick={() => setMoChucMung(false)}>
-            Tuyệt vời!
+          <Button type="primary" block onClick={() => setMoThangHang(false)}>
+            Xem thẻ hạng {hangMoi?.TenHang}
           </Button>
         </div>
       </Modal>
-    </div>
+    </main>
   )
 }
 
@@ -101,7 +103,7 @@ export default function ThanhToanMoMo() {
     try {
       const kq = await capNhatTrangThaiGiaoDich(maGD, trangThai)
       setKetQua(kq)
-      taiLai() // lấy lại điểm/hạng mới nhất từ server
+      taiLai() // lấy lại điểm và hạng mới nhất từ server
       if (trangThai === 'CANCELLED') {
         message.info('Đã hủy giao dịch')
         navigate('/app/mua-ve')
@@ -125,13 +127,13 @@ export default function ThanhToanMoMo() {
   let noiDung
   if (!gd && gdApi.error) {
     noiDung = (
-      <div className="phone-content">
+      <div className="khung__noi-dung">
         <ErrorState error={gdApi.error} onRetry={gdApi.reload} />
       </div>
     )
   } else if (!gd || !khachHang) {
     noiDung = (
-      <div className="phone-content phone-content--center">
+      <div className="khung__noi-dung khung__noi-dung--giua">
         <Spin size="large" />
       </div>
     )
@@ -139,112 +141,89 @@ export default function ThanhToanMoMo() {
     noiDung = <KetQuaThanhCong gd={gd} ketQua={ketQua} />
   } else if (gd.TrangThai !== 'PENDING' || hetHan) {
     noiDung = (
-      <div className="phone-content">
-        <Result
-          status="warning"
-          title={hetHan || gd.TrangThai === 'FAILED' ? 'Giao dịch đã hết hạn thanh toán' : 'Giao dịch đã bị hủy'}
-          subTitle={`Mã giao dịch ${gd.MaGiaoDich} – không có điểm nào được cộng.`}
-          extra={
-            <Button type="primary" onClick={() => navigate('/app/mua-ve')}>
-              Đặt lại
-            </Button>
-          }
-        />
-      </div>
+      <main className="khung__noi-dung trang ket-qua">
+        <span className="trang-thai-lon trang-thai-lon--loi">
+          <CloseCircleOutlined />
+          {hetHan || gd.TrangThai === 'FAILED' ? 'Giao dịch đã hết hạn thanh toán' : 'Giao dịch đã bị hủy'}
+        </span>
+        <p>
+          Giao dịch {gd.MaGiaoDich} ({formatVND(gd.TongTien)}) không được cộng điểm. Bạn có thể đặt lại vé và thanh
+          toán trong 15 phút.
+        </p>
+        <div className="cot-nut">
+          <Button type="primary" block onClick={() => navigate('/app/mua-ve')}>
+            Đặt vé lại
+          </Button>
+        </div>
+      </main>
     )
   } else {
     const hanThanhToan = new Date(gd.NgayTao).getTime() + THOI_HAN_THANH_TOAN_MS
     noiDung = (
-      <>
-        <header className="momo-header">
-          <button type="button" className="momo-header__back" onClick={() => navigate(-1)} aria-label="Quay lại">
-            <ArrowLeftOutlined />
-          </button>
-          <div className="momo-header__title">
-            <WalletOutlined /> Thanh toán qua Ví MoMo
+      <main className="khung__noi-dung trang" style={{ gap: 24 }}>
+        <button type="button" className="nut-link" onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>
+          <ArrowLeftOutlined /> Quay lại
+        </button>
+        <div className="cap">
+          <h1>Thanh toán qua MoMo</h1>
+          <small>Màn hình mô phỏng ví MoMo cho đồ án, không phát sinh giao dịch thật.</small>
+        </div>
+
+        <section className="hoa-don" aria-label="Hóa đơn">
+          <div className="hoa-don__dong">
+            <span className="chu-phu">{APP_NAME}, đơn hàng</span>
+            <b>{gd.MaGiaoDich}</b>
           </div>
-          <span className="momo-header__badge">MÔ PHỎNG</span>
-        </header>
-        <div className="momo-body">
-          <section className="momo-card">
-            <div className="momo-card__merchant">{APP_NAME} · Rạp chiếu phim</div>
-            <div className="momo-card__amount" data-testid="momo-amount">
-              {formatVND(gd.TongTien)}
+          <span className="so-lon" data-testid="momo-amount">
+            {formatVND(gd.TongTien)}
+          </span>
+          <div className="duong-rang-cua" />
+          {gd.ChiTiet.map((d, i) => (
+            <div className="hoa-don__dong" key={`${d.MaSanPham}-${i}`}>
+              <span>
+                {d.SoLuong} × {d.TenSanPham}
+              </span>
+              <b>{formatVND(d.ThanhTien ?? d.SoLuong * d.DonGia)}</b>
             </div>
-            <dl className="momo-card__info">
-              <div>
-                <dt>Mã đơn hàng</dt>
-                <dd>{gd.MaGiaoDich}</dd>
-              </div>
-              <div>
-                <dt>Nội dung</dt>
-                <dd>Thanh toán {gd.LoaiGiaoDich === 'COMBO_BAP_NUOC' ? 'bắp nước' : 'vé xem phim'}</dd>
-              </div>
-              <div>
-                <dt>Thành viên</dt>
-                <dd>
-                  {khachHang.HoTen} ({khachHang.MaKH})
-                </dd>
-              </div>
-              <div>
-                <dt>Điểm dự kiến</dt>
-                <dd>+{formatDiem(Math.floor(gd.TongTien / SO_TIEN_MOI_DIEM))} điểm</dd>
-              </div>
-            </dl>
-          </section>
-
-          <section className="momo-card momo-card--qr">
-            <QRCode value={`MOMO-SIM|${gd.MaGiaoDich}|${gd.TongTien}`} color={MAU_MOMO} size={168} bordered={false} />
-            <p>Quét mã bằng ứng dụng MoMo (mô phỏng) hoặc bấm xác nhận bên dưới</p>
-            <div className="momo-timer">
-              Giao dịch hết hạn sau{' '}
-              <Statistic.Timer type="countdown" value={hanThanhToan} format="mm:ss" onFinish={khiHetHan} />
+          ))}
+          <div className="hoa-don__dong">
+            <span>Điểm sẽ nhận</span>
+            <b>+{formatDiem(Math.floor(gd.TongTien / SO_TIEN_MOI_DIEM))}</b>
+          </div>
+          <div className="hoa-don__dong">
+            <span>Thành viên</span>
+            <b>
+              {khachHang.HoTen} ({khachHang.MaKH})
+            </b>
+          </div>
+          <div className="duong-rang-cua" />
+          <div className="hoa-don__qr">
+            <div aria-hidden="true">
+              <QRCode type="svg" value={`MOMO-SIM|${gd.MaGiaoDich}|${gd.TongTien}`} size={112} bordered={false} color={MAU.chu} bgColor={MAU.nen} />
             </div>
-          </section>
+            <div className="cap">
+              <small>Quét bằng ứng dụng MoMo (mô phỏng) hoặc bấm xác nhận bên dưới.</small>
+              <div className="dong-ho cap">
+                <small>Hết hạn sau</small>
+                <Statistic.Timer type="countdown" value={hanThanhToan} format="mm:ss" onFinish={khiHetHan} />
+              </div>
+            </div>
+          </div>
+        </section>
 
-          <section className="momo-card">
-            <h3>Chi tiết đơn hàng</h3>
-            <ul className="cart cart--plain">
-              {gd.ChiTiet.map((d, i) => (
-                <li key={`${d.MaSanPham}-${i}`}>
-                  <span>
-                    {d.TenSanPham}
-                    <small>
-                      {d.SoLuong} × {formatVND(d.DonGia)}
-                    </small>
-                  </span>
-                  <b>{formatVND(d.ThanhTien ?? d.SoLuong * d.DonGia)}</b>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <Button
-            block
-            type="primary"
-            size="large"
-            loading={dangXuLy === 'COMPLETED'}
-            disabled={Boolean(dangXuLy)}
-            onClick={() => capNhat('COMPLETED')}
-          >
+        <div className="cot-nut">
+          <Button type="primary" block loading={dangXuLy === 'COMPLETED'} disabled={Boolean(dangXuLy)} onClick={() => capNhat('COMPLETED')}>
             Xác nhận thanh toán {formatVND(gd.TongTien)}
           </Button>
           <Popconfirm title="Hủy giao dịch này?" okText="Hủy giao dịch" cancelText="Không" onConfirm={() => capNhat('CANCELLED')}>
-            <Button block type="text" disabled={Boolean(dangXuLy)}>
+            <Button block disabled={Boolean(dangXuLy)}>
               Hủy giao dịch
             </Button>
           </Popconfirm>
-          <p className="momo-note">
-            <SafetyCertificateOutlined /> Màn hình mô phỏng ví điện tử cho đồ án – không phát sinh giao dịch thật.
-          </p>
         </div>
-      </>
+      </main>
     )
   }
 
-  return (
-    <ConfigProvider theme={{ token: { colorPrimary: MAU_MOMO } }}>
-      <PhoneFrame className="phone--momo">{noiDung}</PhoneFrame>
-    </ConfigProvider>
-  )
+  return <PhoneFrame>{noiDung}</PhoneFrame>
 }

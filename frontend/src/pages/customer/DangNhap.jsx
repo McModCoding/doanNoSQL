@@ -1,5 +1,5 @@
-import { ArrowLeftOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons'
-import { Alert, Button, Divider, Input } from 'antd'
+import { RightOutlined } from '@ant-design/icons'
+import { Alert, Button, Input } from 'antd'
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { MockControls } from '../../components/MockControls.jsx'
@@ -7,6 +7,7 @@ import { APP_NAME, APP_SLOGAN, DEMO_ACCOUNTS } from '../../config.js'
 import { useKhachHang } from '../../context/khachHangContext.js'
 import { PhoneFrame } from '../../layouts/PhoneFrame.jsx'
 
+/** Đăng nhập kiểu quầy soát vé: số điện thoại trước, tài khoản thử bên dưới. */
 export default function DangNhap() {
   const { maKH, dangNhap } = useKhachHang()
   const navigate = useNavigate()
@@ -32,66 +33,68 @@ export default function DangNhap() {
   }
 
   return (
-    <PhoneFrame className="phone--login">
-      <div className="login-hero">
-        <Link to="/" className="login-hero__back" aria-label="Về trang chọn ứng dụng">
-          <ArrowLeftOutlined />
-        </Link>
-        <div className="login-hero__logo">🎬</div>
-        <h1>{APP_NAME}</h1>
-        <p>{APP_SLOGAN}</p>
-      </div>
-
-      <div className="login-card">
-        <h2>Đăng nhập thành viên</h2>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            xuLyDangNhap(sdt)
-          }}
-        >
-          <Input
-            size="large"
-            prefix={<PhoneOutlined />}
-            placeholder="Số điện thoại (10 số)"
-            inputMode="numeric"
-            maxLength={10}
-            value={sdt}
-            onChange={(e) => setSdt(e.target.value.replace(/\D/g, ''))}
-            aria-label="Số điện thoại"
-          />
-          {loi && <Alert type="error" showIcon title={loi} style={{ marginTop: 12 }} />}
-          <Button type="primary" size="large" block htmlType="submit" loading={dangGui} style={{ marginTop: 12 }}>
-            Đăng nhập
-          </Button>
-        </form>
-        <p className="login-card__note">Đăng nhập mô phỏng bằng số điện thoại, không cần mật khẩu.</p>
-
-        <Divider plain>Tài khoản demo</Divider>
-        <div className="demo-accounts">
-          {DEMO_ACCOUNTS.map((tk) => (
-            <button
-              type="button"
-              key={tk.soDienThoai}
-              className="demo-account"
-              onClick={() => {
-                setSdt(tk.soDienThoai)
-                xuLyDangNhap(tk.soDienThoai)
-              }}
-              disabled={dangGui}
-            >
-              <UserOutlined />
-              <span>
-                <b>{tk.soDienThoai}</b>
-                <small>{tk.nhan}</small>
-              </span>
-            </button>
-          ))}
+    <PhoneFrame>
+      <main className="khung__noi-dung trang">
+        <div className="cap">
+          <Link to="/" className="ten-thuong-hieu">
+            {APP_NAME}
+          </Link>
+          <p>{APP_SLOGAN}</p>
         </div>
-        <div className="login-card__mock">
-          <MockControls />
-        </div>
-      </div>
+
+        <section className="nhom">
+          <h1>Đăng nhập bằng số điện thoại</h1>
+          <form
+            className="form-dang-nhap"
+            onSubmit={(e) => {
+              e.preventDefault()
+              xuLyDangNhap(sdt)
+            }}
+          >
+            <label htmlFor="so-dien-thoai" className="chu-nho">
+              Số điện thoại thành viên
+            </label>
+            <Input
+              id="so-dien-thoai"
+              placeholder="Ví dụ 0901000001"
+              inputMode="numeric"
+              maxLength={10}
+              value={sdt}
+              onChange={(e) => setSdt(e.target.value.replace(/\D/g, ''))}
+            />
+            {loi && <Alert type="error" showIcon title={loi} />}
+            <Button type="primary" htmlType="submit" block loading={dangGui}>
+              Đăng nhập
+            </Button>
+            <small>Bản mô phỏng cho đồ án, không cần mật khẩu.</small>
+          </form>
+        </section>
+
+        <section className="nhom">
+          <h2>Tài khoản thử</h2>
+          <div>
+            {DEMO_ACCOUNTS.map((tk) => (
+              <button
+                type="button"
+                key={tk.soDienThoai}
+                className="hang-viec hang-viec--nut"
+                onClick={() => {
+                  setSdt(tk.soDienThoai)
+                  xuLyDangNhap(tk.soDienThoai)
+                }}
+                disabled={dangGui}
+              >
+                <span className="hang-viec__chu">
+                  <span className="so-cot">{tk.soDienThoai}</span>
+                  <small>{tk.nhan}</small>
+                </span>
+                <RightOutlined />
+              </button>
+            ))}
+          </div>
+          <MockControls nutLon />
+        </section>
+      </main>
     </PhoneFrame>
   )
 }

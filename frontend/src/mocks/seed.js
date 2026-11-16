@@ -48,16 +48,16 @@ export const HANG_THANH_VIEN = [
 ]
 
 export const PHAN_THUONG = [
-  { MaPhanThuong: 'PT001', TenPhanThuong: 'Voucher giảm 20.000đ vé 2D', LoaiPhanThuong: 'VOUCHER_VE', DiemCanDoi: 200, SoLuongTon: 500, GiaTri: 20000, HanSuDungNgay: 30, HinhAnh: '🎟️', MoTa: 'Áp dụng cho 1 vé 2D bất kỳ suất chiếu.' },
-  { MaPhanThuong: 'PT002', TenPhanThuong: 'Voucher giảm 50.000đ vé 2D/3D', LoaiPhanThuong: 'VOUCHER_VE', DiemCanDoi: 450, SoLuongTon: 400, GiaTri: 50000, HanSuDungNgay: 30, HinhAnh: '🎫', MoTa: 'Áp dụng cho 1 vé 2D hoặc 3D.' },
-  { MaPhanThuong: 'PT003', TenPhanThuong: 'Voucher 1 vé 2D miễn phí', LoaiPhanThuong: 'VOUCHER_VE', DiemCanDoi: 900, SoLuongTon: 250, GiaTri: 95000, HanSuDungNgay: 45, HinhAnh: '🎬', MoTa: 'Đổi 1 vé 2D miễn phí, trừ suất chiếu đặc biệt.' },
-  { MaPhanThuong: 'PT004', TenPhanThuong: 'Voucher nước ngọt size L', LoaiPhanThuong: 'VOUCHER_BAP_NUOC', DiemCanDoi: 350, SoLuongTon: 600, GiaTri: 35000, HanSuDungNgay: 30, HinhAnh: '🥤', MoTa: '1 ly nước ngọt size L tại quầy bắp nước.' },
-  { MaPhanThuong: 'PT005', TenPhanThuong: 'Voucher bắp ngọt size L', LoaiPhanThuong: 'VOUCHER_BAP_NUOC', DiemCanDoi: 500, SoLuongTon: 500, GiaTri: 55000, HanSuDungNgay: 30, HinhAnh: '🍿', MoTa: '1 hộp bắp ngọt size L.' },
-  { MaPhanThuong: 'PT006', TenPhanThuong: 'Voucher Combo Couple', LoaiPhanThuong: 'VOUCHER_BAP_NUOC', DiemCanDoi: 950, SoLuongTon: 300, GiaTri: 109000, HanSuDungNgay: 30, HinhAnh: '🍿', MoTa: '1 bắp lớn + 2 nước ngọt size L.' },
-  { MaPhanThuong: 'PT007', TenPhanThuong: 'Móc khóa linh vật LoyalCine', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 800, SoLuongTon: 150, GiaTri: 60000, HanSuDungNgay: 60, HinhAnh: '🔑', MoTa: 'Nhận tại quầy vé, mang theo mã đổi quà.' },
-  { MaPhanThuong: 'PT008', TenPhanThuong: 'Ly giữ nhiệt LoyalCine', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 1500, SoLuongTon: 120, GiaTri: 150000, HanSuDungNgay: 60, HinhAnh: '☕', MoTa: 'Ly giữ nhiệt 500ml phiên bản giới hạn.' },
-  { MaPhanThuong: 'PT009', TenPhanThuong: 'Gấu bông linh vật', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 2500, SoLuongTon: 80, GiaTri: 250000, HanSuDungNgay: 60, HinhAnh: '🧸', MoTa: 'Gấu bông cao 30cm.' },
-  { MaPhanThuong: 'PT010', TenPhanThuong: 'Áo thun LoyalCine', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 3000, SoLuongTon: 60, GiaTri: 300000, HanSuDungNgay: 60, HinhAnh: '👕', MoTa: 'Áo thun cotton, nhiều size. (Đang hết hàng)' },
+  { MaPhanThuong: 'PT001', TenPhanThuong: 'Voucher giảm 20.000đ vé 2D', LoaiPhanThuong: 'VOUCHER_VE', DiemCanDoi: 200, SoLuongTon: 500, GiaTri: 20000, HanSuDungNgay: 30, HinhAnh: null, MoTa: 'Áp dụng cho 1 vé 2D bất kỳ suất chiếu.' },
+  { MaPhanThuong: 'PT002', TenPhanThuong: 'Voucher giảm 50.000đ vé 2D/3D', LoaiPhanThuong: 'VOUCHER_VE', DiemCanDoi: 450, SoLuongTon: 400, GiaTri: 50000, HanSuDungNgay: 30, HinhAnh: null, MoTa: 'Áp dụng cho 1 vé 2D hoặc 3D.' },
+  { MaPhanThuong: 'PT003', TenPhanThuong: 'Voucher 1 vé 2D miễn phí', LoaiPhanThuong: 'VOUCHER_VE', DiemCanDoi: 900, SoLuongTon: 250, GiaTri: 95000, HanSuDungNgay: 45, HinhAnh: null, MoTa: 'Đổi 1 vé 2D miễn phí, trừ suất chiếu đặc biệt.' },
+  { MaPhanThuong: 'PT004', TenPhanThuong: 'Voucher nước ngọt size L', LoaiPhanThuong: 'VOUCHER_BAP_NUOC', DiemCanDoi: 350, SoLuongTon: 600, GiaTri: 35000, HanSuDungNgay: 30, HinhAnh: null, MoTa: '1 ly nước ngọt size L tại quầy bắp nước.' },
+  { MaPhanThuong: 'PT005', TenPhanThuong: 'Voucher bắp ngọt size L', LoaiPhanThuong: 'VOUCHER_BAP_NUOC', DiemCanDoi: 500, SoLuongTon: 500, GiaTri: 55000, HanSuDungNgay: 30, HinhAnh: null, MoTa: '1 hộp bắp ngọt size L.' },
+  { MaPhanThuong: 'PT006', TenPhanThuong: 'Voucher Combo Couple', LoaiPhanThuong: 'VOUCHER_BAP_NUOC', DiemCanDoi: 950, SoLuongTon: 300, GiaTri: 109000, HanSuDungNgay: 30, HinhAnh: null, MoTa: '1 bắp lớn + 2 nước ngọt size L.' },
+  { MaPhanThuong: 'PT007', TenPhanThuong: 'Móc khóa linh vật LoyalCine', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 800, SoLuongTon: 150, GiaTri: 60000, HanSuDungNgay: 60, HinhAnh: null, MoTa: 'Nhận tại quầy vé, mang theo mã đổi quà.' },
+  { MaPhanThuong: 'PT008', TenPhanThuong: 'Ly giữ nhiệt LoyalCine', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 1500, SoLuongTon: 120, GiaTri: 150000, HanSuDungNgay: 60, HinhAnh: null, MoTa: 'Ly giữ nhiệt 500ml phiên bản giới hạn.' },
+  { MaPhanThuong: 'PT009', TenPhanThuong: 'Gấu bông linh vật', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 2500, SoLuongTon: 80, GiaTri: 250000, HanSuDungNgay: 60, HinhAnh: null, MoTa: 'Gấu bông cao 30cm.' },
+  { MaPhanThuong: 'PT010', TenPhanThuong: 'Áo thun LoyalCine', LoaiPhanThuong: 'QUA_HIEN_VAT', DiemCanDoi: 3000, SoLuongTon: 60, GiaTri: 300000, HanSuDungNgay: 60, HinhAnh: null, MoTa: 'Áo thun cotton, nhiều size.' },
 ]
 
 const KHACH_DEMO = [
@@ -97,7 +97,7 @@ export function taoDuLieuMau(now = new Date(), seed = 20261115) {
   const khuyen_mai = [
     { MaKhuyenMai: 'KM001', TenKhuyenMai: 'Sinh nhật vui vẻ', MoTa: 'Thành viên hạng Bạc trở lên được tặng combo bắp nước trong tháng sinh nhật.', ApDungChoHang: ['BAC', 'VANG'], NgayBatDau: isoT(T - 300 * NGAY), NgayKetThuc: isoT(T + 400 * NGAY), TrangThai: 'ACTIVE' },
     { MaKhuyenMai: 'KM002', TenKhuyenMai: 'Chào thành viên mới', MoTa: 'Đăng ký thành viên trong tháng này được tặng 1 voucher nước ngọt size L.', ApDungChoHang: ['DONG', 'BAC', 'VANG'], NgayBatDau: isoT(T - 20 * NGAY), NgayKetThuc: isoT(T + 40 * NGAY), TrangThai: 'ACTIVE' },
-    { MaKhuyenMai: 'KM003', TenKhuyenMai: 'Mùa quà cuối năm', MoTa: 'Thêm nhiều quà tặng hiện vật mới, số lượng có hạn – đổi điểm ngay kẻo lỡ!', ApDungChoHang: ['DONG', 'BAC', 'VANG'], NgayBatDau: isoT(T - 5 * NGAY), NgayKetThuc: isoT(T + 45 * NGAY), TrangThai: 'ACTIVE' },
+    { MaKhuyenMai: 'KM003', TenKhuyenMai: 'Mùa quà cuối năm', MoTa: 'Thêm nhiều quà tặng hiện vật mới, số lượng có hạn, đổi điểm tại app hoặc quầy vé.', ApDungChoHang: ['DONG', 'BAC', 'VANG'], NgayBatDau: isoT(T - 5 * NGAY), NgayKetThuc: isoT(T + 45 * NGAY), TrangThai: 'ACTIVE' },
     { MaKhuyenMai: 'KM004', TenKhuyenMai: 'Hè rực rỡ', MoTa: 'Tặng bắp ngọt cho hóa đơn từ 2 vé (đã kết thúc).', ApDungChoHang: ['DONG', 'BAC', 'VANG'], NgayBatDau: isoT(T - 150 * NGAY), NgayKetThuc: isoT(T - 60 * NGAY), TrangThai: 'ACTIVE' },
   ].map((k) => ({ _id: oid(new Date(k.NgayBatDau).getTime()), ...k }))
 

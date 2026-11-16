@@ -6,6 +6,7 @@ import { CustomerProvider } from './context/CustomerProvider.jsx'
 import { AdminLayout } from './layouts/AdminLayout.jsx'
 import { CustomerLayout } from './layouts/CustomerLayout.jsx'
 import { RequireLogin } from './layouts/RequireLogin.jsx'
+import { ANTD_THEME } from './design/antdTheme.js'
 import Landing from './pages/Landing.jsx'
 
 // Tải từng trang khi cần (giảm dung lượng tải lần đầu)
@@ -27,18 +28,10 @@ const DangTai = (
   </div>
 )
 
-const THEME = {
-  token: {
-    colorPrimary: '#c8102e',
-    colorLink: '#c8102e',
-    borderRadius: 10,
-    fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  },
-}
 
 export default function App() {
   return (
-    <ConfigProvider locale={viVN} theme={THEME}>
+    <ConfigProvider locale={viVN} theme={ANTD_THEME} wave={{ disabled: true }}>
       <AntApp>
         <BrowserRouter>
           <Suspense fallback={DangTai}>
