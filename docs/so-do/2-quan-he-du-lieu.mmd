@@ -1,0 +1,63 @@
+erDiagram
+  hang_thanh_vien ||--o{ khach_hang : "MaHangHienTai"
+  khach_hang ||--o{ giao_dich : "MaKH"
+  khach_hang ||--o{ bien_dong_diem : "MaKH"
+  khach_hang ||--o{ doi_thuong : "MaKH"
+  khach_hang ||--o{ lich_su_hang : "MaKH"
+  phan_thuong ||--o{ doi_thuong : "MaPhanThuong"
+  giao_dich ||--o| bien_dong_diem : "EARN qua MaThamChieu"
+  doi_thuong ||--|| bien_dong_diem : "REDEEM qua MaThamChieu"
+  khach_hang {
+    string MaKH PK
+    string SoDienThoai UK
+    int DiemHienTai
+    int TongChiTieu
+    string MaHangHienTai FK
+    string TrangThai "ACTIVE | INACTIVE"
+  }
+  hang_thanh_vien {
+    string MaHang PK "DONG | BAC | VANG"
+    int NguongChiTieu
+    array QuyenLoi
+  }
+  giao_dich {
+    string MaGiaoDich PK
+    string MaKH FK
+    array ChiTiet "nhúng: vé, combo"
+    int TongTien
+    string TrangThai "PENDING | COMPLETED ..."
+    int DiemCong
+  }
+  bien_dong_diem {
+    string MaBienDong PK
+    string MaKH FK
+    string LoaiBienDong "EARN | REDEEM"
+    int SoDiem
+    int SoDuSau
+    string MaThamChieu
+  }
+  phan_thuong {
+    string MaPhanThuong PK
+    string LoaiPhanThuong
+    int DiemCanDoi
+    int SoLuongTon
+  }
+  doi_thuong {
+    string MaDoiThuong PK
+    string MaKH FK
+    string MaPhanThuong FK
+    string TenPhanThuong "lưu kèm"
+    string MaVoucher
+  }
+  lich_su_hang {
+    string MaKH FK
+    string HangCu
+    string HangMoi
+    date NgayThayDoi
+  }
+  khuyen_mai {
+    string MaKhuyenMai PK
+    array ApDungChoHang
+    date NgayBatDau
+    date NgayKetThuc
+  }

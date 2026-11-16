@@ -1,0 +1,7 @@
+flowchart TB
+  P["pages/ – các màn hình<br/>customer/ · admin/"] --> H["hooks/useApi · context/CustomerProvider"]
+  H --> A["api/*.js – mỗi collection một file<br/>(nơi duy nhất biết URL)"]
+  A --> M["api/mappers.js<br/>chuyển đổi tên trường"]
+  A --> C["api/client.js<br/>axios · baseURL /api · chuẩn hóa lỗi"]
+  C -->|"VITE_USE_MOCK=true"| W["mocks/ – MSW<br/>handlers · logic · seed (localStorage)"]
+  C -->|"VITE_USE_MOCK=false"| X["Vite proxy → Express :3000 → MongoDB"]

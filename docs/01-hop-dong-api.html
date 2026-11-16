@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hợp đồng API LoyalCine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Tài liệu kỹ thuật cho nhóm: mục lục dính bên trái, nội dung một cột ~70 ký tự, bảng và code cuộn ngang riêng */
+:root {
+  --bg: #f6f5f3;
+  --surface: #ffffff;
+  --ink: #1d1b1a;
+  --muted: #6b6560;
+  --line: #e6e2dd;
+  --accent: #b3122b;
+  --code-bg: #f3f0ec;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --get: #1f6fd1; --post: #16824a; --put: #a86a00; --patch: #7046c8; --delete: #c0262d;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141312; --surface: #1c1b19; --ink: #efebe6; --muted: #a9a29a; --line: #34312d;
+    --accent: #ff6b7f; --code-bg: #24221f;
+    --get: #6aa8ff; --post: #4fc07e; --put: #e2a43b; --patch: #a98bff; --delete: #ff6b6b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141312; --surface: #1c1b19; --ink: #efebe6; --muted: #a9a29a; --line: #34312d;
+  --accent: #ff6b7f; --code-bg: #24221f;
+  --get: #6aa8ff; --post: #4fc07e; --put: #e2a43b; --patch: #a98bff; --delete: #ff6b6b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.65 var(--font-body); }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 40px; }
+header.doc { grid-column: 1 / -1; display: grid; gap: 10px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--accent); text-transform: uppercase; }
+h1 { margin: 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); font-size: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; color: var(--ink); }
+.lead { max-width: 72ch; margin: 4px 0 0; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0; }
+nav.toc { position: sticky; top: 24px; align-self: start; font-size: 14px; }
+nav.toc h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+nav.toc a { display: block; padding: 6px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; }
+nav.toc a:hover { background: var(--surface); color: var(--accent); }
+main { min-width: 0; }
+main > * { max-width: 80ch; }
+main h2 { font-size: 24px; line-height: 1.3; margin: 40px 0 12px; padding-top: 8px; text-wrap: balance; scroll-margin-top: 16px; }
+main h3 { font-size: 18px; margin: 28px 0 8px; scroll-margin-top: 16px; }
+main p, main li { max-width: 72ch; }
+main ul, main ol { padding-left: 22px; }
+code { font-family: var(--font-mono); font-size: .86em; background: var(--code-bg); padding: 1px 5px; border-radius: 5px; }
+.table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin: 12px 0 20px; }
+main .table-wrap { max-width: none; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 13px; color: var(--muted); font-weight: 600; background: var(--code-bg); }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+.ep { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ep code { background: transparent; padding: 0; }
+.m { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: .03em; padding: 2px 6px; border-radius: 5px; color: #fff; }
+.m-get { background: var(--get); } .m-post { background: var(--post); } .m-put { background: var(--put); }
+.m-patch { background: var(--patch); } .m-delete { background: var(--delete); }
+:root[data-theme="dark"] .m { color: #141312; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .m { color: #141312; } }
+.req { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--surface); font-size: 12px; }
+.opt { color: var(--muted); }
+.code { position: relative; margin: 10px 0 18px; }
+main .code { max-width: none; }
+pre { margin: 0; padding: 14px 16px; padding-right: 92px; overflow-x: auto; background: var(--code-bg); border: 1px solid var(--line); border-radius: 12px; font: 13px/1.55 var(--font-mono); }
+pre code { background: transparent; padding: 0; font-size: inherit; }
+.copy { position: absolute; top: 8px; right: 8px; font: 600 12px var(--font-body); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.copy:hover { border-color: var(--accent); color: var(--accent); }
+blockquote { margin: 12px 0; padding: 10px 14px; border-left: 3px solid var(--line); color: var(--muted); }
+li.todo { list-style: none; margin-left: -22px; display: flex; gap: 10px; align-items: baseline; }
+.box { flex: none; width: 14px; height: 14px; border: 1.5px solid var(--muted); border-radius: 4px; transform: translateY(2px); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 20px; padding: 20px 16px 48px; }
+  nav.toc { position: static; }
+  nav.toc ol { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="doc">
+    <span class="eyebrow">Đồ án NoSQL · Ứng dụng Khách hàng thân thiết Rạp chiếu phim</span>
+    <h1>Hợp đồng API giữa Backend và Frontend</h1>
+    <div class="meta">
+      <span class="chip">Phiên bản 0.1 · bản đề xuất</span>
+      <span>Người soạn: Khánh Lâm (Frontend)</span>
+      <span>Cần xác nhận: Trung Tính (CSDL, CRUD) · Yến Linh (nghiệp vụ, thống kê)</span>
+      <span>15/11/2026</span>
+    </div>
+    <p class="lead">Tài liệu chốt trước tên trường, mẫu JSON và danh sách endpoint để 3 người làm song song. Frontend đã chạy bằng API giả theo đúng tài liệu này. Khi backend trả đúng hợp đồng, frontend chỉ cần đặt <code>VITE_USE_MOCK=false</code>. Thấy chỗ nào khác với schema giữa kỳ thì ghi vào mục 6.</p>
+  </header>
+  <nav class="toc" aria-label="Mục lục">
+    <h2>Mục lục</h2>
+    <ol>
+<li><a href="#1-quy-ước-chung">1. Quy ước chung</a></li>
+<li><a href="#2-cấu-trúc-document-đề-xuất-8-collection">2. Cấu trúc document đề xuất (8 collection)</a></li>
+<li><a href="#3-danh-sách-endpoint">3. Danh sách endpoint</a></li>
+<li><a href="#4-chi-tiết-các-endpoint-">4. Chi tiết các endpoint ★</a></li>
+<li><a href="#5-quy-tắc-nghiệp-vụ-đề-xuất-linh-chốt-và-gợi-ý-cài-đặt-mongodb">5. Quy tắc nghiệp vụ đề xuất (Linh chốt) và gợi ý cài đặt MongoDB</a></li>
+<li><a href="#6-việc-cần-chốt">6. Việc cần chốt</a></li>
+<li><a href="#7-lịch-sử-thay-đổi">7. Lịch sử thay đổi</a></li>
+    </ol>
+  </nav>
+  <main>
+
+<h2 id="1-quy-ước-chung">1. Quy ước chung</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr class="header">
+<th>Mục</th>
+<th>Quy ước</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Địa chỉ</td>
+<td><code>http://localhost:3000/api/...</code>. Mọi route có tiền tố <code>/api</code>. Port đổi được.</td>
+</tr>
+<tr class="even">
+<td>Định dạng</td>
+<td>JSON, UTF-8</td>
+</tr>
+<tr class="odd">
+<td>Response thành công</td>
+<td><code>{ "success": true, "data": &lt;dữ liệu&gt;, "message": "&lt;tùy chọn&gt;" }</code></td>
+</tr>
+<tr class="even">
+<td>Response lỗi</td>
+<td>Mã HTTP 4xx/5xx và <code>{ "success": false, "message": "Thông báo tiếng Việt cho người dùng" }</code></td>
+</tr>
+<tr class="odd">
+<td>Mã lỗi</td>
+<td><code>400</code> dữ liệu sai hoặc không đủ điểm · <code>403</code> tài khoản INACTIVE · <code>404</code> không tìm thấy · <code>409</code> xung đột (trùng SĐT, giao dịch đã xử lý, hết quà) · <code>500</code> lỗi server</td>
+</tr>
+<tr class="even">
+<td>Tên trường</td>
+<td>Trường của document giữ đúng tên trong MongoDB: PascalCase, không dấu (<code>DiemHienTai</code>, <code>MaHangHienTai</code>, <code>TrangThai</code>). Trường do API tự tính hoặc bọc ngoài dùng camelCase (<code>diemCong</code>, <code>thangHang</code>, <code>tongDiem</code>).</td>
+</tr>
+<tr class="odd">
+<td>Định danh</td>
+<td>Dùng <strong>mã nghiệp vụ</strong> trên URL và để tham chiếu giữa các collection: <code>MaKH</code>, <code>MaGiaoDich</code>, <code>MaPhanThuong</code>, <code>MaDoiThuong</code>. Vẫn giữ <code>_id</code> (ObjectId) của MongoDB.</td>
+</tr>
+<tr class="even">
+<td>Ngày giờ</td>
+<td>Lưu kiểu <strong>Date</strong> trong MongoDB, không lưu chuỗi, để dùng được <code>$month</code>, <code>$year</code>. API trả chuỗi ISO 8601. Thống kê theo tháng dùng múi giờ <code>Asia/Ho_Chi_Minh</code>.</td>
+</tr>
+<tr class="odd">
+<td>Tiền và điểm</td>
+<td>Số nguyên: tiền tính bằng VND, điểm tính bằng điểm</td>
+</tr>
+<tr class="even">
+<td>Đăng nhập</td>
+<td><strong>Mô phỏng</strong>: tra cứu khách theo số điện thoại, không cần mật khẩu (ngoài phạm vi môn NoSQL)</td>
+</tr>
+<tr class="odd">
+<td>CORS</td>
+<td>Khi dev không cần cấu hình vì frontend dùng Vite proxy. Nếu chạy frontend ở domain khác thì bật <code>app.use(cors())</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Frontend vẫn đọc được nếu backend trả <strong>thẳng dữ liệu, không có lớp <code>{ success, data }</code></strong>. Tuy vậy nên theo đúng quy ước để thông báo lỗi hiển thị đẹp.</p>
+</blockquote>
+<hr />
+<h2 id="2-cấu-trúc-document-đề-xuất-8-collection">2. Cấu trúc document đề xuất (8 collection)</h2>
+<blockquote>
+<p>Đây là tên trường mà frontend đang dùng. <strong>Nếu JSON schema giữa kỳ của Tính đặt tên khác, ưu tiên schema của Tính</strong> rồi báo Lâm sửa. Phía frontend chỉ cần sửa 1 file <code>frontend/src/api/mappers.js</code>.</p>
+</blockquote>
+<h3 id="21-khach_hang">2.1. <code>khach_hang</code></h3>
+<div class="sourceCode" id="cb1"><div class="code"><button type="button" class="copy" data-target="code-1">Sao chép</button><pre id="code-1" class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;_id&quot;</span><span class="fu">:</span> <span class="st">&quot;6721f0c8a1b2c3d4e5f60718&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;HoTen&quot;</span><span class="fu">:</span> <span class="st">&quot;Trần Minh Anh&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;SoDienThoai&quot;</span><span class="fu">:</span> <span class="st">&quot;0901000001&quot;</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;Email&quot;</span><span class="fu">:</span> <span class="st">&quot;tran.minh.anh01@example.com&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;NgaySinh&quot;</span><span class="fu">:</span> <span class="st">&quot;2003-11-20&quot;</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;GioiTinh&quot;</span><span class="fu">:</span> <span class="st">&quot;Nữ&quot;</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MaThe&quot;</span><span class="fu">:</span> <span class="st">&quot;LC00000001&quot;</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;DiemHienTai&quot;</span><span class="fu">:</span> <span class="dv">9500</span><span class="fu">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;TongChiTieu&quot;</span><span class="fu">:</span> <span class="dv">9850000</span><span class="fu">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MaHangHienTai&quot;</span><span class="fu">:</span> <span class="st">&quot;DONG&quot;</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span><span class="fu">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;NgayDangKy&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-09-21T03:15:00.000Z&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<ul>
+<li><code>MaThe</code>: số thẻ để mã hóa thành QR/Barcode. Nếu không có trường này, frontend dùng <code>MaKH</code>.</li>
+<li><code>TongChiTieu</code>: tổng tiền các giao dịch <strong>COMPLETED</strong>, dùng để xét hạng.</li>
+<li><code>DiemHienTai</code>: điểm còn dùng được, bằng EARN − REDEEM.</li>
+<li><code>TrangThai</code>: <code>ACTIVE</code> hoặc <code>INACTIVE</code>.</li>
+</ul>
+<h3 id="22-hang_thanh_vien">2.2. <code>hang_thanh_vien</code></h3>
+<div class="sourceCode" id="cb2"><div class="code"><button type="button" class="copy" data-target="code-2">Sao chép</button><pre id="code-2" class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaHang&quot;</span><span class="fu">:</span> <span class="st">&quot;BAC&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenHang&quot;</span><span class="fu">:</span> <span class="st">&quot;Bạc&quot;</span><span class="fu">,</span> <span class="dt">&quot;NguongChiTieu&quot;</span><span class="fu">:</span> <span class="dv">10000000</span><span class="fu">,</span> <span class="dt">&quot;ThuTu&quot;</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span> <span class="dt">&quot;MauSac&quot;</span><span class="fu">:</span> <span class="st">&quot;#6b7785&quot;</span><span class="fu">,</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;QuyenLoi&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;Toàn bộ quyền lợi hạng Đồng&quot;</span><span class="ot">,</span> <span class="st">&quot;Tặng 1 combo bắp nước trong tháng sinh nhật&quot;</span><span class="ot">]</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Có 3 hạng: <code>DONG</code> (từ 0đ), <code>BAC</code> (từ 10.000.000đ), <code>VANG</code> (từ 30.000.000đ). <code>MauSac</code> và <code>QuyenLoi</code> không bắt buộc.</p>
+<h3 id="23-giao_dich">2.3. <code>giao_dich</code></h3>
+<div class="sourceCode" id="cb3"><div class="code"><button type="button" class="copy" data-target="code-3">Sao chép</button><pre id="code-3" class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MaGiaoDich&quot;</span><span class="fu">:</span> <span class="st">&quot;GD001043&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;LoaiGiaoDich&quot;</span><span class="fu">:</span> <span class="st">&quot;VE_XEM_PHIM&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ChiTiet&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">&quot;MaSanPham&quot;</span><span class="fu">:</span> <span class="st">&quot;P01-2D&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenSanPham&quot;</span><span class="fu">:</span> <span class="st">&quot;Vé 2D – Hành Tinh Cuối Cùng (suất 19:30)&quot;</span><span class="fu">,</span> <span class="dt">&quot;Loai&quot;</span><span class="fu">:</span> <span class="st">&quot;VE&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;SoLuong&quot;</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span> <span class="dt">&quot;DonGia&quot;</span><span class="fu">:</span> <span class="dv">95000</span><span class="fu">,</span> <span class="dt">&quot;ThanhTien&quot;</span><span class="fu">:</span> <span class="dv">190000</span> <span class="fu">}</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;TongTien&quot;</span><span class="fu">:</span> <span class="dv">190000</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;PhuongThucThanhToan&quot;</span><span class="fu">:</span> <span class="st">&quot;MOMO&quot;</span><span class="fu">,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;PENDING&quot;</span><span class="fu">,</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;DiemCong&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;NgayTao&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-11-15T12:30:00.000Z&quot;</span><span class="fu">,</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;NgayCapNhat&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-11-15T12:30:00.000Z&quot;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<ul>
+<li><code>LoaiGiaoDich</code>: <code>VE_XEM_PHIM</code>, <code>COMBO_BAP_NUOC</code> hoặc <code>VE_VA_COMBO</code>.</li>
+<li><code>ChiTiet[].Loai</code>: <code>VE</code> hoặc <code>COMBO</code>.</li>
+<li><code>TrangThai</code>: <code>PENDING</code>, <code>COMPLETED</code>, <code>CANCELLED</code> hoặc <code>FAILED</code>.</li>
+<li><code>ChiTiet</code> được <strong>nhúng (embed)</strong> vào giao dịch vì chỉ được đọc cùng giao dịch, đây là lựa chọn điển hình của NoSQL.</li>
+<li>Danh mục phim và combo nằm ở frontend, không cần thêm collection.</li>
+</ul>
+<h3 id="24-bien_dong_diem-sổ-cái-điểm-chỉ-ghi-thêm">2.4. <code>bien_dong_diem</code> (sổ cái điểm, chỉ ghi thêm)</h3>
+<div class="sourceCode" id="cb4"><div class="code"><button type="button" class="copy" data-target="code-4">Sao chép</button><pre id="code-4" class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaBienDong&quot;</span><span class="fu">:</span> <span class="st">&quot;BD001222&quot;</span><span class="fu">,</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;LoaiBienDong&quot;</span><span class="fu">:</span> <span class="st">&quot;EARN&quot;</span><span class="fu">,</span> <span class="dt">&quot;SoDiem&quot;</span><span class="fu">:</span> <span class="dv">190</span><span class="fu">,</span> <span class="dt">&quot;SoDuSau&quot;</span><span class="fu">:</span> <span class="dv">9690</span><span class="fu">,</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MaThamChieu&quot;</span><span class="fu">:</span> <span class="st">&quot;GD001043&quot;</span><span class="fu">,</span> <span class="dt">&quot;MoTa&quot;</span><span class="fu">:</span> <span class="st">&quot;Tích điểm giao dịch GD001043&quot;</span><span class="fu">,</span> <span class="dt">&quot;NgayTao&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-11-15T12:31:00.000Z&quot;</span> <span class="fu">}</span></span></code></pre></div></div>
+<ul>
+<li><code>LoaiBienDong</code>: <code>EARN</code> (cộng, <code>SoDiem</code> &gt; 0) hoặc <code>REDEEM</code> (trừ, <code>SoDiem</code> &lt; 0).</li>
+<li><code>MaThamChieu</code> là <code>MaGiaoDich</code> (với EARN) hoặc <code>MaDoiThuong</code> (với REDEEM).</li>
+<li><code>SoDuSau</code> giúp đối soát. Không bắt buộc nhưng nên có.</li>
+</ul>
+<h3 id="25-phan_thuong">2.5. <code>phan_thuong</code></h3>
+<div class="sourceCode" id="cb5"><div class="code"><button type="button" class="copy" data-target="code-5">Sao chép</button><pre id="code-5" class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaPhanThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;PT002&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenPhanThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;Voucher giảm 50.000đ vé 2D/3D&quot;</span><span class="fu">,</span> <span class="dt">&quot;LoaiPhanThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;VOUCHER_VE&quot;</span><span class="fu">,</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;DiemCanDoi&quot;</span><span class="fu">:</span> <span class="dv">450</span><span class="fu">,</span> <span class="dt">&quot;SoLuongTon&quot;</span><span class="fu">:</span> <span class="dv">400</span><span class="fu">,</span> <span class="dt">&quot;GiaTri&quot;</span><span class="fu">:</span> <span class="dv">50000</span><span class="fu">,</span> <span class="dt">&quot;HanSuDungNgay&quot;</span><span class="fu">:</span> <span class="dv">30</span><span class="fu">,</span> <span class="dt">&quot;HinhAnh&quot;</span><span class="fu">:</span> <span class="st">&quot;🎫&quot;</span><span class="fu">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;MoTa&quot;</span><span class="fu">:</span> <span class="st">&quot;Áp dụng cho 1 vé 2D hoặc 3D.&quot;</span><span class="fu">,</span> <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span> <span class="fu">}</span></span></code></pre></div></div>
+<p><code>LoaiPhanThuong</code> nhận một trong ba giá trị: <code>VOUCHER_VE</code>, <code>VOUCHER_BAP_NUOC</code>, <code>QUA_HIEN_VAT</code>.</p>
+<h3 id="26-doi_thuong">2.6. <code>doi_thuong</code></h3>
+<div class="sourceCode" id="cb6"><div class="code"><button type="button" class="copy" data-target="code-6">Sao chép</button><pre id="code-6" class="sourceCode json"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaDoiThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;DT000165&quot;</span><span class="fu">,</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;MaPhanThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;PT002&quot;</span><span class="fu">,</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;TenPhanThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;Voucher giảm 50.000đ vé 2D/3D&quot;</span><span class="fu">,</span> <span class="dt">&quot;LoaiPhanThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;VOUCHER_VE&quot;</span><span class="fu">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;DiemDaDoi&quot;</span><span class="fu">:</span> <span class="dv">450</span><span class="fu">,</span> <span class="dt">&quot;MaVoucher&quot;</span><span class="fu">:</span> <span class="st">&quot;VC-7K2M9Q&quot;</span><span class="fu">,</span> <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;CHUA_SU_DUNG&quot;</span><span class="fu">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;NgayDoi&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-11-15T12:40:00.000Z&quot;</span><span class="fu">,</span> <span class="dt">&quot;HanSuDung&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-12-15T12:40:00.000Z&quot;</span> <span class="fu">}</span></span></code></pre></div></div>
+<ul>
+<li><code>TenPhanThuong</code> và <code>LoaiPhanThuong</code> được <strong>lưu kèm (denormalize)</strong>, nhờ đó xem lịch sử không cần <code>$lookup</code>.</li>
+<li><code>TrangThai</code>: <code>CHUA_SU_DUNG</code> hoặc <code>DA_SU_DUNG</code>.</li>
+</ul>
+<h3 id="27-khuyen_mai">2.7. <code>khuyen_mai</code></h3>
+<div class="sourceCode" id="cb7"><div class="code"><button type="button" class="copy" data-target="code-7">Sao chép</button><pre id="code-7" class="sourceCode json"><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaKhuyenMai&quot;</span><span class="fu">:</span> <span class="st">&quot;KM001&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenKhuyenMai&quot;</span><span class="fu">:</span> <span class="st">&quot;Sinh nhật vui vẻ&quot;</span><span class="fu">,</span> <span class="dt">&quot;MoTa&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span> <span class="dt">&quot;ApDungChoHang&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;BAC&quot;</span><span class="ot">,</span> <span class="st">&quot;VANG&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;NgayBatDau&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-01-19T00:00:00.000Z&quot;</span><span class="fu">,</span> <span class="dt">&quot;NgayKetThuc&quot;</span><span class="fu">:</span> <span class="st">&quot;2027-12-20T00:00:00.000Z&quot;</span><span class="fu">,</span> <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span> <span class="fu">}</span></span></code></pre></div></div>
+<h3 id="28-lich_su_hang">2.8. <code>lich_su_hang</code></h3>
+<div class="sourceCode" id="cb8"><div class="code"><button type="button" class="copy" data-target="code-8">Sao chép</button><pre id="code-8" class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;HangCu&quot;</span><span class="fu">:</span> <span class="st">&quot;DONG&quot;</span><span class="fu">,</span> <span class="dt">&quot;HangMoi&quot;</span><span class="fu">:</span> <span class="st">&quot;BAC&quot;</span><span class="fu">,</span> <span class="dt">&quot;TongChiTieuKhiDoi&quot;</span><span class="fu">:</span> <span class="dv">10040000</span><span class="fu">,</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;LyDo&quot;</span><span class="fu">:</span> <span class="st">&quot;Tổng chi tiêu đạt 10.000.000đ&quot;</span><span class="fu">,</span> <span class="dt">&quot;NgayThayDoi&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-11-15T12:31:00.000Z&quot;</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Khi khách đăng ký, ghi 1 dòng có <code>HangCu: null</code> và <code>HangMoi: "DONG"</code>.</p>
+<hr />
+<h2 id="3-danh-sách-endpoint">3. Danh sách endpoint</h2>
+<p>★ là endpoint <strong>bắt buộc cho buổi demo</strong>. Các endpoint còn lại làm nếu còn thời gian.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Method &amp; đường dẫn</th>
+<th>Mục đích</th>
+<th>Phụ trách</th>
+<th>Màn hình dùng</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang?q=&amp;soDienThoai=&amp;maHang=&amp;trangThai=</code></span></td>
+<td>Tìm kiếm, lọc khách; đăng nhập bằng SĐT</td>
+<td>Tính (CRUD) + Linh (truy vấn)</td>
+<td>Đăng nhập, Admin › Khách hàng</td>
+</tr>
+<tr class="even">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang/:maKH</code></span></td>
+<td>Chi tiết 1 khách</td>
+<td>Tính</td>
+<td>Thẻ thành viên</td>
+</tr>
+<tr class="odd">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-post">POST</span><code>/api/khach-hang</code></span></td>
+<td>Thêm khách</td>
+<td>Tính / Linh</td>
+<td>Admin › Khách hàng</td>
+</tr>
+<tr class="even">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-put">PUT</span><code>/api/khach-hang/:maKH</code></span></td>
+<td>Sửa thông tin, trạng thái</td>
+<td>Tính / Linh</td>
+<td>Admin › Khách hàng</td>
+</tr>
+<tr class="odd">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-delete">DELETE</span><code>/api/khach-hang/:maKH</code></span></td>
+<td>Xóa khách chưa có giao dịch</td>
+<td>Tính / Linh</td>
+<td>Admin › Khách hàng</td>
+</tr>
+<tr class="even">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/hang-thanh-vien</code></span></td>
+<td>Danh sách hạng và ngưỡng</td>
+<td>Tính</td>
+<td>Thanh tiến trình lên hạng</td>
+</tr>
+<tr class="odd">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang/:maKH/bien-dong-diem</code></span></td>
+<td>Lịch sử điểm (mới nhất trước)</td>
+<td>Tính</td>
+<td>Lịch sử, Trang chủ</td>
+</tr>
+<tr class="even">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang/:maKH/giao-dich</code></span></td>
+<td>Giao dịch của khách</td>
+<td>Tính</td>
+<td>Lịch sử</td>
+</tr>
+<tr class="odd">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang/:maKH/doi-thuong</code></span></td>
+<td>Quà đã đổi</td>
+<td>Tính</td>
+<td>Lịch sử › Quà của tôi</td>
+</tr>
+<tr class="even">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang/:maKH/lich-su-hang</code></span></td>
+<td>Lịch sử thay đổi hạng</td>
+<td>Tính</td>
+<td>Lịch sử › Hạng</td>
+</tr>
+<tr class="odd">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/khuyen-mai?conHieuLuc=true</code></span></td>
+<td>Ưu đãi đang hiệu lực</td>
+<td>Tính</td>
+<td>Trang chủ</td>
+</tr>
+<tr class="even">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-post">POST</span><code>/api/giao-dich</code></span></td>
+<td>Tạo giao dịch vé/combo, trạng thái <code>PENDING</code></td>
+<td>Tính</td>
+<td>Mua vé → MoMo</td>
+</tr>
+<tr class="odd">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/giao-dich/:maGD</code></span></td>
+<td>Chi tiết 1 giao dịch</td>
+<td>Tính</td>
+<td>Màn hình MoMo</td>
+</tr>
+<tr class="even">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-patch">PATCH</span><code>/api/giao-dich/:maGD/trang-thai</code></span></td>
+<td>Cập nhật trạng thái; <code>COMPLETED</code> → cộng điểm + xét hạng</td>
+<td><strong>Linh</strong></td>
+<td>MoMo, Admin › Giao dịch</td>
+</tr>
+<tr class="odd">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/giao-dich?trangThai=&amp;maKH=</code></span></td>
+<td>Danh sách giao dịch</td>
+<td>Tính</td>
+<td>Admin › Giao dịch</td>
+</tr>
+<tr class="even">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/phan-thuong?loai=&amp;trangThai=</code></span></td>
+<td>Danh mục quà (sắp xếp theo điểm)</td>
+<td>Tính</td>
+<td>Đổi quà, Admin</td>
+</tr>
+<tr class="odd">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-post">POST</span><code>/api/doi-thuong</code></span></td>
+<td>Đổi quà bằng điểm</td>
+<td><strong>Linh</strong></td>
+<td>Đổi quà</td>
+</tr>
+<tr class="even">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/doi-thuong?maKH=</code></span></td>
+<td>Danh sách lượt đổi</td>
+<td>Tính</td>
+<td>Admin › Đổi thưởng</td>
+</tr>
+<tr class="odd">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/thong-ke/diem-phat-hanh-theo-thang?nam=</code></span></td>
+<td>Điểm EARN theo tháng</td>
+<td><strong>Linh</strong></td>
+<td>Dashboard (biểu đồ cột)</td>
+</tr>
+<tr class="even">
+<td><span class="req" title="Bắt buộc cho buổi demo">★</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/thong-ke/top-doi-qua?limit=10&amp;nam=</code></span></td>
+<td>Top khách đổi quà (<code>nam</code> không bắt buộc)</td>
+<td><strong>Linh</strong></td>
+<td>Dashboard (Top 10)</td>
+</tr>
+<tr class="odd">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/thong-ke/khach-hang-theo-hang</code></span></td>
+<td>Số khách mỗi hạng</td>
+<td>Linh</td>
+<td>Dashboard</td>
+</tr>
+<tr class="even">
+<td><span class="opt" title="Không bắt buộc">·</span></td>
+<td><span class="ep"><span class="m m-get">GET</span><code>/api/thong-ke/tong-quan</code></span></td>
+<td>Các chỉ số KPI tháng hiện tại</td>
+<td>Linh</td>
+<td>Dashboard</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="4-chi-tiết-các-endpoint-">4. Chi tiết các endpoint ★</h2>
+<h3 id="41-đăng-nhập-mô-phỏng--get-apikhach-hangsodienthoai0901000001">4.1. Đăng nhập mô phỏng – <span class="ep"><span class="m m-get">GET</span><code>/api/khach-hang?soDienThoai=0901000001</code></span></h3>
+<p>Response <code>200</code>. Trả về mảng, mảng rỗng nghĩa là không tìm thấy. Frontend tự kiểm tra <code>TrangThai</code>.</p>
+<div class="sourceCode" id="cb9"><div class="code"><button type="button" class="copy" data-target="code-9">Sao chép</button><pre id="code-9" class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span> <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="ot">[</span> <span class="fu">{</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;HoTen&quot;</span><span class="fu">:</span> <span class="st">&quot;Trần Minh Anh&quot;</span><span class="fu">,</span> <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span><span class="fu">,</span> <span class="dt">&quot;...&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span> <span class="fu">}</span> <span class="ot">]</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Tham số <code>q</code> tìm gần đúng theo tên, SĐT, mã KH hoặc email, <strong>không phân biệt hoa thường và không dấu nếu làm được</strong>.</p>
+<h3 id="42-get-apihang-thanh-vien">4.2. <span class="ep"><span class="m m-get">GET</span><code>/api/hang-thanh-vien</code></span></h3>
+<div class="sourceCode" id="cb10"><div class="code"><button type="button" class="copy" data-target="code-10">Sao chép</button><pre id="code-10" class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span> <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">{</span> <span class="dt">&quot;MaHang&quot;</span><span class="fu">:</span> <span class="st">&quot;DONG&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenHang&quot;</span><span class="fu">:</span> <span class="st">&quot;Đồng&quot;</span><span class="fu">,</span> <span class="dt">&quot;NguongChiTieu&quot;</span><span class="fu">:</span> <span class="dv">0</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">{</span> <span class="dt">&quot;MaHang&quot;</span><span class="fu">:</span> <span class="st">&quot;BAC&quot;</span><span class="fu">,</span>  <span class="dt">&quot;TenHang&quot;</span><span class="fu">:</span> <span class="st">&quot;Bạc&quot;</span><span class="fu">,</span>  <span class="dt">&quot;NguongChiTieu&quot;</span><span class="fu">:</span> <span class="dv">10000000</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">{</span> <span class="dt">&quot;MaHang&quot;</span><span class="fu">:</span> <span class="st">&quot;VANG&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenHang&quot;</span><span class="fu">:</span> <span class="st">&quot;Vàng&quot;</span><span class="fu">,</span> <span class="dt">&quot;NguongChiTieu&quot;</span><span class="fu">:</span> <span class="dv">30000000</span> <span class="fu">}</span> <span class="ot">]</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Frontend tự tính câu "Bạn cần chi tiêu thêm <strong>150.000đ</strong> để lên hạng <strong>Bạc</strong>" theo công thức <code>NguongChiTieu(hạng kế tiếp) − TongChiTieu</code>.</p>
+<h3 id="43-tạo-giao-dịch--post-apigiao-dich">4.3. Tạo giao dịch – <span class="ep"><span class="m m-post">POST</span><code>/api/giao-dich</code></span></h3>
+<p>Request:</p>
+<div class="sourceCode" id="cb11"><div class="code"><button type="button" class="copy" data-target="code-11">Sao chép</button><pre id="code-11" class="sourceCode json"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;PhuongThucThanhToan&quot;</span><span class="fu">:</span> <span class="st">&quot;MOMO&quot;</span><span class="fu">,</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ChiTiet&quot;</span><span class="fu">:</span> <span class="ot">[</span> <span class="fu">{</span> <span class="dt">&quot;MaSanPham&quot;</span><span class="fu">:</span> <span class="st">&quot;P01-2D&quot;</span><span class="fu">,</span> <span class="dt">&quot;TenSanPham&quot;</span><span class="fu">:</span> <span class="st">&quot;Vé 2D – Hành Tinh Cuối Cùng (suất 19:30)&quot;</span><span class="fu">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 <span class="dt">&quot;Loai&quot;</span><span class="fu">:</span> <span class="st">&quot;VE&quot;</span><span class="fu">,</span> <span class="dt">&quot;SoLuong&quot;</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span> <span class="dt">&quot;DonGia&quot;</span><span class="fu">:</span> <span class="dv">95000</span> <span class="fu">}</span> <span class="ot">]</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Response <code>201</code>: document <code>giao_dich</code> vừa tạo, có <code>TrangThai: "PENDING"</code> và <code>DiemCong: 0</code>. Server tự tính <code>ThanhTien</code>, <code>TongTien</code>, <code>LoaiGiaoDich</code> và <code>MaGiaoDich</code>. Lỗi: <code>403</code> nếu khách INACTIVE, <code>400</code> nếu <code>ChiTiet</code> rỗng hoặc số lượng sai.</p>
+<h3 id="44-cập-nhật-trạng-thái--patch-apigiao-dichmagdtrang-thai">4.4. Cập nhật trạng thái – <span class="ep"><span class="m m-patch">PATCH</span><code>/api/giao-dich/:maGD/trang-thai</code></span></h3>
+<p>Request: <code>{ "TrangThai": "COMPLETED" }</code>. Các giá trị hợp lệ khác: <code>CANCELLED</code>, <code>FAILED</code>.</p>
+<p>Response <code>200</code> khi chuyển sang COMPLETED:</p>
+<div class="sourceCode" id="cb12"><div class="code"><button type="button" class="copy" data-target="code-12">Sao chép</button><pre id="code-12" class="sourceCode json"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span> <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;giaoDich&quot;</span><span class="fu">:</span>  <span class="fu">{</span> <span class="dt">&quot;MaGiaoDich&quot;</span><span class="fu">:</span> <span class="st">&quot;GD001043&quot;</span><span class="fu">,</span> <span class="dt">&quot;TrangThai&quot;</span><span class="fu">:</span> <span class="st">&quot;COMPLETED&quot;</span><span class="fu">,</span> <span class="dt">&quot;DiemCong&quot;</span><span class="fu">:</span> <span class="dv">190</span><span class="fu">,</span> <span class="dt">&quot;...&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span> <span class="fu">},</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;diemCong&quot;</span><span class="fu">:</span>  <span class="dv">190</span><span class="fu">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;khachHang&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;DiemHienTai&quot;</span><span class="fu">:</span> <span class="dv">9690</span><span class="fu">,</span> <span class="dt">&quot;TongChiTieu&quot;</span><span class="fu">:</span> <span class="dv">10040000</span><span class="fu">,</span> <span class="dt">&quot;MaHangHienTai&quot;</span><span class="fu">:</span> <span class="st">&quot;BAC&quot;</span><span class="fu">,</span> <span class="dt">&quot;...&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span> <span class="fu">},</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;thangHang&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;HangCu&quot;</span><span class="fu">:</span> <span class="st">&quot;DONG&quot;</span><span class="fu">,</span> <span class="dt">&quot;HangMoi&quot;</span><span class="fu">:</span> <span class="st">&quot;BAC&quot;</span> <span class="fu">}</span> <span class="fu">}</span> <span class="fu">}</span></span></code></pre></div></div>
+<ul>
+<li><code>thangHang</code> bằng <code>null</code> nếu khách không đổi hạng.</li>
+<li>Lỗi <code>409</code> nếu giao dịch không còn ở trạng thái <code>PENDING</code>. Ví dụ bấm xác nhận 2 lần thì <strong>không được cộng điểm 2 lần</strong>.</li>
+</ul>
+<h3 id="45-đổi-quà--post-apidoi-thuong">4.5. Đổi quà – <span class="ep"><span class="m m-post">POST</span><code>/api/doi-thuong</code></span></h3>
+<p>Request: <code>{ "MaKH": "KH001", "MaPhanThuong": "PT002" }</code></p>
+<p>Response <code>201</code>:</p>
+<div class="sourceCode" id="cb13"><div class="code"><button type="button" class="copy" data-target="code-13">Sao chép</button><pre id="code-13" class="sourceCode json"><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span> <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;doiThuong&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;MaDoiThuong&quot;</span><span class="fu">:</span> <span class="st">&quot;DT000165&quot;</span><span class="fu">,</span> <span class="dt">&quot;MaVoucher&quot;</span><span class="fu">:</span> <span class="st">&quot;VC-7K2M9Q&quot;</span><span class="fu">,</span> <span class="dt">&quot;DiemDaDoi&quot;</span><span class="fu">:</span> <span class="dv">450</span><span class="fu">,</span> <span class="dt">&quot;HanSuDung&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span> <span class="dt">&quot;...&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span> <span class="fu">},</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;khachHang&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH001&quot;</span><span class="fu">,</span> <span class="dt">&quot;DiemHienTai&quot;</span><span class="fu">:</span> <span class="dv">9240</span><span class="fu">,</span> <span class="dt">&quot;...&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span> <span class="fu">}</span> <span class="fu">}</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Các trường hợp lỗi:</p>
+<ul>
+<li><code>400</code>: "Không đủ điểm: cần 450 điểm, bạn đang có 300 điểm."</li>
+<li><code>409</code>: "Phần thưởng đã hết…"</li>
+<li><code>403</code>: khách INACTIVE.</li>
+</ul>
+<h3 id="46-thống-kê-điểm-theo-tháng--get-apithong-kediem-phat-hanh-theo-thangnam2026">4.6. Thống kê điểm theo tháng – <span class="ep"><span class="m m-get">GET</span><code>/api/thong-ke/diem-phat-hanh-theo-thang?nam=2026</code></span></h3>
+<div class="sourceCode" id="cb14"><div class="code"><button type="button" class="copy" data-target="code-14">Sao chép</button><pre id="code-14" class="sourceCode json"><code class="sourceCode json"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span> <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="ot">[</span> <span class="fu">{</span> <span class="dt">&quot;thang&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span> <span class="dt">&quot;tongDiem&quot;</span><span class="fu">:</span> <span class="dv">18481</span><span class="fu">,</span> <span class="dt">&quot;soGiaoDich&quot;</span><span class="fu">:</span> <span class="dv">61</span> <span class="fu">}</span><span class="ot">,</span> <span class="st">&quot;...&quot;</span><span class="ot">,</span> <span class="fu">{</span> <span class="dt">&quot;thang&quot;</span><span class="fu">:</span> <span class="dv">12</span><span class="fu">,</span> <span class="dt">&quot;tongDiem&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;soGiaoDich&quot;</span><span class="fu">:</span> <span class="dv">0</span> <span class="fu">}</span> <span class="ot">]</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Nên trả đủ 12 tháng, nhưng frontend cũng tự điền 0 cho tháng thiếu. Kết quả này cũng trả lời được câu "điểm phát hành tháng 9".</p>
+<h3 id="47-top-khách-đổi-quà--get-apithong-ketop-doi-qualimit10nam2026">4.7. Top khách đổi quà – <span class="ep"><span class="m m-get">GET</span><code>/api/thong-ke/top-doi-qua?limit=10&amp;nam=2026</code></span></h3>
+<div class="sourceCode" id="cb15"><div class="code"><button type="button" class="copy" data-target="code-15">Sao chép</button><pre id="code-15" class="sourceCode json"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span> <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="ot">[</span> <span class="fu">{</span> <span class="dt">&quot;MaKH&quot;</span><span class="fu">:</span> <span class="st">&quot;KH003&quot;</span><span class="fu">,</span> <span class="dt">&quot;HoTen&quot;</span><span class="fu">:</span> <span class="st">&quot;Phạm Thu Hà&quot;</span><span class="fu">,</span> <span class="dt">&quot;MaHangHienTai&quot;</span><span class="fu">:</span> <span class="st">&quot;VANG&quot;</span><span class="fu">,</span> <span class="dt">&quot;soLuotDoi&quot;</span><span class="fu">:</span> <span class="dv">31</span><span class="fu">,</span> <span class="dt">&quot;tongDiemDaDoi&quot;</span><span class="fu">:</span> <span class="dv">26950</span> <span class="fu">}</span> <span class="ot">]</span> <span class="fu">}</span></span></code></pre></div></div>
+<p>Kết quả sắp xếp theo <code>soLuotDoi</code> giảm dần, nếu bằng nhau thì theo <code>tongDiemDaDoi</code>.</p>
+<hr />
+<h2 id="5-quy-tắc-nghiệp-vụ-đề-xuất-linh-chốt-và-gợi-ý-cài-đặt-mongodb">5. Quy tắc nghiệp vụ đề xuất (Linh chốt) và gợi ý cài đặt MongoDB</h2>
+<ol type="1">
+<li><strong>Tích điểm:</strong> <code>DiemCong = floor(TongTien / 1000)</code>, tức 1 điểm cho mỗi 1.000đ. Con số này suy ra từ kịch bản demo trong tài liệu phân công.</li>
+<li><strong>Xét hạng theo <code>TongChiTieu</code>, không xét theo <code>DiemHienTai</code>.</strong> Đổi quà làm giảm điểm nhưng không được làm khách tụt hạng.
+<div class="sourceCode" id="cb16"><div class="code"><button type="button" class="copy" data-target="code-16">Sao chép</button><pre id="code-16" class="sourceCode js"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Sau khi cộng TongChiTieu: cập nhật hạng bằng pipeline $switch</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>db<span class="op">.</span><span class="at">khach_hang</span><span class="op">.</span><span class="fu">updateOne</span>({ <span class="dt">MaKH</span><span class="op">:</span> <span class="st">&quot;KH001&quot;</span> }<span class="op">,</span> [</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$set</span><span class="op">:</span> { <span class="dt">MaHangHienTai</span><span class="op">:</span> { <span class="dt">$switch</span><span class="op">:</span> { <span class="dt">branches</span><span class="op">:</span> [</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">case</span><span class="op">:</span> { <span class="dt">$gte</span><span class="op">:</span> [<span class="st">&quot;$TongChiTieu&quot;</span><span class="op">,</span> <span class="dv">30000000</span>] }<span class="op">,</span> <span class="dt">then</span><span class="op">:</span> <span class="st">&quot;VANG&quot;</span> }<span class="op">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">case</span><span class="op">:</span> { <span class="dt">$gte</span><span class="op">:</span> [<span class="st">&quot;$TongChiTieu&quot;</span><span class="op">,</span> <span class="dv">10000000</span>] }<span class="op">,</span> <span class="dt">then</span><span class="op">:</span> <span class="st">&quot;BAC&quot;</span> } ]<span class="op">,</span> <span class="cf">default</span><span class="op">:</span> <span class="st">&quot;DONG&quot;</span> } } } }</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div></div></li>
+<li><strong>Không cộng điểm 2 lần.</strong> Chuyển trạng thái <strong>có điều kiện</strong>. Đây là thao tác nguyên tử nên chỉ 1 request thắng:
+<div class="sourceCode" id="cb17"><div class="code"><button type="button" class="copy" data-target="code-17">Sao chép</button><pre id="code-17" class="sourceCode js"><code class="sourceCode javascript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> gd <span class="op">=</span> <span class="cf">await</span> db<span class="op">.</span><span class="fu">collection</span>(<span class="st">&quot;giao_dich&quot;</span>)<span class="op">.</span><span class="fu">findOneAndUpdate</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">MaGiaoDich</span><span class="op">:</span> maGD<span class="op">,</span> <span class="dt">TrangThai</span><span class="op">:</span> <span class="st">&quot;PENDING&quot;</span> }<span class="op">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$set</span><span class="op">:</span> { <span class="dt">TrangThai</span><span class="op">:</span> <span class="st">&quot;COMPLETED&quot;</span><span class="op">,</span> <span class="dt">NgayCapNhat</span><span class="op">:</span> <span class="kw">new</span> <span class="bu">Date</span>() } }<span class="op">,</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">returnDocument</span><span class="op">:</span> <span class="st">&quot;after&quot;</span> })</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="op">!</span>gd) → trả <span class="dv">409</span>   <span class="co">// giao dịch không tồn tại hoặc đã xử lý</span></span></code></pre></div></div></li>
+<li><strong>Đổi quà an toàn.</strong> Trừ điểm và trừ tồn kho bằng điều kiện ngay trong câu lệnh update:
+<div class="sourceCode" id="cb18"><div class="code"><button type="button" class="copy" data-target="code-18">Sao chép</button><pre id="code-18" class="sourceCode js"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>db<span class="op">.</span><span class="at">khach_hang</span><span class="op">.</span><span class="fu">findOneAndUpdate</span>({ MaKH<span class="op">,</span> <span class="dt">TrangThai</span><span class="op">:</span> <span class="st">&quot;ACTIVE&quot;</span><span class="op">,</span> <span class="dt">DiemHienTai</span><span class="op">:</span> { <span class="dt">$gte</span><span class="op">:</span> diemCan } }<span class="op">,</span> { <span class="dt">$inc</span><span class="op">:</span> { <span class="dt">DiemHienTai</span><span class="op">:</span> <span class="op">-</span>diemCan } })</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>db<span class="op">.</span><span class="at">phan_thuong</span><span class="op">.</span><span class="fu">findOneAndUpdate</span>({ MaPhanThuong<span class="op">,</span> <span class="dt">SoLuongTon</span><span class="op">:</span> { <span class="dt">$gt</span><span class="op">:</span> <span class="dv">0</span> } }<span class="op">,</span> { <span class="dt">$inc</span><span class="op">:</span> { <span class="dt">SoLuongTon</span><span class="op">:</span> <span class="op">-</span><span class="dv">1</span> } })</span></code></pre></div></div></li>
+<li><strong>Transaction (tùy chọn):</strong> muốn gộp nhiều thao tác thành 1 giao dịch MongoDB (<code>session.withTransaction</code>) thì MongoDB phải chạy dạng <strong>replica set</strong>. Có thể dùng 1 node: <code>mongod --replSet rs0</code> rồi chạy <code>rs.initiate()</code>. Nếu không dùng transaction, hãy làm theo thứ tự ở mục 3 và 4.</li>
+<li><strong>Gợi ý pipeline thống kê.</strong> Linh có thể dùng lại pipeline giữa kỳ xuất từ Studio 3T:
+<div class="sourceCode" id="cb19"><div class="code"><button type="button" class="copy" data-target="code-19">Sao chép</button><pre id="code-19" class="sourceCode js"><code class="sourceCode javascript"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>db<span class="op">.</span><span class="at">bien_dong_diem</span><span class="op">.</span><span class="fu">aggregate</span>([</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$match</span><span class="op">:</span> { <span class="dt">LoaiBienDong</span><span class="op">:</span> <span class="st">&quot;EARN&quot;</span><span class="op">,</span> <span class="dt">NgayTao</span><span class="op">:</span> { <span class="dt">$gte</span><span class="op">:</span> <span class="fu">ISODate</span>(<span class="st">&quot;2026-01-01T00:00:00+07:00&quot;</span>)<span class="op">,</span> <span class="dt">$lt</span><span class="op">:</span> <span class="fu">ISODate</span>(<span class="st">&quot;2027-01-01T00:00:00+07:00&quot;</span>) } } }<span class="op">,</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$group</span><span class="op">:</span> { <span class="dt">_id</span><span class="op">:</span> { <span class="dt">$month</span><span class="op">:</span> { <span class="dt">date</span><span class="op">:</span> <span class="st">&quot;$NgayTao&quot;</span><span class="op">,</span> <span class="dt">timezone</span><span class="op">:</span> <span class="st">&quot;Asia/Ho_Chi_Minh&quot;</span> } }<span class="op">,</span> <span class="dt">tongDiem</span><span class="op">:</span> { <span class="dt">$sum</span><span class="op">:</span> <span class="st">&quot;$SoDiem&quot;</span> }<span class="op">,</span> <span class="dt">soGiaoDich</span><span class="op">:</span> { <span class="dt">$sum</span><span class="op">:</span> <span class="dv">1</span> } } }<span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$project</span><span class="op">:</span> { <span class="dt">_id</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">thang</span><span class="op">:</span> <span class="st">&quot;$_id&quot;</span><span class="op">,</span> <span class="dt">tongDiem</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">soGiaoDich</span><span class="op">:</span> <span class="dv">1</span> } }<span class="op">,</span> { <span class="dt">$sort</span><span class="op">:</span> { <span class="dt">thang</span><span class="op">:</span> <span class="dv">1</span> } } ])</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>db<span class="op">.</span><span class="at">doi_thuong</span><span class="op">.</span><span class="fu">aggregate</span>([</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$group</span><span class="op">:</span> { <span class="dt">_id</span><span class="op">:</span> <span class="st">&quot;$MaKH&quot;</span><span class="op">,</span> <span class="dt">soLuotDoi</span><span class="op">:</span> { <span class="dt">$sum</span><span class="op">:</span> <span class="dv">1</span> }<span class="op">,</span> <span class="dt">tongDiemDaDoi</span><span class="op">:</span> { <span class="dt">$sum</span><span class="op">:</span> <span class="st">&quot;$DiemDaDoi&quot;</span> } } }<span class="op">,</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$sort</span><span class="op">:</span> { <span class="dt">soLuotDoi</span><span class="op">:</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dt">tongDiemDaDoi</span><span class="op">:</span> <span class="op">-</span><span class="dv">1</span> } }<span class="op">,</span> { <span class="dt">$limit</span><span class="op">:</span> <span class="dv">10</span> }<span class="op">,</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$lookup</span><span class="op">:</span> { <span class="dt">from</span><span class="op">:</span> <span class="st">&quot;khach_hang&quot;</span><span class="op">,</span> <span class="dt">localField</span><span class="op">:</span> <span class="st">&quot;_id&quot;</span><span class="op">,</span> <span class="dt">foreignField</span><span class="op">:</span> <span class="st">&quot;MaKH&quot;</span><span class="op">,</span> <span class="dt">as</span><span class="op">:</span> <span class="st">&quot;kh&quot;</span> } }<span class="op">,</span> { <span class="dt">$unwind</span><span class="op">:</span> <span class="st">&quot;$kh&quot;</span> }<span class="op">,</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">$project</span><span class="op">:</span> { <span class="dt">_id</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">MaKH</span><span class="op">:</span> <span class="st">&quot;$_id&quot;</span><span class="op">,</span> <span class="dt">HoTen</span><span class="op">:</span> <span class="st">&quot;$kh.HoTen&quot;</span><span class="op">,</span> <span class="dt">MaHangHienTai</span><span class="op">:</span> <span class="st">&quot;$kh.MaHangHienTai&quot;</span><span class="op">,</span> <span class="dt">soLuotDoi</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">tongDiemDaDoi</span><span class="op">:</span> <span class="dv">1</span> } } ])</span></code></pre></div></div></li>
+<li><strong>Index nên tạo:</strong>
+<ul>
+<li><code>khach_hang</code>: <code>{MaKH:1}</code> unique, <code>{SoDienThoai:1}</code> unique</li>
+<li><code>giao_dich</code>: <code>{MaGiaoDich:1}</code> unique, <code>{MaKH:1, NgayTao:-1}</code></li>
+<li><code>bien_dong_diem</code>: <code>{MaKH:1, NgayTao:-1}</code>, <code>{LoaiBienDong:1, NgayTao:1}</code></li>
+<li><code>doi_thuong</code>: <code>{MaKH:1, NgayDoi:-1}</code></li>
+<li><code>phan_thuong</code>: <code>{MaPhanThuong:1}</code> unique</li>
+</ul></li>
+</ol>
+<blockquote>
+<p>File <code>frontend/src/mocks/logic.js</code> là bản <strong>mô phỏng chạy được</strong> của các quy tắc trên, có kèm test trong <code>logic.test.js</code>. Linh có thể dùng để đối chiếu kết quả.</p>
+</blockquote>
+<hr />
+<h2 id="6-việc-cần-chốt">6. Việc cần chốt</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Tên trường có khớp JSON schema giữa kỳ không? Trường nào khác thì ghi lại vào đây.</label></li>
+<li><label><input type="checkbox" />URL dùng <code>MaKH</code> hay <code>_id</code>?</label></li>
+<li><label><input type="checkbox" />Tỷ lệ tích điểm có giữ 1 điểm / 1.000đ không? Có nhân hệ số theo khuyến mãi hoặc hạng không?</label></li>
+<li><label><input type="checkbox" />Ai chuyển giao dịch sang <code>COMPLETED</code>: màn hình MoMo của frontend, trang Admin, hay cả hai?</label></li>
+<li><label><input type="checkbox" />Port server (mặc định 3000) và tiền tố <code>/api</code>.</label></li>
+<li><label><input type="checkbox" />Dữ liệu demo trong DB thật phải có:</label>
+<ul>
+<li>KH001 ở hạng Đồng, <code>TongChiTieu</code> 9.850.000đ, 9.500 điểm.</li>
+<li>1 khách hạng Bạc gần lên Vàng.</li>
+<li>1 khách hạng Vàng.</li>
+<li>1 khách INACTIVE.</li>
+<li>10 phần thưởng.</li>
+</ul></li>
+</ul>
+<h2 id="7-lịch-sử-thay-đổi">7. Lịch sử thay đổi</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr class="header">
+<th>Phiên bản</th>
+<th>Ngày</th>
+<th>Người sửa</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.1</td>
+<td>15/11/2026</td>
+<td>Khánh Lâm</td>
+<td>Bản đề xuất đầu tiên, khớp với frontend đang chạy mock</td>
+</tr>
+</tbody>
+</table></div>
+
+  </main>
+</div>
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var el = document.getElementById(btn.dataset.target);
+    var text = el ? el.innerText : '';
+    var done = function (msg) { btn.textContent = msg; setTimeout(function () { btn.textContent = 'Sao chép'; }, 1600); };
+    try {
+      navigator.clipboard.writeText(text).then(function () { done('Đã chép'); }, function () { done('Không chép được'); });
+    } catch (e) { done('Không chép được'); }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+sequenceDiagram
+  autonumber
+  actor KH as Khách hàng
+  participant FE as Customer App (React)
+  participant API as Express API
+  participant DB as MongoDB
+  KH->>FE: Chọn "Voucher giảm 50.000đ" (450 điểm)
+  FE->>FE: Kiểm tra sơ bộ: đủ điểm, còn hàng
+  KH->>FE: Xác nhận đổi quà
+  FE->>API: POST /api/doi-thuong {MaKH, MaPhanThuong}
+  API->>DB: findOneAndUpdate phan_thuong {SoLuongTon > 0} $inc −1
+  API->>DB: findOneAndUpdate khach_hang {DiemHienTai ≥ 450} $inc −450
+  alt Hết quà hoặc không đủ điểm
+    API-->>FE: 409 / 400 kèm thông báo (hoàn lại tồn kho nếu đã trừ)
+  else Thành công
+    API->>DB: insertOne doi_thuong (MaVoucher)
+    API->>DB: insertOne bien_dong_diem (REDEEM, −450)
+    API-->>FE: 201 {doiThuong, khachHang}
+    FE->>KH: Hiện mã voucher + QR, điểm còn lại
+  end

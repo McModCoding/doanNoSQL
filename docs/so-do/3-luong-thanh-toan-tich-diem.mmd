@@ -1,0 +1,26 @@
+sequenceDiagram
+  autonumber
+  actor KH as Khách hàng
+  participant FE as Customer App (React)
+  participant API as Express API
+  participant DB as MongoDB
+  KH->>FE: Chọn 2 vé 2D, bấm "Thanh toán MoMo"
+  FE->>API: POST /api/giao-dich {MaKH, ChiTiet}
+  API->>DB: insertOne giao_dich (TrangThai = PENDING)
+  API-->>FE: 201 giao_dich GD001043
+  FE->>KH: Màn hình MoMo mô phỏng (QR, đếm ngược)
+  KH->>FE: Bấm "Xác nhận thanh toán"
+  FE->>API: PATCH /api/giao-dich/GD001043/trang-thai {COMPLETED}
+  API->>DB: findOneAndUpdate {MaGiaoDich, TrangThai: PENDING} → COMPLETED
+  alt Giao dịch đã được xử lý trước đó
+    API-->>FE: 409 – không cộng điểm lần 2
+  else Cập nhật thành công
+    API->>DB: insertOne bien_dong_diem (EARN, +190)
+    API->>DB: updateOne khach_hang ($inc DiemHienTai, TongChiTieu)
+    API->>DB: updateOne khach_hang (pipeline $switch → MaHangHienTai)
+    opt Hạng thay đổi
+      API->>DB: insertOne lich_su_hang (DONG → BAC)
+    end
+    API-->>FE: 200 {diemCong: 190, khachHang, thangHang}
+    FE->>KH: "+190 điểm" và popup "Chúc mừng thăng hạng!"
+  end

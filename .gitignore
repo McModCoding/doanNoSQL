@@ -4,3 +4,9 @@
 
 # Profile Chrome mà bộ kiểm tra của Taste Skill tạo ra khi chạy
 .taste-skill/chrome*/
+
+# Node / Vite
+node_modules
+dist
+*.local
+.DS_Store
