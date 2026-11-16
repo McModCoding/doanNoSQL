@@ -28,6 +28,11 @@ if not exist "node_modules" (
     pause
     exit /b 1
   )
+) else (
+  rem Ban moi co the them thu vien moi: dong bo lai, may giay neu khong co gi moi
+  echo Dang kiem tra thu vien, vai giay...
+  call npm install --prefer-offline --no-audit --no-fund --loglevel=error
+  if errorlevel 1 echo [CANH BAO] Khong cap nhat duoc thu vien, van thu chay app.
 )
 
 echo.

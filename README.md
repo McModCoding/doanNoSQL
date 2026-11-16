@@ -36,7 +36,9 @@ npm install
 npm run dev
 ```
 
-Mở http://localhost:5173 và chọn **Customer App** hoặc **Admin Dashboard**.
+Mở http://localhost:5173 và chọn **App khách hàng** hoặc **Trang quản trị**.
+
+Đã có bản cũ trên máy và vừa lấy bản mới (tải ZIP mới hoặc `git pull`)? Chạy lại `npm install` trong thư mục `frontend` trước `npm run dev`, vì bản mới có thể thêm thư viện (`CHAY-APP.bat` tự làm bước này).
 
 Tài khoản demo (bấm chọn nhanh ở màn hình đăng nhập):
 
