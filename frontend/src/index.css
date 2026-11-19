@@ -38,11 +38,48 @@
   box-sizing: border-box;
 }
 
-html:has(.thanh-tab) {
-  scroll-padding-bottom: calc(var(--cao-thanh-tab) + 16px);
+/* Hiện theo khổ màn hình: điện thoại dưới 768px, máy tính từ 768px, màn lớn từ 1024px */
+@media (min-width: 768px) {
+  .chi-dien-thoai {
+    display: none !important;
+  }
+  /* Nhãn chỉ cần trên điện thoại; trên máy tính đã có tiêu đề cột nhưng trình đọc màn hình vẫn đọc */
+  .nhan-dien-thoai {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
-html:has(.thanh-day) {
-  scroll-padding-bottom: calc(var(--cao-thanh-tab) + 128px + 24px);
+@media (max-width: 767px) {
+  .chi-may-tinh {
+    display: none !important;
+  }
+}
+@media (max-width: 1023px) {
+  .chi-man-lon {
+    display: none !important;
+  }
+}
+
+/* Ô đang focus không bị thanh dính đáy che mất */
+@media (max-width: 767px) {
+  html:has(.thanh-tab) {
+    scroll-padding-bottom: calc(var(--cao-thanh-tab) + 16px);
+  }
+  html:has(.thanh-day) {
+    scroll-padding-bottom: calc(var(--cao-thanh-tab) + 128px + 24px);
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  html:has(.thanh-day) {
+    scroll-padding-bottom: calc(128px + 24px);
+  }
 }
 
 html,
@@ -251,36 +288,37 @@ html .ant-table-wrapper .ant-table-thead th.ant-table-column-has-sorters:focus-v
 }
 
 /* ==========================================================================
-   Khung app khách hàng (một cột, tối đa 440px)
+   Khung app khách hàng: điện thoại một cột vừa màn hình, máy tính tràn hết bề ngang
    ========================================================================== */
 .khung-ngoai {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  background: var(--nen-phu);
+  background: var(--nen);
 }
 .khung {
-  --h1: 32px;
-  --h2: 24px;
-  --h3: 20px;
-  --so-lon: 48px;
   position: relative;
   width: 100%;
-  max-width: 440px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--nen);
 }
-@media (min-width: 441px) {
+/* thang chữ điện thoại (quy chuẩn giao diện, phần 3) */
+@media (max-width: 767px) {
   .khung {
-    border-left: 1px solid var(--vien);
-    border-right: 1px solid var(--vien);
+    --h1: 32px;
+    --h2: 24px;
+    --h3: 20px;
+    --so-lon: 48px;
   }
 }
 .khung__noi-dung {
   flex: 1;
   padding: 24px 16px 48px;
+}
+@media (min-width: 768px) {
+  .khung__noi-dung {
+    padding: 48px 32px 96px;
+  }
 }
 .khung__noi-dung--giua {
   display: grid;
@@ -662,7 +700,8 @@ a.ten-thuong-hieu {
   gap: 12px;
   padding: 24px;
   border: 1px solid var(--vien);
-  border-radius: var(--bo-ve);
+  border-bottom: 0;
+  border-radius: var(--bo-ve) var(--bo-ve) 0 0;
 }
 .hoa-don__dong {
   display: flex;
@@ -676,11 +715,15 @@ a.ten-thuong-hieu {
 .duong-rang-cua {
   border-top: 2px dashed var(--vien);
 }
-.hoa-don__qr {
+.hoa-don__cuong {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 16px;
   align-items: center;
+  padding: 24px;
+  border: 1px solid var(--vien);
+  border-top: 2px dashed var(--vien);
+  border-radius: 0 0 var(--bo-ve) var(--bo-ve);
 }
 .dong-ho .ant-statistic-content {
   font-family: var(--font-tieu-de);
@@ -810,8 +853,6 @@ a.ten-thuong-hieu {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 64px;
   align-items: center;
-  max-width: 1280px;
-  margin: 0 auto;
   padding: 64px 32px;
 }
 .trang-dau__lua-chon {
@@ -850,8 +891,7 @@ a.ten-thuong-hieu {
   background: var(--nen);
 }
 .qt-dau__trong {
-  max-width: 1280px;
-  margin: 0 auto;
+  /* tràn hết bề ngang màn hình máy tính, lề hai bên 32px (yêu cầu ngày 19/11/2026) */
   padding: 16px 32px 0;
   display: flex;
   flex-wrap: wrap;
@@ -917,8 +957,6 @@ a.ten-thuong-hieu {
   padding-bottom: 16px;
 }
 .qt-noi-dung {
-  max-width: 1280px;
-  margin: 0 auto;
   padding: 48px 32px 96px;
 }
 .qt-trang {
@@ -1157,6 +1195,253 @@ a.ten-thuong-hieu {
   display: block;
   font-size: 13px;
   color: var(--chu-phu);
+}
+
+/* ==========================================================================
+   App khách hàng trên máy tính: tràn hết bề ngang (yêu cầu ngày 19/11/2026).
+   Từ 768px: thanh điều hướng trên, thang chữ máy tính. Từ 1024px: chia cột.
+   ========================================================================== */
+.trang-chu,
+.mua-ve,
+.mua-ve__chinh,
+.doi-qua__nhom,
+.thanh-toan {
+  display: flex;
+  flex-direction: column;
+}
+.trang-chu,
+.doi-qua__nhom {
+  gap: 48px;
+}
+.mua-ve,
+.mua-ve__chinh {
+  gap: 24px;
+}
+/* Điện thoại, máy tính bảng: giỏ hàng và thanh tổng tiền nằm trong dòng chảy của trang,
+   nhờ vậy thanh tổng tiền dính đáy suốt khi cuộn danh sách phim */
+.mua-ve__gio {
+  display: contents;
+}
+.thanh-toan__nut {
+  margin-top: 24px;
+}
+.ket-qua__chinh {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.ket-qua__phu {
+  align-self: stretch;
+  text-align: left;
+}
+
+/* Sổ ghi 4 ô (lịch sử): điện thoại xếp số phụ ở dòng dưới, máy tính thành bảng có cột */
+.so-cai__hang--4 {
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'ngay noi so'
+    'ngay noi phu';
+  row-gap: 4px;
+}
+.so-cai__hang--so-du {
+  grid-template-areas:
+    'ngay noi so'
+    '. phu .';
+}
+.so-cai__hang--4 > .so-cai__ngay {
+  grid-area: ngay;
+}
+.so-cai__hang--4 > .so-cai__noi-dung {
+  grid-area: noi;
+}
+.so-cai__hang--4 > .so-cai__so {
+  grid-area: so;
+}
+.so-cai__hang--4 > .so-cai__phu {
+  grid-area: phu;
+  justify-self: end;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--chu-phu);
+}
+.so-cai__hang--so-du > .so-cai__phu {
+  justify-self: start;
+}
+.so-cai__phu > .nut-link {
+  font-size: 16px;
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+.so-cai__dau {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  /* bảng giờ chiếu: chip vừa chữ, không kéo giãn theo màn hình */
+  .hang-ngay {
+    grid-template-columns: repeat(3, 128px);
+  }
+  .gio-chieu {
+    grid-template-columns: repeat(auto-fill, 96px);
+  }
+  /* ô định dạng (2D, 3D) rộng bằng một nút giờ chiếu để giá vé thẳng cột với nút giờ thứ hai */
+  .dong-dinh-dang {
+    display: grid;
+    grid-template-columns: 96px auto;
+    column-gap: 8px;
+    justify-content: start;
+  }
+  .dong-so-luong {
+    justify-content: flex-start;
+  }
+  html .mua-ve__chinh .ant-segmented-block {
+    width: fit-content;
+  }
+  html .mua-ve__chinh .ant-segmented-block .ant-segmented-item {
+    flex: none;
+  }
+  .thanh-day {
+    bottom: 0;
+    margin: 0 -32px;
+    padding: 16px 32px;
+  }
+
+  .so-cai__hang--4,
+  .so-cai__dau {
+    grid-template-columns: 96px minmax(0, 1fr) 128px 128px;
+    grid-template-areas: 'ngay noi so phu';
+    column-gap: 24px;
+    padding-inline: 16px;
+  }
+  .so-cai__hang--4 {
+    align-items: baseline;
+  }
+  .so-cai__hang--4 > .so-cai__phu {
+    justify-self: end;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: 0;
+    color: var(--chu);
+    text-align: right;
+  }
+  .so-cai__dau {
+    display: grid;
+    padding-block: 12px;
+    background: var(--nen-phu);
+    font-weight: 600;
+  }
+  .so-cai__dau > :nth-child(n + 3) {
+    text-align: right;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Trang chủ: tấm vé bên trái, việc hay làm, ưu đãi, điểm gần đây bên phải */
+  .trang-chu {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: 48px;
+    align-items: start;
+  }
+  .trang-chu .ve {
+    margin-bottom: 0;
+  }
+
+  /* Mua vé: bảng giờ chiếu bên trái, giỏ hàng dính bên phải */
+  .mua-ve {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    column-gap: 48px;
+    align-items: start;
+  }
+  .mua-ve__gio {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    border: 1px solid var(--vien);
+    border-radius: var(--bo-ve);
+  }
+  .mua-ve__gio .thanh-day {
+    position: static;
+    margin: 0;
+    padding: 24px 0 0;
+    border-top: 2px dashed var(--vien);
+    background: transparent;
+  }
+  .mua-ve__gio .so-cai__hang:last-child {
+    border-bottom: 0;
+  }
+  /* cột giỏ hàng hẹp (khổ 1024px): chữ trên nút thanh toán được xuống dòng thay vì tràn ra ngoài */
+  html .mua-ve__gio .thanh-day .ant-btn {
+    height: auto;
+    min-height: 48px;
+    padding-block: 12px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+
+  /* Đăng nhập: ô số điện thoại bên trái, tài khoản thử bên phải */
+  .dang-nhap {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 48px;
+    align-content: start;
+    align-items: start;
+  }
+  .dang-nhap > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Đổi quà: hai nhóm đặt cạnh nhau */
+  .doi-qua__nhom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  /* Thanh toán: hóa đơn là thân vé bên trái, cuống có QR bên phải, nút dưới cuống */
+  .thanh-toan {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas:
+      'hoa-don cuong'
+      '. nut';
+  }
+  .thanh-toan .hoa-don {
+    grid-area: hoa-don;
+    border-bottom: 1px solid var(--vien);
+    border-right: 0;
+    border-radius: var(--bo-ve) 0 0 var(--bo-ve);
+  }
+  .thanh-toan .hoa-don__cuong {
+    grid-area: cuong;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-content: center;
+    text-align: center;
+    border-top: 1px solid var(--vien);
+    border-left: 2px dashed var(--vien);
+    border-radius: 0 var(--bo-ve) var(--bo-ve) 0;
+  }
+  .thanh-toan__nut {
+    grid-area: nut;
+  }
+  /* Kết quả thanh toán: hai cột, cả khối nằm giữa màn hình theo chiều dọc */
+  .ket-qua--hai-cot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 48px;
+    align-content: center;
+    align-items: center;
+  }
+  .ket-qua--hai-cot .ket-qua__phu {
+    align-self: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

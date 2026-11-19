@@ -85,7 +85,8 @@ export default function DoiThuong() {
   else if (danhSach.length === 0) noiDung = <p>Chưa có quà nào trong nhóm này.</p>
   else
     noiDung = (
-      <>
+      // Màn lớn (từ 1024px): nhóm "Đủ điểm đổi ngay" và "Chưa đổi được" đặt cạnh nhau
+      <div className="doi-qua__nhom">
         {duDiem.length > 0 && (
           <section className="cap" aria-labelledby="du-diem">
             <h2 id="du-diem">Đủ điểm đổi ngay</h2>
@@ -106,7 +107,7 @@ export default function DoiThuong() {
             </ul>
           </section>
         )}
-      </>
+      </div>
     )
 
   return (

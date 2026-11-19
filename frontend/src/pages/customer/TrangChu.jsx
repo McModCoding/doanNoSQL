@@ -11,7 +11,10 @@ import { useKhachHang } from '../../context/khachHangContext.js'
 import { useApi } from '../../hooks/useApi.js'
 import { formatDiemCoDau, formatNgayNgan } from '../../utils/format.js'
 
-/** Trang chủ: tấm vé thành viên, các việc khách hay làm, ưu đãi, điểm gần đây. */
+/**
+ * Trang chủ: tấm vé thành viên, các việc khách hay làm, ưu đãi, điểm gần đây.
+ * Điện thoại: một cột. Màn lớn (từ 1024px): tấm vé bên trái, phần còn lại bên phải.
+ */
 export default function TrangChu() {
   const { khachHang, dsHang, taiLai, dangXuat } = useKhachHang()
   const khuyenMai = useApi(() => layKhuyenMai({ conHieuLuc: true }), [])
@@ -27,9 +30,10 @@ export default function TrangChu() {
   const tenHang = (ma) => dsHang.find((h) => h.MaHang === ma)?.TenHang ?? ma
 
   return (
-    <div className="trang">
+    <div className="trang-chu">
       <h1 className="an-di">Thẻ thành viên của {khachHang.HoTen}</h1>
-      <header className="dau-trang">
+      {/* Trên máy tính, tên app và nút Đăng xuất nằm ở thanh trên */}
+      <header className="dau-trang chi-dien-thoai">
         <span className="ten-thuong-hieu">{APP_NAME}</span>
         <Popconfirm title="Đăng xuất khỏi app?" okText="Đăng xuất" cancelText="Ở lại" onConfirm={dangXuat}>
           <button type="button" className="nut-link">
@@ -38,68 +42,72 @@ export default function TrangChu() {
         </Popconfirm>
       </header>
 
-      <MembershipCard khachHang={khachHang} dsHang={dsHang} />
+      <div>
+        <MembershipCard khachHang={khachHang} dsHang={dsHang} />
+      </div>
 
-      <nav aria-label="Việc bạn có thể làm">
-        <Link to="/app/mua-ve" className="hang-viec">
-          <span className="hang-viec__chu">Mua vé xem phim</span>
-          <RightOutlined />
-        </Link>
-        <Link to="/app/mua-ve?tab=combo" className="hang-viec">
-          <span className="hang-viec__chu">Mua bắp nước</span>
-          <RightOutlined />
-        </Link>
-        <Link to="/app/doi-thuong" className="hang-viec">
-          <span className="hang-viec__chu">
-            Đổi quà
-            <small>{quaApi.data ? `${soQuaDuDiem} quà đủ điểm đổi ngay` : 'Đang tải danh sách quà'}</small>
-          </span>
-          <RightOutlined />
-        </Link>
-      </nav>
+      <div className="trang">
+        <nav aria-label="Việc bạn có thể làm">
+          <Link to="/app/mua-ve" className="hang-viec">
+            <span className="hang-viec__chu">Mua vé xem phim</span>
+            <RightOutlined />
+          </Link>
+          <Link to="/app/mua-ve?tab=combo" className="hang-viec">
+            <span className="hang-viec__chu">Mua bắp nước</span>
+            <RightOutlined />
+          </Link>
+          <Link to="/app/doi-thuong" className="hang-viec">
+            <span className="hang-viec__chu">
+              Đổi quà
+              <small>{quaApi.data ? `${soQuaDuDiem} quà đủ điểm đổi ngay` : 'Đang tải danh sách quà'}</small>
+            </span>
+            <RightOutlined />
+          </Link>
+        </nav>
 
-      <section className="nhom" aria-labelledby="uu-dai">
-        <h2 id="uu-dai">Ưu đãi đang chạy</h2>
-        {khuyenMai.loading && !khuyenMai.data ? (
-          <Skeleton active paragraph={{ rows: 2 }} />
-        ) : khuyenMai.data?.length ? (
-          <ul className="ds-hang">
-            {khuyenMai.data.map((km) => (
-              <li key={km.MaKhuyenMai} className="cap" style={{ paddingBottom: 16 }}>
-                <b>{km.TenKhuyenMai}</b>
-                <p>{km.MoTa}</p>
-                {km.ApDungChoHang?.length > 0 && km.ApDungChoHang.length < dsHang.length && (
-                  <small>Dành cho hạng {km.ApDungChoHang.map(tenHang).join(', ')}</small>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Hiện chưa có ưu đãi nào.</p>
-        )}
-      </section>
+        <section className="nhom" aria-labelledby="uu-dai">
+          <h2 id="uu-dai">Ưu đãi đang chạy</h2>
+          {khuyenMai.loading && !khuyenMai.data ? (
+            <Skeleton active paragraph={{ rows: 2 }} />
+          ) : khuyenMai.data?.length ? (
+            <ul className="ds-hang">
+              {khuyenMai.data.map((km) => (
+                <li key={km.MaKhuyenMai} className="cap" style={{ paddingBottom: 16 }}>
+                  <b>{km.TenKhuyenMai}</b>
+                  <p>{km.MoTa}</p>
+                  {km.ApDungChoHang?.length > 0 && km.ApDungChoHang.length < dsHang.length && (
+                    <small>Dành cho hạng {km.ApDungChoHang.map(tenHang).join(', ')}</small>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Hiện chưa có ưu đãi nào.</p>
+          )}
+        </section>
 
-      <section className="nhom" aria-labelledby="diem-gan-day">
-        <div className="dau-trang">
-          <h2 id="diem-gan-day">Điểm gần đây</h2>
-          <Link to="/app/lich-su">Xem toàn bộ lịch sử</Link>
-        </div>
-        {bienDong.loading && !bienDong.data ? (
-          <Skeleton active paragraph={{ rows: 3 }} />
-        ) : bienDong.data?.length ? (
-          <ol className="so-cai">
-            {bienDong.data.slice(0, 3).map((b) => (
-              <li key={b.MaBienDong ?? b._id} className="so-cai__hang">
-                <span className="so-cai__ngay">{formatNgayNgan(b.NgayTao)}</span>
-                <span className="so-cai__noi-dung">{b.MoTa}</span>
-                <span className="so-cai__so">{formatDiemCoDau(b.SoDiem)}</span>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p>Chưa có biến động điểm.</p>
-        )}
-      </section>
+        <section className="nhom" aria-labelledby="diem-gan-day">
+          <div className="dau-trang">
+            <h2 id="diem-gan-day">Điểm gần đây</h2>
+            <Link to="/app/lich-su">Xem toàn bộ lịch sử</Link>
+          </div>
+          {bienDong.loading && !bienDong.data ? (
+            <Skeleton active paragraph={{ rows: 3 }} />
+          ) : bienDong.data?.length ? (
+            <ol className="so-cai">
+              {bienDong.data.slice(0, 3).map((b) => (
+                <li key={b.MaBienDong ?? b._id} className="so-cai__hang">
+                  <span className="so-cai__ngay">{formatNgayNgan(b.NgayTao)}</span>
+                  <span className="so-cai__noi-dung">{b.MoTa}</span>
+                  <span className="so-cai__so">{formatDiemCoDau(b.SoDiem)}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p>Chưa có biến động điểm.</p>
+          )}
+        </section>
+      </div>
     </div>
   )
 }

@@ -26,10 +26,20 @@ function KhungDuLieu({ api, children, rong }) {
   return children(api.data)
 }
 
-/** Sổ ghi chia theo tháng: tiêu đề tháng, rồi các hàng ngày, nội dung, con số. */
-function SoTheoThang({ ds, layNgay, renderHang, ...rest }) {
+/**
+ * Sổ ghi chia theo tháng: tiêu đề tháng, rồi các hàng ngày, nội dung, con số.
+ * Máy tính (từ 768px): thêm hàng tiêu đề cột, mỗi hàng thành 4 cột như một bảng.
+ */
+function SoTheoThang({ ds, layNgay, renderHang, cot, ...rest }) {
   return (
     <div className="nhom" {...rest}>
+      {cot && (
+        <div className="so-cai__dau" aria-hidden="true">
+          {cot.map((c) => (
+            <span key={c}>{c}</span>
+          ))}
+        </div>
+      )}
       {nhomTheoThang(ds, layNgay).map((t) => (
         <section key={t.khoa} className="cap" aria-labelledby={`thang-${t.khoa}`}>
           <h2 id={`thang-${t.khoa}`}>{t.nhan}</h2>
@@ -48,15 +58,20 @@ function TabDiem({ maKH }) {
         <SoTheoThang
           data-testid="points-history"
           ds={ds}
+          cot={['Ngày', 'Nội dung', 'Điểm', 'Số dư']}
           layNgay={(b) => b.NgayTao}
           renderHang={(b) => (
-            <li key={b.MaBienDong ?? b._id} className="so-cai__hang">
+            <li key={b.MaBienDong ?? b._id} className="so-cai__hang so-cai__hang--4 so-cai__hang--so-du">
               <span className="so-cai__ngay">{formatNgayNgan(b.NgayTao)}</span>
-              <span className="so-cai__noi-dung">
-                {b.MoTa}
-                {b.SoDuSau !== undefined && <small>Số dư {formatDiem(b.SoDuSau)} điểm</small>}
-              </span>
+              <span className="so-cai__noi-dung">{b.MoTa}</span>
               <span className="so-cai__so">{formatDiemCoDau(b.SoDiem)}</span>
+              {b.SoDuSau !== undefined && (
+                <span className="so-cai__phu">
+                  <span className="nhan-dien-thoai">Số dư </span>
+                  {formatDiem(b.SoDuSau)}
+                  <span className="nhan-dien-thoai"> điểm</span>
+                </span>
+              )}
             </li>
           )}
         />
@@ -72,9 +87,10 @@ function TabGiaoDich({ maKH }) {
       {(ds) => (
         <SoTheoThang
           ds={ds}
+          cot={['Ngày', 'Giao dịch', 'Số tiền', 'Điểm cộng']}
           layNgay={(g) => g.NgayTao}
           renderHang={(g) => (
-            <li key={g.MaGiaoDich} className="so-cai__hang">
+            <li key={g.MaGiaoDich} className="so-cai__hang so-cai__hang--4">
               <span className="so-cai__ngay">{formatNgayNgan(g.NgayTao)}</span>
               <span className="so-cai__noi-dung">
                 <span>
@@ -83,10 +99,13 @@ function TabGiaoDich({ maKH }) {
                 <small>{tomTatChiTiet(g.ChiTiet)}</small>
                 {g.TrangThai === 'PENDING' && <Link to={`/app/thanh-toan/${g.MaGiaoDich}`}>Tiếp tục thanh toán</Link>}
               </span>
-              <span className="so-cai__noi-dung" style={{ alignItems: 'flex-end' }}>
-                <span className="so-cai__so">{formatVND(g.TongTien)}</span>
-                {g.TrangThai === 'COMPLETED' && <small>+{formatDiem(g.DiemCong)} điểm</small>}
-              </span>
+              <span className="so-cai__so">{formatVND(g.TongTien)}</span>
+              {g.TrangThai === 'COMPLETED' && (
+                <span className="so-cai__phu">
+                  +{formatDiem(g.DiemCong)}
+                  <span className="nhan-dien-thoai"> điểm</span>
+                </span>
+              )}
             </li>
           )}
         />
@@ -104,9 +123,10 @@ function TabQua({ maKH }) {
         {(ds) => (
           <SoTheoThang
             ds={ds}
+            cot={['Ngày', 'Quà', 'Điểm', 'Mã voucher']}
             layNgay={(d) => d.NgayDoi}
             renderHang={(d) => (
-              <li key={d.MaDoiThuong} className="so-cai__hang">
+              <li key={d.MaDoiThuong} className="so-cai__hang so-cai__hang--4">
                 <span className="so-cai__ngay">{formatNgayNgan(d.NgayDoi)}</span>
                 <span className="so-cai__noi-dung">
                   <b>{d.TenPhanThuong}</b>
@@ -114,8 +134,8 @@ function TabQua({ maKH }) {
                     {nhanTrangThaiDoiThuong(d)}, hạn dùng đến {formatNgay(d.HanSuDung)}
                   </small>
                 </span>
-                <span className="so-cai__noi-dung" style={{ alignItems: 'flex-end' }}>
-                  <span className="so-cai__so">{formatDiemCoDau(-d.DiemDaDoi)}</span>
+                <span className="so-cai__so">{formatDiemCoDau(-d.DiemDaDoi)}</span>
+                <span className="so-cai__phu">
                   <button type="button" className="nut-link" onClick={() => setDangXem(d)}>
                     Xem mã
                   </button>
