@@ -1,4 +1,7 @@
-/** Khung app khách hàng: một cột tối đa 440px, trên máy tính đặt giữa màn hình. */
+/**
+ * Khung app khách hàng: trên điện thoại là một cột vừa màn hình,
+ * trên máy tính tràn hết bề ngang (lề hai bên 32px).
+ */
 export function PhoneFrame({ children }) {
   return (
     <div className="khung-ngoai">

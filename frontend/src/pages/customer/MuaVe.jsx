@@ -135,96 +135,103 @@ export default function MuaVe() {
   }
 
   return (
-    <div className="trang" style={{ gap: 24 }}>
-      <h1>Đặt vé</h1>
-      <Segmented
-        block
-        value={tab}
-        onChange={(v) => setParams(v === 'combo' ? { tab: 'combo' } : {}, { replace: true })}
-        options={[
-          { label: 'Vé xem phim', value: 've' },
-          { label: 'Bắp nước', value: 'combo' },
-        ]}
-      />
+    <div className="mua-ve">
+      <div className="mua-ve__chinh">
+        <h1>Đặt vé</h1>
+        <Segmented
+          block
+          value={tab}
+          onChange={(v) => setParams(v === 'combo' ? { tab: 'combo' } : {}, { replace: true })}
+          options={[
+            { label: 'Vé xem phim', value: 've' },
+            { label: 'Bắp nước', value: 'combo' },
+          ]}
+        />
 
-      {tab === 've' ? (
-        <>
-          <div className="hang-ngay" role="group" aria-label="Chọn ngày chiếu">
-            {dsNgay.map((d) => (
-              <button
-                type="button"
-                key={d.khoa}
-                className={`chip-chon${d.ngay === ngay ? ' is-chon' : ''}`}
-                aria-pressed={d.ngay === ngay}
-                onClick={() => setNgay(d.ngay)}
-              >
-                {d.nhan}
-                <small>{d.ngay}</small>
-              </button>
-            ))}
-          </div>
-          <div className="nhom">
-            {PHIM.map((p) => (
-              <HangPhim key={`${p.MaPhim}-${ngay}`} phim={p} ngay={ngay} gioHang={gioHang} datDong={datDong} />
-            ))}
-          </div>
-        </>
-      ) : (
-        <ul className="ds-hang">
-          {COMBO.map((c) => (
-            <li key={c.MaSanPham} className="qua" data-testid={`combo-${c.MaSanPham}`} style={{ gridTemplateColumns: '1fr auto' }}>
-              <div className="cap">
-                <h2 className="co-h3">{c.TenSanPham}</h2>
-                <small>{c.MoTa}</small>
-                <b>{formatVND(c.DonGia)}</b>
-              </div>
-              <BoDem
-                value={gioHang[c.MaSanPham]?.SoLuong ?? 0}
-                nhan={c.TenSanPham}
-                onChange={(n) => datDong(c.MaSanPham, taoDongCombo(c, n))}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {dsDong.length > 0 && (
-        <section className="nhom" aria-labelledby="gio-hang">
-          <h2 id="gio-hang">Giỏ hàng</h2>
-          <ol className="so-cai">
-            {dsDong.map(([khoa, d]) => (
-              <li key={khoa} className="so-cai__hang so-cai__hang--rong">
-                <span className="so-cai__noi-dung">
-                  {d.TenSanPham}
-                  <small>
-                    {d.SoLuong} × {formatVND(d.DonGia)}
-                  </small>
-                </span>
-                <span className="cap" style={{ alignItems: 'flex-end' }}>
-                  <b className="so-cot">{formatVND(d.SoLuong * d.DonGia)}</b>
-                  <button type="button" className="nut-link" onClick={() => datDong(khoa, { ...d, SoLuong: 0 })}>
-                    Bỏ khỏi giỏ
-                  </button>
-                </span>
+        {tab === 've' ? (
+          <>
+            <div className="hang-ngay" role="group" aria-label="Chọn ngày chiếu">
+              {dsNgay.map((d) => (
+                <button
+                  type="button"
+                  key={d.khoa}
+                  className={`chip-chon${d.ngay === ngay ? ' is-chon' : ''}`}
+                  aria-pressed={d.ngay === ngay}
+                  onClick={() => setNgay(d.ngay)}
+                >
+                  {d.nhan}
+                  <small>{d.ngay}</small>
+                </button>
+              ))}
+            </div>
+            <div className="nhom">
+              {PHIM.map((p) => (
+                <HangPhim key={`${p.MaPhim}-${ngay}`} phim={p} ngay={ngay} gioHang={gioHang} datDong={datDong} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <ul className="ds-hang">
+            {COMBO.map((c) => (
+              <li key={c.MaSanPham} className="qua" data-testid={`combo-${c.MaSanPham}`} style={{ gridTemplateColumns: '1fr auto' }}>
+                <div className="cap">
+                  <h2 className="co-h3">{c.TenSanPham}</h2>
+                  <small>{c.MoTa}</small>
+                  <b>{formatVND(c.DonGia)}</b>
+                </div>
+                <BoDem
+                  value={gioHang[c.MaSanPham]?.SoLuong ?? 0}
+                  nhan={c.TenSanPham}
+                  onChange={(n) => datDong(c.MaSanPham, taoDongCombo(c, n))}
+                />
               </li>
             ))}
-          </ol>
-        </section>
-      )}
+          </ul>
+        )}
+      </div>
 
-      <div className="thanh-day">
-        <div className="thanh-day__tong">
-          <span className="cap">
-            <small>{tomTat || 'Chưa chọn vé hoặc combo'}</small>
-            <small>Dự kiến +{formatDiem(diemDuKien)} điểm</small>
-          </span>
-          <span className="so-vua" data-testid="cart-total">
-            {formatVND(tong)}
-          </span>
+      {/* Giỏ hàng: điện thoại nằm dưới danh sách, thanh tổng tiền dính đáy; màn lớn là cột phải dính khi cuộn */}
+      <div className="mua-ve__gio">
+        <section className={`nhom${dsDong.length ? '' : ' chi-man-lon'}`} aria-labelledby="gio-hang">
+          <h2 id="gio-hang">Giỏ hàng</h2>
+          {dsDong.length ? (
+            <ol className="so-cai">
+              {dsDong.map(([khoa, d]) => (
+                <li key={khoa} className="so-cai__hang so-cai__hang--rong">
+                  <span className="so-cai__noi-dung">
+                    {d.TenSanPham}
+                    <small>
+                      {d.SoLuong} × {formatVND(d.DonGia)}
+                    </small>
+                  </span>
+                  <span className="cap" style={{ alignItems: 'flex-end' }}>
+                    <b className="so-cot">{formatVND(d.SoLuong * d.DonGia)}</b>
+                    <button type="button" className="nut-link" onClick={() => datDong(khoa, { ...d, SoLuong: 0 })}>
+                      Bỏ khỏi giỏ
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p>Chưa có vé hoặc combo nào. Chọn suất chiếu và bấm dấu cộng để thêm vé.</p>
+          )}
+        </section>
+
+        <div className="thanh-day">
+          <div className="thanh-day__tong">
+            <span className="cap">
+              <small>{tomTat || 'Chưa chọn vé hoặc combo'}</small>
+              <small>Dự kiến +{formatDiem(diemDuKien)} điểm</small>
+            </span>
+            <span className="so-vua" data-testid="cart-total">
+              {formatVND(tong)}
+            </span>
+          </div>
+          <Button type="primary" block disabled={dsDong.length === 0} loading={dangGui} onClick={thanhToan}>
+            {dsDong.length ? `Thanh toán ${formatVND(tong)} bằng MoMo` : 'Chọn vé để thanh toán'}
+          </Button>
         </div>
-        <Button type="primary" block disabled={dsDong.length === 0} loading={dangGui} onClick={thanhToan}>
-          {dsDong.length ? `Thanh toán ${formatVND(tong)} bằng MoMo` : 'Chọn vé để thanh toán'}
-        </Button>
       </div>
     </div>
   )

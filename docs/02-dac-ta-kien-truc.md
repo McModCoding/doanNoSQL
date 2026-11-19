@@ -160,6 +160,7 @@ Nguyên tắc thiết kế frontend:
 - **Một nơi duy nhất biết URL** (`src/api`). **Một nơi duy nhất chuyển đổi tên trường** (`src/api/mappers.js`). Khi backend đổi tên trường, các màn hình không phải sửa.
 - **API giả bằng MSW:** chặn request `/api/...` ngay trong trình duyệt, trả dữ liệu đúng hợp đồng và mô phỏng logic. Dữ liệu giả lưu ở localStorage, có nút "Khôi phục dữ liệu mẫu" tương tự `mongorestore`.
 - **Giao diện theo `DESIGN.md` (hướng "Vé giấy"):** nền giấy vé in nhiệt, chữ mực đen, đỏ con dấu chỉ dùng cho nút chính và link; font Barlow Condensed cho tiêu đề và con số, Be Vietnam Pro cho nội dung (cả hai lưu sẵn trong project, hiển thị đủ dấu tiếng Việt). Màu, cỡ chữ, khoảng cách lấy từ một chỗ (`src/design/tokens.js`, `src/index.css`).
+- **Co giãn theo màn hình:** điện thoại (dưới 768px) dùng một cột vừa màn hình và thanh tab dưới đáy; máy tính tràn hết bề ngang với thanh điều hướng trên; từ 1024px các màn chia cột (trang chủ: tấm vé bên trái; mua vé: giỏ hàng bên phải; thanh toán: hóa đơn và cuống vé có QR đặt cạnh nhau). Trang quản trị cũng tràn hết bề ngang màn hình máy tính.
 - **Biểu đồ:**
   - Cột màu mực. Chỉ cột tháng hiện tại (hoặc tháng cao nhất khi xem năm cũ) màu đỏ dấu và có ghi số; các tháng khác xem qua gợi ý khi rê chuột hoặc chế độ **xem dạng bảng**.
   - Phân bố khách theo hạng dùng 3 màu hạng (Đồng, Bạc, Vàng), luôn kèm chữ và số khách.

@@ -7,7 +7,10 @@ import { APP_NAME, APP_SLOGAN, DEMO_ACCOUNTS } from '../../config.js'
 import { useKhachHang } from '../../context/khachHangContext.js'
 import { PhoneFrame } from '../../layouts/PhoneFrame.jsx'
 
-/** Đăng nhập kiểu quầy soát vé: số điện thoại trước, tài khoản thử bên dưới. */
+/**
+ * Đăng nhập kiểu quầy soát vé: số điện thoại trước, tài khoản thử bên dưới.
+ * Màn lớn (từ 1024px): ô số điện thoại bên trái, tài khoản thử bên phải.
+ */
 export default function DangNhap() {
   const { maKH, dangNhap } = useKhachHang()
   const navigate = useNavigate()
@@ -34,7 +37,7 @@ export default function DangNhap() {
 
   return (
     <PhoneFrame>
-      <main className="khung__noi-dung trang">
+      <main className="khung__noi-dung trang dang-nhap">
         <div className="cap">
           <Link to="/" className="ten-thuong-hieu">
             {APP_NAME}

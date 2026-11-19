@@ -15,8 +15,8 @@
 | 8 | Logic tích điểm & thăng hạng | <ul><li>`COMPLETED` → ghi EARN</li><li>`$inc` điểm và chi tiêu</li><li>`$switch` xét hạng</li><li>Chống cộng điểm 2 lần bằng update có điều kiện</li></ul> | `hinh/so-do-3-luong-thanh-toan-tich-diem.png` | Linh | 1:30 |
 | 9 | Đổi quà an toàn | Trừ điểm và tồn kho bằng update có điều kiện; transaction (replica set) | `hinh/so-do-4-luong-doi-qua.png` | Linh | 1:00 |
 | 10 | Aggregation thống kê | Điểm phát hành theo tháng, top 10 khách đổi quà, giải thích từng stage | `hinh/so-do-5-luong-thong-ke.png` + ảnh Aggregation Editor **[Linh chụp]** | Linh | 1:30 |
-| 11 | Customer App | Thẻ thành viên QR/Barcode, hạng, thanh tiến trình "cần chi tiêu thêm 150.000đ…" | `hinh/02-trang-chu-the-thanh-vien.png`, `hinh/07-trang-chu-hang-bac.png` | Lâm | 1:00 |
-| 12 | Mua vé & thanh toán MoMo (mô phỏng) | Tạo giao dịch PENDING → xác nhận → +điểm → popup thăng hạng | `hinh/04-mua-ve.png`, `hinh/05-thanh-toan-momo.png`, `hinh/06-thang-hang.png` | Lâm | 1:00 |
+| 11 | Customer App | Thẻ thành viên QR/Barcode, hạng, thanh tiến trình "Còn 150.000đ nữa là lên hạng Bạc"; cùng một app chạy trên điện thoại và máy tính | `hinh/02-trang-chu-the-thanh-vien.png`, `hinh/07-trang-chu-hang-bac.png`, bản máy tính `hinh/17-may-tinh-trang-chu.png` | Lâm | 1:00 |
+| 12 | Mua vé & thanh toán MoMo (mô phỏng) | Tạo giao dịch PENDING → xác nhận → +điểm → popup thăng hạng | `hinh/04-mua-ve.png`, `hinh/05-thanh-toan-momo.png`, `hinh/06-thang-hang.png`, bản máy tính `hinh/18-may-tinh-mua-ve.png`, `hinh/19-may-tinh-thanh-toan.png` | Lâm | 1:00 |
 | 13 | Đổi quà & lịch sử | Bảng giá bằng điểm, quà chưa đủ ghi số điểm còn thiếu; voucher dạng vé có mã; sổ điểm EARN/REDEEM có số dư | `hinh/08-doi-qua.png`, `hinh/09-doi-qua-thanh-cong.png`, `hinh/10-lich-su-diem.png` | Lâm | 0:45 |
 | 14 | Admin Dashboard | Câu tóm tắt tháng, giao dịch chờ xử lý, biểu đồ theo tháng, top 10, phân bố hạng; quản lý khách hàng và giao dịch | `hinh/11-admin-dashboard.png`, `hinh/14-admin-giao-dich.png` | Lâm | 1:00 |
 | 15 | Sao lưu & khôi phục | Export CSV, `mongodump`/`mongorestore`, vai trò trong buổi demo | Ảnh lệnh CMD + thư mục backup **[Linh chụp]** | Linh | 0:45 |
