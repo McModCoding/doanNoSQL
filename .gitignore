@@ -10,3 +10,8 @@ node_modules
 dist
 *.local
 .DS_Store
+
+# Cấu hình riêng từng máy (chuỗi kết nối, mật khẩu): không bao giờ đưa lên GitHub
+.env
+# File CSV do XUAT-CSV.bat sinh ra, chạy lại là có
+backend/exports/
