@@ -7,12 +7,17 @@ Frontend **chạy được ngay bằng dữ liệu giả (mock)**, không cần 
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `frontend/` | Ứng dụng React (Vite): Customer App giao diện điện thoại + Admin Dashboard |
+| `frontend/` | Ứng dụng React (Vite): app khách hàng (điện thoại và máy tính) + trang quản trị |
+| `backend/` | API Node.js/Express + MongoDB (phần của Yến Linh): tích điểm, thăng hạng, đổi quà, thống kê; `scripts/` có nạp dữ liệu mẫu, sao lưu, khôi phục, xuất CSV; `backup/chuan/` là bản sao lưu chuẩn để demo |
+| `CHAY-APP.bat` | Chạy riêng frontend với dữ liệu giả, không cần MongoDB |
+| `CHAY-HE-THONG.bat` | Chạy cả backend và frontend với dữ liệu thật |
+| `KHOI-PHUC-CSDL.bat`, `SAO-LUU-CSDL.bat`, `XUAT-CSV.bat` | Khôi phục CSDL về bản chuẩn (`mongorestore --drop`), sao lưu (`mongodump`), xuất danh sách khách hàng ra CSV |
 | `docs/00-ke-hoach-phoi-hop.md` | Cách 3 người làm song song, các mốc tích hợp, checklist nối API thật |
 | `docs/01-hop-dong-api.md` | **Hợp đồng API**: gửi Tính & Linh chốt trước khi code |
 | `docs/02-dac-ta-kien-truc.md` (+ `.docx`) | Bản nháp chương *Đặc tả kiến trúc phần mềm* cho báo cáo |
 | `docs/03-dan-y-slide.md` | Dàn ý slide thuyết trình, có phân công người nói |
 | `docs/04-kich-ban-demo.md` | Kịch bản demo vòng khép kín, lệnh IntelliShell, bảng so sánh App / IntelliShell / Visual Query Builder |
+| `docs/05-bao-cao-phan-cong-yen-linh.md` | Báo cáo phần backend và logic nghiệp vụ của Yến Linh |
 | `docs/hinh/` | Ảnh chụp màn hình (dữ liệu giả) và sơ đồ |
 | `docs/so-do/` | Mã nguồn sơ đồ Mermaid (`.mmd`) để sửa lại khi cần |
 
@@ -51,16 +56,29 @@ Tài khoản demo (bấm chọn nhanh ở màn hình đăng nhập):
 
 Dữ liệu giả được lưu trong trình duyệt (localStorage). Bấm **"Khôi phục dữ liệu mẫu"** (ở trang đầu hoặc trang Admin) để quay về dữ liệu ban đầu, tương tự `mongorestore`.
 
-## Nối với backend thật
+## Chạy cả hệ thống với backend thật (MongoDB)
 
-Tạo file `frontend/.env.development.local` với nội dung:
+Cần cài thêm:
+- **MongoDB Community Server** (bản 8.x), để chạy ở cổng 27017 như mặc định.
+- **MongoDB Database Tools**, chỉ cần khi dùng khôi phục hoặc sao lưu. Các script tự tìm công cụ trong thư mục cài mặc định (`C:\Program Files\MongoDB\...`) hoặc trong PATH. Cài ở chỗ khác thì đặt biến `MONGO_TOOLS_DIR` trỏ tới thư mục `bin` của công cụ.
 
+Các bước trên Windows:
+1. Lần đầu, hoặc trước buổi demo: nhấp đúp **`KHOI-PHUC-CSDL.bat`** để nạp bản sao lưu chuẩn `backend/backup/chuan`. Chưa cài Database Tools thì chạy `npm run seed` trong thư mục `backend` để nạp dữ liệu mẫu.
+2. Nhấp đúp **`CHAY-HE-THONG.bat`**. Lần đầu file sẽ tự cài thư viện, sau đó mở 2 cửa sổ: backend ở http://localhost:3000/api và frontend ở http://localhost:5173 (chế độ dữ liệu thật).
+
+Hoặc chạy bằng lệnh, mỗi lệnh trong một cửa sổ riêng:
+
+```bash
+cd backend && npm install && npm start
 ```
-VITE_USE_MOCK=false
-VITE_API_TARGET=http://localhost:3000
+
+```bash
+cd frontend && npm install && npm run dev:api
 ```
 
-Sau đó chạy lại `npm run dev`. Frontend gọi `/api/...` và Vite tự chuyển tiếp sang server Express, nên không cần cấu hình CORS. Nếu tên trường của backend khác hợp đồng, chỉ cần sửa `frontend/src/api/mappers.js`. Chi tiết xem `docs/00-ke-hoach-phoi-hop.md`.
+`npm run dev:api` đọc file `frontend/.env.api` (`VITE_USE_MOCK=false`). Frontend gọi `/api/...` và Vite tự chuyển tiếp sang server Express, nên không cần cấu hình CORS. Backend đọc cấu hình từ `backend/.env` nếu có (mẫu: `backend/.env.example`). Không có file này thì dùng mặc định `mongodb://127.0.0.1:27017`, CSDL `CinemaLoyaltyDB`, cổng 3000. **Không đưa file `.env` lên GitHub.**
+
+Bộ kiểm thử backend của Yến Linh: chạy `node scripts/test-api.js` trong thư mục `backend` sau khi khôi phục dữ liệu chuẩn.
 
 ## Kiểm thử
 

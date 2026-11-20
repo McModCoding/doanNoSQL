@@ -6,21 +6,20 @@
 
 ## 1. Chuẩn bị trước giờ demo (T-30 phút)
 
-- [ ] Linh: khôi phục dữ liệu chuẩn:
+- [ ] Linh: khôi phục dữ liệu chuẩn bằng **`KHOI-PHUC-CSDL.bat`**, tương đương lệnh:
   ```bash
-  mongorestore --db <ten_db> --drop ./backup/chuan/<ten_db>
+  mongorestore --db CinemaLoyaltyDB --drop ./backend/backup/chuan/CinemaLoyaltyDB
   ```
 - [ ] Kiểm tra dữ liệu demo:
   - KH001 (SĐT `0901000001`) ở hạng **Đồng**, `TongChiTieu` **9.850.000đ**, **9.500 điểm**.
   - PT002 (voucher 50.000đ, 450 điểm) còn hàng.
-- [ ] Tính: chạy MongoDB và server (`npm start`). Terminal mở to, chữ lớn, để giảng viên thấy log request.
+- [ ] Tính: bật MongoDB rồi chạy **`CHAY-HE-THONG.bat`**: file này mở cửa sổ backend (cổng 3000) và frontend chế độ dữ liệu thật (`npm run dev:api`, cổng 5173). Phóng to cửa sổ backend, chữ lớn, để giảng viên thấy log request.
 - [ ] Lâm:
-  - Đặt `VITE_USE_MOCK=false` rồi chạy `npm run dev`.
   - Mở 2 tab: `http://localhost:5173/app` (thu nhỏ cửa sổ hoặc bật chế độ giả lập điện thoại trong DevTools) và `http://localhost:5173/admin`.
   - Đăng xuất sẵn ở Customer App.
 - [ ] Linh: mở Studio 3T với 2 tab IntelliShell đã dán sẵn lệnh ở mục 4. Mở sẵn 1 tab Visual Query Builder trên `khach_hang`.
 - [ ] **Phương án dự phòng:**
-  - Mạng hoặc server lỗi: chuyển frontend về `VITE_USE_MOCK=true`. Vẫn demo được giao diện và luồng nghiệp vụ, nhưng phải nói rõ là "dữ liệu giả".
+  - Mạng hoặc server lỗi: tắt cửa sổ frontend, chạy **`CHAY-APP.bat`** (dữ liệu giả, không cần MongoDB). Vẫn demo được giao diện và luồng nghiệp vụ, nhưng phải nói rõ là "dữ liệu giả".
   - Dữ liệu hỏng: Linh chạy lại `mongorestore` (mục 3, bước 9).
 
 ## 2. Lời mở đầu (30 giây – Lâm)
