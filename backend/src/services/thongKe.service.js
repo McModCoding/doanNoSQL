@@ -13,17 +13,23 @@ export async function thongKeDiemTheoThang(nam) {
   const db = getDB()
   const namInt = parseInt(nam, 10) || new Date().getFullYear()
 
-  // Khoảng thời gian từ đầu năm đến hết năm
-  const startDate = new Date(`${namInt}-01-01T00:00:00.000Z`)
-  const endDate = new Date(`${namInt + 1}-01-01T00:00:00.000Z`)
+  // Khoảng thời gian từ đầu năm đến hết năm, theo giờ Việt Nam (khớp với $month timezone bên dưới)
+  const startDate = new Date(`${namInt}-01-01T00:00:00+07:00`)
+  const endDate = new Date(`${namInt + 1}-01-01T00:00:00+07:00`)
 
   const pipeline = [
     {
+      // Hai điều kiện $or phải bọc trong $and: nếu viết hai khóa $or cạnh nhau trong một object,
+      // khóa sau ghi đè khóa trước và điểm đổi quà (REDEEM, số âm) bị cộng lẫn vào "điểm phát hành".
       $match: {
-        $or: [{ LoaiBienDong: 'EARN' }, { Loai: 'EARN' }],
-        $or: [
-          { NgayTao: { $gte: startDate, $lt: endDate } },
-          { NgayPhatSinh: { $gte: startDate, $lt: endDate } },
+        $and: [
+          { $or: [{ LoaiBienDong: 'EARN' }, { Loai: 'EARN' }] },
+          {
+            $or: [
+              { NgayTao: { $gte: startDate, $lt: endDate } },
+              { NgayPhatSinh: { $gte: startDate, $lt: endDate } },
+            ],
+          },
         ],
       },
     },
@@ -93,8 +99,8 @@ export async function topDoiQua({ limit = 10, nam } = {}) {
     pipeline.push({
       $match: {
         NgayDoi: {
-          $gte: new Date(`${namInt}-01-01T00:00:00.000Z`),
-          $lt: new Date(`${namInt + 1}-01-01T00:00:00.000Z`),
+          $gte: new Date(`${namInt}-01-01T00:00:00+07:00`),
+          $lt: new Date(`${namInt + 1}-01-01T00:00:00+07:00`),
         },
       },
     })

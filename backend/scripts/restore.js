@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { execFile } from 'child_process'
 import dotenv from 'dotenv'
+import { HUONG_DAN_CAI, timCongCu } from './congCuMongo.js'
 
 dotenv.config()
 
@@ -9,7 +10,7 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'
 const DB_NAME = process.env.DB_NAME || 'CinemaLoyaltyDB'
 const BACKUP_PATH = path.resolve('backup', 'chuan', DB_NAME)
 
-const MONGORESTORE_PATH = 'C:\\Program Files\\MongoDB\\mongodb-database-tools-windows-x86_64-100.19.1\\bin\\mongorestore.exe'
+const MONGORESTORE_PATH = timCongCu('mongorestore')
 
 async function restoreDatabase() {
   console.log('='.repeat(65))
@@ -36,6 +37,10 @@ async function restoreDatabase() {
     execFile(MONGORESTORE_PATH, args, (error, stdout, stderr) => {
       if (error) {
         console.error('[mongorestore] Lỗi khi khôi phục:', error.message)
+        if (error.code === 'ENOENT') {
+          console.error(`[mongorestore] Không tìm thấy công cụ. ${HUONG_DAN_CAI}`)
+          console.error('[mongorestore] Cách khác: chạy "npm run seed" trong thư mục backend để nạp lại dữ liệu mẫu.')
+        }
         return reject(error)
       }
       console.log(stderr || stdout)

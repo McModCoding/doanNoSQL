@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { execFile } from 'child_process'
 import dotenv from 'dotenv'
+import { HUONG_DAN_CAI, timCongCu } from './congCuMongo.js'
 
 dotenv.config()
 
@@ -13,7 +14,7 @@ if (!fs.existsSync(BACKUP_DIR)) {
   fs.mkdirSync(BACKUP_DIR, { recursive: true })
 }
 
-const MONGODUMP_PATH = 'C:\\Program Files\\MongoDB\\mongodb-database-tools-windows-x86_64-100.19.1\\bin\\mongodump.exe'
+const MONGODUMP_PATH = timCongCu('mongodump')
 
 async function backupDatabase() {
   console.log('='.repeat(65))
@@ -33,6 +34,7 @@ async function backupDatabase() {
     execFile(MONGODUMP_PATH, args, (error, stdout, stderr) => {
       if (error) {
         console.error('[mongodump] Lỗi khi sao lưu:', error.message)
+        if (error.code === 'ENOENT') console.error(`[mongodump] Không tìm thấy công cụ. ${HUONG_DAN_CAI}`)
         return reject(error)
       }
       console.log(stderr || stdout)

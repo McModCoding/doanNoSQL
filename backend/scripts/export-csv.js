@@ -3,6 +3,7 @@ import path from 'path'
 import { execFile } from 'child_process'
 import { MongoClient } from 'mongodb'
 import dotenv from 'dotenv'
+import { timCongCu } from './congCuMongo.js'
 
 dotenv.config()
 
@@ -15,7 +16,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true })
 }
 
-const MONGOEXPORT_PATH = 'C:\\Program Files\\MongoDB\\mongodb-database-tools-windows-x86_64-100.19.1\\bin\\mongoexport.exe'
+const MONGOEXPORT_PATH = timCongCu('mongoexport')
 
 async function exportUsingMongoTools() {
   return new Promise((resolve, reject) => {
