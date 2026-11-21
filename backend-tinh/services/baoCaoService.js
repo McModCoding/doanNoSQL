@@ -231,7 +231,9 @@ const productPipeline = (filters = {}) => {
         pipeline: [...base, { $facet: {
             summary: [{ $group: { _id: null, tongSoLuongBan: { $sum: "$soLuongBan" }, tongDoanhThuTruocGiam: { $sum: "$doanhThuTruocGiam" }, soNhomSanPham: { $sum: 1 } } }, { $project: { _id: 0, tongSoLuongBan: 1, tongDoanhThuTruocGiam: 1, soNhomSanPham: 1 } }],
             byType: [{ $group: { _id: "$loaiSanPham", soLuongBan: { $sum: "$soLuongBan" }, doanhThuTruocGiam: { $sum: "$doanhThuTruocGiam" }, soMaSanPham: { $sum: 1 } } }, { $sort: { _id: 1 } }],
-            products: facetPagination({ sort: { doanhThuTruocGiam: -1, MaSP: 1 }, pagination })
+            // Moi nhanh $facet phai la mot mang stage: tach rows/total giong bao cao ve.
+            productRows: facetPagination({ sort: { doanhThuTruocGiam: -1, MaSP: 1 }, pagination }).rows,
+            productTotal: facetPagination({ sort: { doanhThuTruocGiam: -1, MaSP: 1 }, pagination }).total
         } }],
         pagination
     };
@@ -292,7 +294,7 @@ const getTicketReport = async (filters = {}) => {
 const getProductReport = async (filters = {}) => {
     const { pipeline, pagination } = productPipeline(filters);
     const [result = {}] = await GiaoDich.aggregate(pipeline);
-    const facet = result.products || {};
+    const facet = { rows: result.productRows || [], total: result.productTotal || [] };
     return normalizeBson({
         summary: result.summary?.[0] || { tongSoLuongBan: 0, tongDoanhThuTruocGiam: DECIMAL_ZERO, soNhomSanPham: 0 },
         byType: result.byType || [],
