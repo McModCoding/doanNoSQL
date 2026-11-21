@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"5e51f38780244b5d8cbe116b7e97f378","collectionName":"lich_su_hang","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"01c48b38a2ba42f29bdebf90f0382fd4","collectionName":"lich_su_hang","type":"collection"}
