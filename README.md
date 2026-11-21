@@ -62,11 +62,11 @@ Dữ liệu giả được lưu trong trình duyệt (localStorage). Bấm **"Kh
 
 Cần cài thêm:
 - **MongoDB Community Server** (bản 8.x), để chạy ở cổng 27017 như mặc định.
-- **MongoDB Database Tools**, chỉ cần khi dùng khôi phục hoặc sao lưu. Các script tự tìm công cụ trong thư mục cài mặc định (`C:\Program Files\MongoDB\...`) hoặc trong PATH. Cài ở chỗ khác thì đặt biến `MONGO_TOOLS_DIR` trỏ tới thư mục `bin` của công cụ.
+- **MongoDB Database Tools** (không bắt buộc), để sao lưu bằng `mongodump`. Không có công cụ này thì `KHOI-PHUC-CSDL.bat` tự nạp dữ liệu chuẩn bằng `scripts/seed.js` (ra cùng bộ dữ liệu), còn `XUAT-CSV.bat` tự xuất bằng thư viện Node. Các script tự tìm công cụ trong thư mục cài mặc định (`C:\Program Files\MongoDB\...`) hoặc trong PATH. Cài ở chỗ khác thì đặt biến `MONGO_TOOLS_DIR` trỏ tới thư mục `bin` của công cụ.
 
 Các bước trên Windows:
-1. Lần đầu, hoặc trước buổi demo: nhấp đúp **`KHOI-PHUC-CSDL.bat`** để nạp bản sao lưu chuẩn `backend/backup/chuan`. Chưa cài Database Tools thì chạy `npm run seed` trong thư mục `backend` để nạp dữ liệu mẫu.
-2. Nhấp đúp **`CHAY-HE-THONG.bat`**. Lần đầu file sẽ tự cài thư viện, sau đó mở 2 cửa sổ: backend ở http://localhost:3000/api và frontend ở http://localhost:5173 (chế độ dữ liệu thật).
+1. Lần đầu, hoặc trước buổi demo: nhấp đúp **`KHOI-PHUC-CSDL.bat`** để nạp dữ liệu chuẩn (`backend/backup/chuan`). Lần đầu file tự cài thư viện cho backend.
+2. Nhấp đúp **`CHAY-HE-THONG.bat`**. Lần đầu file sẽ tự cài thư viện cho frontend, sau đó mở 2 cửa sổ: backend ở http://localhost:3000/api và frontend ở http://localhost:5173 (chế độ dữ liệu thật).
 
 Hoặc chạy bằng lệnh, mỗi lệnh trong một cửa sổ riêng:
 
