@@ -22,7 +22,7 @@ async function restoreDatabase() {
   if (!fs.existsSync(BACKUP_PATH)) {
     console.error(`[Lỗi] Không tìm thấy thư mục backup tại: ${BACKUP_PATH}`)
     console.log(`Vui lòng chạy script backup trước (npm run backup) hoặc nạp dữ liệu mẫu (npm run seed).`)
-    process.exit(1)
+    process.exit(2)
   }
 
   return new Promise((resolve, reject) => {
@@ -50,4 +50,8 @@ async function restoreDatabase() {
   })
 }
 
-restoreDatabase().catch(console.error)
+// Mã thoát cho KHOI-PHUC-CSDL.bat: 2 = không có mongorestore hoặc bản sao lưu (file .bat chuyển sang nạp
+// bằng seed.js, ra cùng bộ dữ liệu chuẩn), 1 = lỗi khác (ví dụ MongoDB chưa chạy)
+restoreDatabase().catch((err) => {
+  process.exitCode = err && err.code === 'ENOENT' ? 2 : 1
+})
