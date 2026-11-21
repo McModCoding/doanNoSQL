@@ -445,14 +445,22 @@ const createBooking = async (data) => {
                     }
                 },
                 {
+                    // Boc trong $and: Mongoose chi ep kieu dung $or/$and khi no dung dau
+                    // bo loc. De "g.MaGhe" dung truoc $or thi Mongoose bien $or thanh
+                    // document mac dinh, MongoDB bao "Error parsing array filter" va
+                    // khong dat ve nao thanh cong.
                     arrayFilters: [
                         {
-                            "g.MaGhe": MaGhe,
-                            $or: [
-                                { "g.TrangThai": "AVAILABLE" },
+                            $and: [
+                                { "g.MaGhe": MaGhe },
                                 {
-                                    "g.TrangThai": "HELD",
-                                    "g.ThoiGianGiuCho": { $lte: now }
+                                    $or: [
+                                        { "g.TrangThai": "AVAILABLE" },
+                                        {
+                                            "g.TrangThai": "HELD",
+                                            "g.ThoiGianGiuCho": { $lte: now }
+                                        }
+                                    ]
                                 }
                             ]
                         }

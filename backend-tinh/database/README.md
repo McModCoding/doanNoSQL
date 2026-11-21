@@ -1,6 +1,8 @@
 # CinemaLoyalty database scripts
 
-These Studio 3T IntelliShell scripts target the exact database **`CinemaLoyaltyDB`**, as requested. The scripts do not connect by themselves; before running any write script, manually confirm that IntelliShell is connected to the intended non-production server and that this database is the new database being prepared. The fixed database name cannot distinguish a development server from a production server.
+> **Ghi chú khi gộp vào repo nhóm (21/11/2026).** Tên CSDL đổi từ `CinemaLoyaltyDB` sang `CinemaLoyaltyDB_Tinh`, khai báo một chỗ ở đầu `setup_all.js` (biến `TEN_CSDL_DICH`; chạy bằng mongosh thì đổi được qua biến môi trường `TEN_CSDL`). Lý do: `CinemaLoyaltyDB` là CSDL demo của backend chính (`backend/`) và bản sao lưu chuẩn, có cấu trúc document khác. Hai bên dùng chung một CSDL sẽ đè nhau. Ba file trong `scripts/migrations/` vẫn kiểm tra tên `CinemaLoyaltyDB` vì chỉ dùng để nâng cấp CSDL cũ trên máy Tính; CSDL tạo mới bằng `setup_all.js` đã có sẵn các index đó. Cách chạy nhanh: xem `backend-tinh/README.md`.
+
+These Studio 3T IntelliShell scripts target the database named in `TEN_CSDL_DICH` at the top of `setup_all.js`: **`CinemaLoyaltyDB_Tinh`** by default in the team repository (see the note below). The scripts do not connect by themselves; before running any write script, manually confirm that IntelliShell is connected to the intended non-production server and that this database is the new database being prepared. The fixed database name cannot distinguish a development server from a production server.
 
 ## Safety and execution order
 
@@ -13,7 +15,7 @@ Run the six JavaScript files in this order:
 5. `05_seed_business_data.js` — insert the 22 business documents, then apply the sample seat, stock, and reward changes. It requires the expected reference IDs/counts, empty business collections, required indexes, and expected opening stock/seat state. If it errors after starting inserts or stock changes, **do not rerun blindly**; inspect the database and resolve it manually. MongoDB Standalone does not make these multi-collection seed writes atomic.
 6. `06_verify_database.js` — read-only checks for collections, validators, indexes, references, payment mode, snapshots, balances, spend, and stock.
 
-Every script selects the literal database name `CinemaLoyaltyDB` and checks it before acting. Seed scripts do not run on import in Node: they are IntelliShell scripts that must be deliberately executed. Never run them through a production connection. These scripts do not create or modify `.env`, application models, or application code.
+Every script selects the database name in `TEN_CSDL_DICH` and checks it before acting. Seed scripts do not run on import in Node: they are IntelliShell scripts that must be deliberately executed. Never run them through a production connection. These scripts do not create or modify `.env`, application models, or application code.
 
 Step 02 sets strict/error validators. Mongoose `Number` fields accept BSON `int` and `double` in the validators so application writes and shell literals are compatible; Decimal128 money fields remain BSON `decimal`. Step 03 declares **50 custom indexes** in addition to MongoDB's built-in `_id_` indexes. If a preflight fails, stop and resolve the incompatibility; do not weaken or delete constraints to force the scripts through. The partial unique index on `ve` covers `VALID` and `USED` seats; the partial unique payment index covers string `MaGiaoDichMoMo` values, allowing multiple null/missing values. MongoDB's current manual documents `$or` as supported in partial filters, but confirm the actual server version before execution.
 

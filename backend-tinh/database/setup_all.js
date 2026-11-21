@@ -1,12 +1,18 @@
 // CinemaLoyalty one-pass Studio 3T IntelliShell script.
-// Targets CinemaLoyaltyDB. Run only on the intended non-production server.
+// Targets TEN_CSDL_DICH below (CinemaLoyaltyDB_Tinh by default). Run only on the intended non-production server.
 // Ordered: create collections, validators, indexes, reference seed, business seed, read-only verification.
 // If business seeding fails partway, do not rerun blindly; inspect the database first.
+
+// [Them khi gop vao repo nhom] Ten CSDL dich, khai bao mot cho cho ca 5 buoc.
+// Repo nhom dung CinemaLoyaltyDB cho backend chinh (thu muc backend/) va ban sao luu chuan,
+// nen backend nay mac dinh dung CSDL rieng CinemaLoyaltyDB_Tinh de hai ben khong de nhau.
+// Chay bang mongosh co the doi ten qua bien moi truong TEN_CSDL (scripts/tao-csdl.js lam viec nay).
+var TEN_CSDL_DICH = (typeof process !== "undefined" && process.env && process.env.TEN_CSDL) || "CinemaLoyaltyDB_Tinh";
 
 // ===== BEGIN 01_create_collections.js =====
 // Studio 3T IntelliShell / mongosh. Targets only the approved database name.
 (function createCinemaLoyaltyCollections() {
-    const TARGET_DB = "CinemaLoyaltyDB";
+    const TARGET_DB = TEN_CSDL_DICH;
     const COLLECTIONS = [
         "bien_dong_diem", "cum_rap", "doi_thuong", "ghi_nhan_chi_tieu",
         "giao_dich", "hang_thanh_vien", "khach_hang", "khuyen_mai",
@@ -35,7 +41,7 @@
 // ===== BEGIN 02_create_validators.js =====
 // Applies model-aligned validators to empty test collections only.
 (function configureCinemaLoyaltyValidators() {
-    const TARGET_DB = "CinemaLoyaltyDB";
+    const TARGET_DB = TEN_CSDL_DICH;
     const S = (required, properties) => {
         const schemaProperties = { _id: { bsonType: "objectId" } };
         Object.keys(properties).forEach((key) => { schemaProperties[key] = properties[key]; });
@@ -273,7 +279,7 @@
 // ===== BEGIN 03_create_indexes.js =====
 // Preflights every unique key before creating any index. Never drops/replaces indexes.
 (function createCinemaLoyaltyIndexes() {
-    const TARGET_DB = "CinemaLoyaltyDB";
+    const TARGET_DB = TEN_CSDL_DICH;
     const indexes = [
         ["khach_hang", { MaKH: 1 }, { unique: true, name: "uq_khach_hang_makh" }],
         ["khach_hang", { SDT: 1 }, { unique: true, name: "uq_khach_hang_sdt" }],
@@ -419,7 +425,7 @@
 // ===== BEGIN 04_seed_reference_data.js =====
 // Fictional reference fixtures. Run only after steps 01-03 on an empty target database.
 (function seedCinemaLoyaltyReferenceData() {
-    const TARGET_DB = "CinemaLoyaltyDB";
+    const TARGET_DB = TEN_CSDL_DICH;
     const COLLECTIONS = [
         "bien_dong_diem", "cum_rap", "doi_thuong", "ghi_nhan_chi_tieu", "giao_dich",
         "hang_thanh_vien", "khach_hang", "khuyen_mai", "lich_su_hang", "lich_su_ton_kho",
@@ -472,7 +478,7 @@
 // ===== BEGIN 05_seed_business_data.js =====
 // Coherent, fictional business fixtures. Uses DEV_MOCK only; never calls a gateway.
 (function seedCinemaLoyaltyBusinessData() {
-    const TARGET_DB = "CinemaLoyaltyDB";
+    const TARGET_DB = TEN_CSDL_DICH;
     const VND_PER_POINT = 10000;
     const HASH_ADMIN = "$2b$12$lbVmCbQc/mjhtEBvuwwAr.fvqQMYiH7HlrYnxfzluSVA3okFlKy7K";
     const HASH_MEMBER = "$2b$12$GJ0UyvM80DhPwo49U3Imo.05KVs8DSQVIFOePG.eIXQi6V1fM8u2m";
