@@ -273,3 +273,15 @@ Bộ kiểm thử tự động tại `backend/scripts/test-api.js` đã chạy t
 - ✓ Pipeline aggregation điểm phát hành 12 tháng (tháng 9 đạt 34.485 điểm)
 - ✓ Pipeline aggregation Top 10 khách đổi quà kèm `$lookup`
 - ✓ Thống kê khách theo hạng và KPI tổng quan tháng
+
+---
+
+## 8. CẬP NHẬT DỮ LIỆU MẪU (21/11/2026, khi gộp vào repo nhóm)
+
+`scripts/seed.js` và bản sao lưu chuẩn `backup/chuan` được sinh lại để các bảng khớp nhau:
+- Không còn mốc thời gian nào sau ngày 20/11/2026. Bản cũ có 13 giao dịch ngày 02/12 đến 14/12/2026, nên giao dịch tạo lúc demo không đứng đầu danh sách mới nhất.
+- `SoDuSau` là số dư dồn theo thời gian của từng khách. Bản cũ ghi cùng một giá trị cho mọi dòng (KH001 dòng nào cũng 9.500).
+- 141 lượt đổi quà có đủ 141 dòng `REDEEM` trong `bien_dong_diem`. Cộng mọi dòng `SoDiem` của một khách ra đúng `DiemHienTai`, cộng tiền giao dịch ra đúng `TongChiTieu`, nên lệnh đối soát (E) trong `docs/04-kich-ban-demo.md` khớp với cả 20 khách.
+- `lich_su_hang` có thêm dòng lên hạng Bạc, Vàng đúng lúc tổng chi tiêu vượt ngưỡng (36 dòng).
+- Giữ nguyên: 20 khách, 183 giao dịch, 141 lượt đổi quà, tháng 9 đạt 34.485 điểm, KH001 có 9.500 điểm và 9.850.000đ, KH002 có 12.400 điểm. Số điểm hiện tại của một số khách khác và danh sách Top 10 thay đổi; KH003 vẫn đứng đầu với 28 lượt.
+- Chạy `npm run seed` lần nào cũng ra đúng một bộ dữ liệu, không phụ thuộc múi giờ của máy.

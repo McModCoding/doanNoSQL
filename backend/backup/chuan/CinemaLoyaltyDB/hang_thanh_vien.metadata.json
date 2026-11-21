@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"MaHang":{"$numberInt":"1"}},"name":"MaHang_1","unique":true}],"uuid":"c22a7102ef3f45c39282e2dbac44ad83","collectionName":"hang_thanh_vien","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"MaHang":{"$numberInt":"1"}},"name":"MaHang_1","unique":true}],"uuid":"bae4bd2d9d77484da193cb306c3da464","collectionName":"hang_thanh_vien","type":"collection"}
