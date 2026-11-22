@@ -92,8 +92,8 @@ Quy tắc:
 ## 4. Khoảng cách và bố cục
 
 - Đơn vị cơ sở: 8px. Chỉ dùng các bước: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128px.
-- Chiều rộng nội dung tối đa: app khách hàng 440px (khung điện thoại, trên máy tính đặt giữa màn hình); trang quản trị 1280px. Lề hai bên: 16px trên điện thoại, 32px trên máy tính.
-- Lưới: 12 cột, khoảng cách giữa các cột 24px (trang quản trị). App khách hàng dùng một cột.
+- Chiều rộng nội dung: dưới 768px (điện thoại) mọi màn dùng một cột vừa màn hình, thanh tab nằm ở đáy. Từ 768px trở lên, cả app khách hàng lẫn trang quản trị tràn hết bề ngang màn hình, thanh điều hướng nằm trên cùng. Lề hai bên: 16px trên điện thoại, 32px trên máy tính.
+- Lưới: trang quản trị 12 cột, khoảng cách giữa các cột 24px. App khách hàng dùng một cột trên điện thoại; từ 1024px chia cột theo nội dung (trang chủ: tấm vé bên trái, các việc hay làm bên phải; mua vé: bảng giờ chiếu bên trái, giỏ hàng bên phải).
 
 **Nhịp khoảng cách, cố tình không đều:**
 - Các thứ thuộc về nhau (tiêu đề và đoạn văn của nó): đặt sát, 8px
