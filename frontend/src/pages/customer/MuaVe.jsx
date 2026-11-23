@@ -6,6 +6,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { taoGiaoDich } from '../../api/giaoDich.js'
 import { SO_TIEN_MOI_DIEM } from '../../config.js'
 import { useKhachHang } from '../../context/khachHangContext.js'
+import { AnhVuong } from '../../components/AnhVuong.jsx'
+import { ANH_COMBO, POSTER_PHIM } from '../../data/anh.js'
 import { COMBO, PHIM, taoDongCombo, taoDongVe } from '../../data/catalog.js'
 import { formatDiem, formatVND } from '../../utils/format.js'
 
@@ -47,9 +49,13 @@ function HangPhim({ phim, ngay, gioHang, datDong }) {
 
   return (
     <article className="phim" data-testid={`movie-${phim.MaPhim}`}>
-      <div className="poster-chu" aria-hidden>
-        {phim.TenPhim}
-      </div>
+      {POSTER_PHIM[phim.MaPhim] ? (
+        <img className="poster" src={POSTER_PHIM[phim.MaPhim]} alt="" width="88" height="132" loading="lazy" decoding="async" />
+      ) : (
+        <div className="poster-chu" aria-hidden>
+          {phim.TenPhim}
+        </div>
+      )}
       <div className="phim__than">
         <h2 className="co-h3">{phim.TenPhim}</h2>
         <small>
@@ -173,7 +179,8 @@ export default function MuaVe() {
         ) : (
           <ul className="ds-hang">
             {COMBO.map((c) => (
-              <li key={c.MaSanPham} className="qua" data-testid={`combo-${c.MaSanPham}`} style={{ gridTemplateColumns: '1fr auto' }}>
+              <li key={c.MaSanPham} className="qua qua--combo" data-testid={`combo-${c.MaSanPham}`}>
+                <AnhVuong src={ANH_COMBO[c.MaSanPham]} />
                 <div className="cap">
                   <h2 className="co-h3">{c.TenSanPham}</h2>
                   <small>{c.MoTa}</small>

@@ -636,6 +636,24 @@ a.ten-thuong-hieu {
   line-height: 1;
   overflow-wrap: anywhere;
 }
+/* Poster ảnh (quy chuẩn giao diện, phần 5): tỉ lệ 2:3, bo 2px, nền phụ trong lúc ảnh đang tải */
+.poster {
+  display: block;
+  width: 88px;
+  height: 132px;
+  object-fit: cover;
+  border-radius: var(--bo-nut);
+  background: var(--nen-phu);
+}
+/* Ảnh vuông cho combo và quà; ô trống cùng cỡ khi chưa có ảnh */
+.anh-vuong {
+  display: block;
+  width: var(--co-anh, 48px);
+  height: var(--co-anh, 48px);
+  object-fit: cover;
+  border-radius: var(--bo-nut);
+  background: var(--nen-phu);
+}
 .phim__than {
   display: flex;
   flex-direction: column;
@@ -782,7 +800,7 @@ a.ten-thuong-hieu {
    ========================================================================== */
 .qua {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) auto;
+  grid-template-columns: 64px 48px minmax(0, 1fr) auto;
   gap: 16px;
   align-items: center;
   min-height: 64px;
@@ -808,6 +826,15 @@ a.ten-thuong-hieu {
 }
 .qua--thieu .qua__diem {
   color: var(--chu-phu);
+}
+.qua--combo {
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  --co-anh: 64px;
+}
+@media (max-width: 767px) {
+  .qua {
+    gap: 12px;
+  }
 }
 
 /* Voucher đã đổi: thân vé, đường răng cưa, cuống có mã */
@@ -867,6 +894,51 @@ a.ten-thuong-hieu {
   font-weight: 600;
   font-size: var(--h2);
   line-height: 1.1;
+}
+.trang-dau__anh {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--bo-nut);
+  background: var(--nen-phu);
+  margin-bottom: 16px;
+}
+.trang-dau__nguon {
+  margin-top: 16px;
+  color: var(--chu-phu);
+}
+
+/* Trang nguồn ảnh */
+.trang-nguon {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 48px 32px 96px;
+}
+.trang-nguon p {
+  max-width: 65ch;
+}
+.dong-nguon {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--vien);
+}
+.ds-hang > .dong-nguon:first-child {
+  border-top: 1px solid var(--vien);
+}
+.dong-nguon small {
+  color: var(--chu-phu);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+  .trang-nguon {
+    padding: 32px 16px 64px;
+  }
 }
 @media (max-width: 760px) {
   .trang-dau {

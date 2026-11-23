@@ -21,6 +21,7 @@ Frontend **chạy được ngay bằng dữ liệu giả (mock)**, không cần 
 | `docs/04-kich-ban-demo.md` | Kịch bản demo vòng khép kín, lệnh IntelliShell, bảng so sánh App / IntelliShell / Visual Query Builder |
 | `docs/05-bao-cao-phan-cong-yen-linh.md` | Báo cáo phần backend và logic nghiệp vụ của Yến Linh |
 | `docs/06-quy-chuan-giao-dien.md` | Quy chuẩn thiết kế giao diện: màu, chữ, khoảng cách, thành phần, các kiểu cần tránh |
+| `docs/07-nguon-anh.md` | Nguồn và giấy phép của ảnh minh họa (ảnh tạm từ Wikimedia Commons, thay được bằng ảnh thật của nhóm) |
 | `docs/hinh/` | Ảnh chụp màn hình (dữ liệu giả) và sơ đồ |
 | `docs/so-do/` | Mã nguồn sơ đồ Mermaid (`.mmd`) để sửa lại khi cần |
 

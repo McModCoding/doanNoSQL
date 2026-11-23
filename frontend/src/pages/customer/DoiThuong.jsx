@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import { doiQua } from '../../api/doiThuong.js'
 import { layDsPhanThuong } from '../../api/phanThuong.js'
 import { ErrorState } from '../../components/ErrorState.jsx'
+import { AnhVuong } from '../../components/AnhVuong.jsx'
 import { VeVoucher } from '../../components/VeVoucher.jsx'
 import { useKhachHang } from '../../context/khachHangContext.js'
+import { ANH_QUA } from '../../data/anh.js'
 import { useApi } from '../../hooks/useApi.js'
 import { formatDiem } from '../../utils/format.js'
 import { NHAN_LOAI_PHAN_THUONG } from '../../utils/nhan.js'
@@ -28,6 +30,7 @@ function HangQua({ qua, diemHienTai, onDoi }) {
   return (
     <li className={`qua${doiDuoc ? '' : ' qua--thieu'}`} data-testid={`reward-${qua.MaPhanThuong}`}>
       <span className="qua__diem">{formatDiem(qua.DiemCanDoi)}</span>
+      <AnhVuong src={ANH_QUA[qua.MaPhanThuong]} />
       <span className="qua__chu">
         <b>{qua.TenPhanThuong}</b>
         <small>

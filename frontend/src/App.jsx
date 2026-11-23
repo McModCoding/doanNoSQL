@@ -21,6 +21,7 @@ const LichSu = lazy(() => import('./pages/customer/LichSu.jsx'))
 const MuaVe = lazy(() => import('./pages/customer/MuaVe.jsx'))
 const ThanhToanMoMo = lazy(() => import('./pages/customer/ThanhToanMoMo.jsx'))
 const TrangChu = lazy(() => import('./pages/customer/TrangChu.jsx'))
+const NguonAnh = lazy(() => import('./pages/NguonAnh.jsx'))
 
 const DangTai = (
   <div style={{ minHeight: 240, display: 'grid', placeItems: 'center' }}>
@@ -37,6 +38,7 @@ export default function App() {
           <Suspense fallback={DangTai}>
             <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/nguon-anh" element={<NguonAnh />} />
 
             {/* Customer App (giao diện điện thoại) */}
             <Route
