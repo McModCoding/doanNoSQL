@@ -30,7 +30,6 @@ export default function Landing() {
           <div className="ve__than">
             <div className="ve__hang-tren">
               <small>Vé vào cửa</small>
-              <small>Đồ án môn NoSQL</small>
             </div>
             <h1 id="ten-app" className="trang-dau__ten">
               {APP_NAME}

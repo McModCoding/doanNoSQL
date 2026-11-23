@@ -121,7 +121,7 @@ App khách hàng mở đầu bằng chính tấm vé thành viên (tên, hạng,
 
     +-------------------+---------------------------------+
     |                   |   +-------------------------+   |
-    |                   |   | Vé vào cửa  Đồ án NoSQL |   |
+    |                   |   | Vé vào cửa              |   |
     |   Ảnh phòng       |   | LoyalCine               |   |
     |   chiếu, phủ kín  |   | App thành viên của ...  |   |
     |   nửa trái        |   |- - - - - - - - - - - - -|   |
