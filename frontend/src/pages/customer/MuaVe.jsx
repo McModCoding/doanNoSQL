@@ -50,7 +50,9 @@ function HangPhim({ phim, ngay, gioHang, datDong }) {
   return (
     <article className="phim" data-testid={`movie-${phim.MaPhim}`}>
       {POSTER_PHIM[phim.MaPhim] ? (
-        <img className="poster" src={POSTER_PHIM[phim.MaPhim]} alt="" width="136" height="204" loading="lazy" decoding="async" />
+        <div className="poster">
+          <img src={POSTER_PHIM[phim.MaPhim]} alt="" width="360" height="540" loading="lazy" decoding="async" />
+        </div>
       ) : (
         <div className="poster-chu" aria-hidden>
           {phim.TenPhim}

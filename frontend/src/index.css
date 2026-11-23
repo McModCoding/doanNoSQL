@@ -615,8 +615,8 @@ a.ten-thuong-hieu {
   color: var(--nen);
 }
 
-/* Một phim. Điện thoại: poster bên cạnh tên, định dạng; giờ chiếu và số vé trải hết bề ngang bên dưới.
-   Máy tính (từ 768px): poster cao từ dòng tên phim xuống tới dòng số vé. */
+/* Một phim. Điện thoại: poster 2:3 bên cạnh tên, định dạng; giờ chiếu và số vé trải hết bề ngang bên dưới.
+   Máy tính (từ 768px): poster rộng 168px, cao từ dòng tên phim xuống tới dòng số vé. */
 .phim {
   display: grid;
   grid-template-columns: 104px minmax(0, 1fr);
@@ -672,12 +672,21 @@ a.ten-thuong-hieu {
   line-height: 1;
   overflow-wrap: anywhere;
 }
-/* Poster ảnh (quy chuẩn giao diện, phần 5): tỉ lệ 2:3, bo 2px, nền phụ trong lúc ảnh đang tải */
+/* Khung poster (quy chuẩn giao diện, phần 5): bo 2px, nền phụ trong lúc ảnh đang tải.
+   Ảnh nằm tuyệt đối trong khung và cắt vừa khung, nên chiều cao khung do phần chữ bên cạnh quyết định. */
 .poster {
-  display: block;
-  object-fit: cover;
+  position: relative;
+  overflow: hidden;
   border-radius: var(--bo-nut);
   background: var(--nen-phu);
+}
+.poster img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%; /* khung rộng hơn 2:3 thì cắt phần dưới nhiều hơn phần trên, giữ đầu mèo, Trái Đất */
 }
 /* Ảnh vuông cho combo và quà; ô trống cùng cỡ khi chưa có ảnh */
 .anh-vuong {
@@ -693,6 +702,7 @@ a.ten-thuong-hieu {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 12px;
+  min-height: 32px; /* bằng nút chọn 2D/3D, để phim một định dạng cũng cao như phim hai định dạng */
 }
 .gio-chieu {
   display: grid;
@@ -1456,9 +1466,9 @@ a.ten-thuong-hieu {
 }
 
 @media (min-width: 768px) {
-  /* poster cao từ dòng tên phim xuống tới dòng số vé, cách phần chữ 24px */
+  /* poster rộng 168px, cao từ dòng tên phim xuống tới dòng số vé, cách phần chữ 24px */
   .phim {
-    grid-template-columns: 136px minmax(0, 1fr);
+    grid-template-columns: 168px minmax(0, 1fr);
     grid-template-rows: none;
     grid-template-areas: none;
     column-gap: 24px;
@@ -1468,7 +1478,6 @@ a.ten-thuong-hieu {
     grid-area: auto;
     align-self: stretch;
     aspect-ratio: auto;
-    min-height: 204px;
   }
   .phim__than {
     display: flex;
