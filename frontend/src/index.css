@@ -615,16 +615,52 @@ a.ten-thuong-hieu {
   color: var(--nen);
 }
 
+/* Một phim. Điện thoại: poster bên cạnh tên, định dạng; giờ chiếu và số vé trải hết bề ngang bên dưới.
+   Máy tính (từ 768px): poster cao từ dòng tên phim xuống tới dòng số vé. */
 .phim {
   display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 16px;
-  padding-bottom: 24px;
+  grid-template-columns: 104px minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr auto auto;
+  grid-template-areas:
+    'poster ten'
+    'poster mo-ta'
+    'poster dinh-dang'
+    'poster .'
+    'gio gio'
+    'so so';
+  column-gap: 16px;
+  row-gap: 8px;
+  padding-bottom: 32px;
   border-bottom: 1px solid var(--vien);
 }
+.phim > .poster,
+.phim > .poster-chu {
+  grid-area: poster;
+  align-self: start;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+}
+.phim__than {
+  display: contents;
+}
+.phim__than > h2 {
+  grid-area: ten;
+}
+.phim__than > small {
+  grid-area: mo-ta;
+}
+.phim__than > .dong-dinh-dang {
+  grid-area: dinh-dang;
+}
+.phim__than > .gio-chieu {
+  grid-area: gio;
+  margin-top: 8px;
+}
+.phim__than > .dong-so-luong {
+  grid-area: so;
+}
 .poster-chu {
-  width: 88px;
-  height: 132px;
   display: flex;
   align-items: flex-end;
   padding: 8px;
@@ -639,8 +675,6 @@ a.ten-thuong-hieu {
 /* Poster ảnh (quy chuẩn giao diện, phần 5): tỉ lệ 2:3, bo 2px, nền phụ trong lúc ảnh đang tải */
 .poster {
   display: block;
-  width: 88px;
-  height: 132px;
   object-fit: cover;
   border-radius: var(--bo-nut);
   background: var(--nen-phu);
@@ -653,12 +687,6 @@ a.ten-thuong-hieu {
   object-fit: cover;
   border-radius: var(--bo-nut);
   background: var(--nen-phu);
-}
-.phim__than {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
 }
 .dong-dinh-dang {
   display: flex;
@@ -874,40 +902,127 @@ a.ten-thuong-hieu {
   flex-direction: column;
   gap: 12px;
 }
+/* Trang đầu. Điện thoại và máy tính bảng: ảnh phòng chiếu tràn bề ngang ở trên, tấm vé vào cửa đè lên mép dưới ảnh.
+   Từ 1024px: ảnh phủ kín nửa trái (đứng yên khi cuộn), tấm vé nằm giữa nửa phải. */
 .trang-dau {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 64px;
-  align-items: center;
-  padding: 64px 32px;
+  background: var(--nen);
 }
-.trang-dau__lua-chon {
+.trang-dau__anh {
+  display: block;
+  background: var(--chu); /* màu trần phòng chiếu, hiện trong lúc ảnh đang tải */
+}
+.trang-dau__anh img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.trang-dau__noi-dung {
+  position: relative;
   display: flex;
   flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 608px;
+  margin: -48px auto 0;
+  padding: 0 16px 48px;
+}
+/* Tấm vé vào cửa: thân vé có tên app, cuống vé (sau đường răng cưa) có hai lựa chọn */
+.ve--vao-cua {
+  margin-bottom: 0;
+}
+.ve--vao-cua .ve__than {
+  gap: 8px;
+  padding: 24px 24px 32px;
+}
+.trang-dau__ten {
+  margin-top: 16px;
+  font-size: var(--so-lon);
+  font-weight: 700;
+  line-height: 1;
+}
+.ve--vao-cua .ve__cuong {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 24px 16px;
 }
 .trang-dau__lua-chon .hang-viec {
   min-height: 96px;
+  padding: 16px 0;
+}
+.trang-dau__lua-chon .hang-viec:first-child {
+  border-top: 0;
+}
+.trang-dau__lua-chon .hang-viec:last-child {
+  border-bottom: 0;
 }
 .trang-dau__lua-chon .hang-viec__chu b {
   font-family: var(--font-tieu-de);
   font-weight: 600;
   font-size: var(--h2);
   line-height: 1.1;
+  text-decoration: underline transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s ease;
 }
-.trang-dau__anh {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  border-radius: var(--bo-nut);
-  background: var(--nen-phu);
-  margin-bottom: 16px;
+.trang-dau__lua-chon .hang-viec__chu small {
+  text-wrap: pretty;
 }
-.trang-dau__nguon {
-  margin-top: 16px;
-  color: var(--chu-phu);
+.trang-dau__lua-chon .hang-viec:hover .hang-viec__chu b {
+  text-decoration-color: currentColor;
+}
+.trang-dau__lua-chon .hang-viec:hover .anticon {
+  color: var(--chu);
+}
+.trang-dau__chan {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .trang-dau {
+    --h2: 24px;
+    --so-lon: 48px;
+  }
+}
+@media (min-width: 768px) {
+  .trang-dau__anh img {
+    aspect-ratio: 3 / 2;
+  }
+  .trang-dau__noi-dung {
+    margin-top: -64px;
+    padding: 0 32px 64px;
+  }
+  .ve--vao-cua .ve__than {
+    padding: 32px;
+  }
+  .ve--vao-cua .ve__cuong {
+    padding: 8px 32px 16px;
+  }
+}
+@media (min-width: 1024px) {
+  .trang-dau {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .trang-dau__anh {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+  }
+  .trang-dau__anh img {
+    aspect-ratio: auto;
+  }
+  .trang-dau__noi-dung {
+    align-self: center;
+    margin: 0 auto;
+    padding: 64px 48px;
+  }
 }
 
 /* Trang nguồn ảnh */
@@ -938,16 +1053,6 @@ a.ten-thuong-hieu {
 @media (max-width: 767px) {
   .trang-nguon {
     padding: 32px 16px 64px;
-  }
-}
-@media (max-width: 760px) {
-  .trang-dau {
-    grid-template-columns: 1fr;
-    gap: 48px;
-    align-content: start;
-    padding: 48px 16px;
-    --h1: 32px;
-    --h2: 24px;
   }
 }
 
@@ -1351,6 +1456,29 @@ a.ten-thuong-hieu {
 }
 
 @media (min-width: 768px) {
+  /* poster cao từ dòng tên phim xuống tới dòng số vé, cách phần chữ 24px */
+  .phim {
+    grid-template-columns: 136px minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: none;
+    column-gap: 24px;
+  }
+  .phim > .poster,
+  .phim > .poster-chu {
+    grid-area: auto;
+    align-self: stretch;
+    aspect-ratio: auto;
+    min-height: 204px;
+  }
+  .phim__than {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .phim__than > .gio-chieu {
+    margin-top: 0;
+  }
   /* bảng giờ chiếu: chip vừa chữ, không kéo giãn theo màn hình */
   .hang-ngay {
     grid-template-columns: repeat(3, 128px);

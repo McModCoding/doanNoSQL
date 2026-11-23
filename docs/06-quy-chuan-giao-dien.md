@@ -83,6 +83,7 @@ Quy tắc:
 | Chữ nhỏ  | 13px    | 13px   | 1.4         | 0.01em         |
 
 - Con số lớn (điểm trên thẻ, tổng tiền khi thanh toán): Barlow Condensed 700, 56px máy tính / 48px điện thoại, line-height 1.0. Số xếp thành cột trong bảng dùng chữ số đều nhau (tabular-nums).
+- Tên LoyalCine trên tấm vé vào cửa ở trang đầu in cùng cỡ con số lớn (Barlow Condensed 700, 56px / 48px, line-height 1.0). Chỉ chỗ này, các tiêu đề khác vẫn theo thang ở trên.
 - Độ dài một dòng chữ tối đa: 65 ký tự.
 - Căn lề: mọi thứ căn trái; chỉ căn giữa ở mã QR, mã vạch và màn hình kết quả thanh toán.
 - Tiêu đề, nút và nhãn viết như câu bình thường (chỉ hoa chữ đầu), không viết hoa toàn bộ.
@@ -116,6 +117,21 @@ App khách hàng mở đầu bằng chính tấm vé thành viên (tên, hạng,
     | Mua vé   Bắp nước   Đổi quà        |
     +------------------------------------+
 
+**Trang đầu (chọn app):** từ 1024px, ảnh phòng chiếu phủ kín nửa trái màn hình (không lề, không bo góc, đứng yên khi cuộn). Nửa phải là tấm vé vào cửa, đặt giữa theo cả chiều ngang lẫn chiều dọc, rộng tối đa 512px: thân vé có tên app và một câu giới thiệu, cuống vé (sau đường răng cưa) có hai lựa chọn App khách hàng và Trang quản trị. Dưới tấm vé là nút dữ liệu giả và dòng ghi nguồn ảnh. Dưới 1024px, ảnh tràn bề ngang ở trên (tỉ lệ 4:3 trên điện thoại, 3:2 trên máy tính bảng), tấm vé đè lên mép dưới ảnh 48px trên điện thoại và 64px trên máy tính bảng.
+
+    +-------------------+---------------------------------+
+    |                   |   +-------------------------+   |
+    |                   |   | Vé vào cửa  Đồ án NoSQL |   |
+    |   Ảnh phòng       |   | LoyalCine               |   |
+    |   chiếu, phủ kín  |   | App thành viên của ...  |   |
+    |   nửa trái        |   |- - - - - - - - - - - - -|   |
+    |                   |   | App khách hàng        > |   |
+    |                   |   | Trang quản trị        > |   |
+    |                   |   +-------------------------+   |
+    |                   |   Dữ liệu giả  [Khôi phục]      |
+    |                   |   Ghi nguồn ảnh                 |
+    +-------------------+---------------------------------+
+
 ---
 
 ## 5. Thành phần giao diện
@@ -125,8 +141,8 @@ App khách hàng mở đầu bằng chính tấm vé thành viên (tên, hạng,
 - **Nút chính:** nền màu nhấn #B42318, chữ trắng Be Vietnam Pro 600 16px, cao 48px, đệm ngang 24px, bo 2px. Không phát sáng.
 - **Nút phụ:** nền trong suốt, viền 1px Chữ chính #1A1A1A, chữ Chữ chính, cao 48px, bo 2px; hover nền Nền phụ #E8E5DD. Nút nhỏ trong bảng của trang quản trị cao 32px.
 - **Chữ trên nút và link:** nói rõ bấm vào thì chuyện gì xảy ra, ví dụ "Thanh toán 190.000đ bằng MoMo", "Đổi voucher với 450 điểm". Link màu nhấn, có gạch chân.
-- **Thẻ (card):** dùng cho những thứ ngoài đời là một tấm vé: thẻ thành viên, vé đã mua, voucher và từng món quà. Mỗi "vé" có Nền phụ hoặc viền 1px, bo 8px, một đường răng cưa nét đứt ngăn phần cuống. Danh sách (lịch sử điểm, giao dịch, bảng quản trị) là các hàng, không bọc từng hàng trong thẻ.
-- **Ảnh:** chưa có ảnh thật của nhóm. Đang dùng ảnh minh họa tạm từ Wikimedia Commons (giấy phép tự do hoặc ghi nguồn, không có người, không có logo thương hiệu): poster 4 phim (tỉ lệ 2:3, bo 2px), ảnh vuông 64px cho combo và 48px cho quà, một ảnh phòng chiếu tỉ lệ 3:2 ở trang đầu. Nguồn và giấy phép ghi ở trang `/nguon-anh` và `docs/07-nguon-anh.md`. Phim chưa có ảnh thì dùng poster dạng chữ (tên phim in Barlow Condensed trên Nền phụ). Không dùng emoji. [CẦN NỘI DUNG: poster phim hoặc ảnh rạp thật được phép dùng, nếu nhóm có]
+- **Thẻ (card):** dùng cho những thứ ngoài đời là một tấm vé: thẻ thành viên, vé đã mua, voucher, từng món quà và tấm vé vào cửa ở trang đầu. Mỗi "vé" có Nền phụ hoặc viền 1px, bo 8px, một đường răng cưa nét đứt ngăn phần cuống. Danh sách (lịch sử điểm, giao dịch, bảng quản trị) là các hàng, không bọc từng hàng trong thẻ.
+- **Ảnh:** chưa có ảnh thật của nhóm. Đang dùng ảnh minh họa tạm từ Wikimedia Commons (giấy phép tự do hoặc ghi nguồn, không có người, không có logo thương hiệu): poster 4 phim (tỉ lệ 2:3, bo 2px; ở Mua vé rộng 104px trên điện thoại, nằm cạnh tên phim; từ 768px rộng 136px, cao từ dòng tên phim xuống hết dòng Số vé, cách phần chữ 24px), ảnh vuông 64px cho combo và 48px cho quà, ảnh phòng chiếu ở trang đầu (không bo góc vì tràn mép màn hình; bản dọc 3:4 cho nửa trái từ 1024px, bản ngang 4:3 cho màn nhỏ hơn, mỗi bản có hai cỡ để màn hình độ nét cao vẫn rõ). Nguồn và giấy phép ghi ở trang `/nguon-anh` và `docs/07-nguon-anh.md`. Phim chưa có ảnh thì dùng poster dạng chữ (tên phim in Barlow Condensed trên Nền phụ). Không dùng emoji. [CẦN NỘI DUNG: poster phim hoặc ảnh rạp thật được phép dùng, nếu nhóm có]
 - **Icon:** bộ @ant-design/icons kiểu Outlined (đã có sẵn trong project, không cài thêm), nét mảnh khoảng 1px ở cỡ 16px, cùng màu với chữ đi kèm. Không đặt icon trong vòng tròn màu nhạt, không dùng emoji thay icon.
 - **Chuyển động:** không có hiệu ứng khi cuộn; nút đổi màu khi rê chuột 150ms; hộp thoại mở và đóng 200ms; thanh tiến độ lên hạng chạy 400ms khi điểm thay đổi; tắt hết khi người dùng bật chế độ giảm chuyển động (prefers-reduced-motion).
 
