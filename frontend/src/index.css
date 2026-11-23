@@ -616,7 +616,7 @@ a.ten-thuong-hieu {
 }
 
 /* Một phim. Điện thoại: poster 2:3 bên cạnh tên, định dạng; giờ chiếu và số vé trải hết bề ngang bên dưới.
-   Máy tính (từ 768px): poster rộng 168px, cao từ dòng tên phim xuống tới dòng số vé. */
+   Máy tính (từ 768px): poster 2:3 cỡ 160x240px; phần chữ giãn theo, tên phim ngang mép trên, dòng Số vé ngang mép dưới. */
 .phim {
   display: grid;
   grid-template-columns: 104px minmax(0, 1fr);
@@ -686,7 +686,6 @@ a.ten-thuong-hieu {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 20%; /* khung rộng hơn 2:3 thì cắt phần dưới nhiều hơn phần trên, giữ đầu mèo, Trái Đất */
 }
 /* Ảnh vuông cho combo và quà; ô trống cùng cỡ khi chưa có ảnh */
 .anh-vuong {
@@ -1466,9 +1465,12 @@ a.ten-thuong-hieu {
 }
 
 @media (min-width: 768px) {
-  /* poster rộng 168px, cao từ dòng tên phim xuống tới dòng số vé, cách phần chữ 24px */
+  /* Poster đúng tỉ lệ 2:3 (160x240px), cách phần chữ 24px. Hàng phim cao ít nhất bằng poster; phần chữ giãn theo:
+     tên phim và thể loại sát nhau 8px, cách hàng định dạng 24px, định dạng và giờ chiếu 12px,
+     dòng Số vé dồn xuống đáy (với nội dung hiện tại cách giờ chiếu đúng 24px). Tên phim quá dài làm phần chữ
+     cao hơn 240px thì poster kéo dài theo, ảnh cắt bớt hai bên rất ít. */
   .phim {
-    grid-template-columns: 168px minmax(0, 1fr);
+    grid-template-columns: 160px minmax(0, 1fr);
     grid-template-rows: none;
     grid-template-areas: none;
     column-gap: 24px;
@@ -1477,7 +1479,6 @@ a.ten-thuong-hieu {
   .phim > .poster-chu {
     grid-area: auto;
     align-self: stretch;
-    aspect-ratio: auto;
   }
   .phim__than {
     display: flex;
@@ -1485,8 +1486,14 @@ a.ten-thuong-hieu {
     gap: 8px;
     min-width: 0;
   }
+  .phim__than > .dong-dinh-dang {
+    margin-top: 16px;
+  }
   .phim__than > .gio-chieu {
-    margin-top: 0;
+    margin-top: 4px;
+  }
+  .phim__than > .dong-so-luong {
+    margin-top: auto;
   }
   /* bảng giờ chiếu: chip vừa chữ, không kéo giãn theo màn hình */
   .hang-ngay {
