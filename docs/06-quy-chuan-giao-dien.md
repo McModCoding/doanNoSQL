@@ -117,7 +117,7 @@ App khách hàng mở đầu bằng chính tấm vé thành viên (tên, hạng,
     | Mua vé   Bắp nước   Đổi quà        |
     +------------------------------------+
 
-**Trang đầu (chọn app):** từ 1024px, ảnh phòng chiếu phủ kín nửa trái màn hình (không lề, không bo góc, đứng yên khi cuộn). Nửa phải là tấm vé vào cửa, đặt giữa theo cả chiều ngang lẫn chiều dọc, rộng tối đa 512px: thân vé có tên app và một câu giới thiệu, cuống vé (sau đường răng cưa) có hai lựa chọn App khách hàng và Trang quản trị. Dưới tấm vé là nút dữ liệu giả và dòng ghi nguồn ảnh. Dưới 1024px, ảnh tràn bề ngang ở trên (tỉ lệ 4:3 trên điện thoại, 3:2 trên máy tính bảng), tấm vé đè lên mép dưới ảnh 48px trên điện thoại và 64px trên máy tính bảng.
+**Trang đầu (chọn app):** từ 1024px, ảnh phòng chiếu phủ kín nửa trái màn hình (không lề, không bo góc, đứng yên khi cuộn). Nửa phải là tấm vé vào cửa, đặt giữa theo cả chiều ngang lẫn chiều dọc, rộng tối đa 512px: thân vé có tên app và một câu giới thiệu, cuống vé (sau đường răng cưa) có hai lựa chọn App khách hàng và Trang quản trị. Ở chế độ dữ liệu giả, dưới tấm vé có nút Khôi phục dữ liệu mẫu. Dưới 1024px, ảnh tràn bề ngang ở trên (tỉ lệ 4:3 trên điện thoại, 3:2 trên máy tính bảng), tấm vé đè lên mép dưới ảnh 48px trên điện thoại và 64px trên máy tính bảng.
 
     +-------------------+---------------------------------+
     |                   |   +-------------------------+   |
@@ -128,8 +128,7 @@ App khách hàng mở đầu bằng chính tấm vé thành viên (tên, hạng,
     |                   |   | App khách hàng        > |   |
     |                   |   | Trang quản trị        > |   |
     |                   |   +-------------------------+   |
-    |                   |   Dữ liệu giả  [Khôi phục]      |
-    |                   |   Ghi nguồn ảnh                 |
+    |                   |   [Khôi phục dữ liệu mẫu]       |
     +-------------------+---------------------------------+
 
 ---

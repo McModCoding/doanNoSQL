@@ -69,7 +69,6 @@ export default function DangNhap() {
             <Button type="primary" htmlType="submit" block loading={dangGui}>
               Đăng nhập
             </Button>
-            <small>Bản mô phỏng cho đồ án, không cần mật khẩu.</small>
           </form>
         </section>
 

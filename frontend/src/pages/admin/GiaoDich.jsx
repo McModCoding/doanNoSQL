@@ -59,13 +59,7 @@ export default function GiaoDichAdmin() {
 
   return (
     <div className="qt-trang" style={{ gap: 24 }}>
-      <div className="cap">
-        <h1>Giao dịch</h1>
-        <p>
-          Khi một giao dịch chuyển sang Thành công, hệ thống ghi một dòng EARN vào bien_dong_diem, cộng DiemHienTai,
-          TongChiTieu và xét lên hạng cho khách.
-        </p>
-      </div>
+      <h1>Giao dịch</h1>
 
       <div className="hang-loc">
         <div className="cuon-ngang">

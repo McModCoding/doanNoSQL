@@ -157,7 +157,6 @@ export default function DoiThuong() {
                 <dd>{formatDiem(diem - dangChon.DiemCanDoi)}</dd>
               </div>
             </dl>
-            <small>Đổi quà không làm giảm hạng thành viên, vì hạng xét theo tổng chi tiêu.</small>
           </div>
         )}
       </Modal>

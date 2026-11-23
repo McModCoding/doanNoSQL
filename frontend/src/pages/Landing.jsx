@@ -58,12 +58,7 @@ export default function Landing() {
           </nav>
         </section>
 
-        <div className="trang-dau__chan">
-          <MockControls />
-          <small>
-            Ảnh minh họa lấy từ Wikimedia Commons. <Link to="/nguon-anh">Xem nguồn và giấy phép ảnh</Link>
-          </small>
-        </div>
+        <MockControls />
       </div>
     </main>
   )

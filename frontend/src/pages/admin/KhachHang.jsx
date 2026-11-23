@@ -232,7 +232,6 @@ function FormKhachHang({ dangSua, open, onClose, onSaved }) {
             </Form.Item>
           )}
         </div>
-        {!dangSua && <small>Khách mới bắt đầu ở hạng thấp nhất với 0 điểm.</small>}
       </Form>
     </Modal>
   )

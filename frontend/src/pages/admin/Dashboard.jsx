@@ -149,9 +149,6 @@ function BieuDoTheoThang({ data, nam, laNamNay, thangHienTai }) {
   const tong = data.reduce((s, d) => s + d.tongDiem, 0)
   const truc = mocTruc(max)
   const thangNoiBat = laNamNay ? thangHienTai : (data.find((d) => d.tongDiem === max && max > 0)?.thang ?? null)
-  const giaiThich = thangNoiBat
-    ? `Cột đỏ: tháng ${thangNoiBat}, ${laNamNay ? 'tháng hiện tại' : 'tháng cao nhất'}.`
-    : ''
 
   const nhanNoiBat = ({ x, y, width, index }) =>
     data[index]?.thang === thangNoiBat ? (
@@ -163,12 +160,7 @@ function BieuDoTheoThang({ data, nam, laNamNay, thangHienTai }) {
   return (
     <section className="khoi" aria-labelledby="bd-thang">
       <div className="khoi__dau">
-        <div className="cap">
-          <h2 id="bd-thang">Điểm phát hành theo tháng</h2>
-          <small>
-            Năm {nam}, tổng {formatDiem(tong)} điểm. {giaiThich}
-          </small>
-        </div>
+        <h2 id="bd-thang">Điểm phát hành theo tháng</h2>
         <Segmented
           size="small"
           value={kieu}
@@ -248,10 +240,7 @@ function TopDoiQua({ api, dsHang, nam }) {
   const max = Math.max(1, ...data.map((d) => d.soLuotDoi))
   return (
     <section className="khoi" aria-labelledby="top-doi-qua">
-      <div className="cap">
-        <h2 id="top-doi-qua">Top 10 khách đổi quà nhiều nhất</h2>
-        <small>Năm {nam}, xếp theo số lượt đổi.</small>
-      </div>
+      <h2 id="top-doi-qua">Top 10 khách đổi quà nhiều nhất</h2>
       {api.error && !api.data ? (
         <ErrorState error={api.error} onRetry={api.reload} compact />
       ) : !api.data ? (
@@ -291,10 +280,7 @@ function KhachTheoHang({ api }) {
   const tong = data.reduce((s, d) => s + d.soKhachHang, 0)
   return (
     <section className="khoi" aria-labelledby="theo-hang">
-      <div className="cap">
-        <h2 id="theo-hang">Khách hàng theo hạng</h2>
-        <small>Tính trên {formatDiem(tong)} khách hàng, kể cả khách ngừng hoạt động.</small>
-      </div>
+      <h2 id="theo-hang">Khách hàng theo hạng</h2>
       {api.error && !api.data ? (
         <ErrorState error={api.error} onRetry={api.reload} compact />
       ) : !api.data ? (

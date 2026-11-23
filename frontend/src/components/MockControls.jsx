@@ -1,17 +1,11 @@
-import { DatabaseOutlined, ReloadOutlined } from '@ant-design/icons'
+import { ReloadOutlined } from '@ant-design/icons'
 import { App, Button, Popconfirm } from 'antd'
 import { USE_MOCK } from '../config.js'
 
-/** Cho biết đang dùng dữ liệu giả hay API thật; với dữ liệu giả có nút khôi phục dữ liệu mẫu. */
+/** Nút khôi phục dữ liệu mẫu, chỉ hiện khi chạy với dữ liệu giả. */
 export function MockControls({ nutLon = false }) {
   const { message } = App.useApp()
-  if (!USE_MOCK) {
-    return (
-      <span className="nhan-trang-thai" title="Đang gọi backend thật qua /api (cấu hình VITE_API_TARGET)">
-        <DatabaseOutlined /> API thật
-      </span>
-    )
-  }
+  if (!USE_MOCK) return null
   const khoiPhuc = async () => {
     const { khoiPhucDuLieuMau } = await import('../mocks/db.js')
     khoiPhucDuLieuMau()
@@ -21,9 +15,6 @@ export function MockControls({ nutLon = false }) {
   }
   return (
     <span className="hang-loc">
-      <span className="nhan-trang-thai chu-phu" title="Dữ liệu giả (MSW) lưu trong trình duyệt, dùng khi backend chưa xong">
-        <DatabaseOutlined /> Dữ liệu giả
-      </span>
       <Popconfirm
         title="Khôi phục dữ liệu mẫu?"
         description="Mọi giao dịch và lượt đổi quà vừa tạo sẽ bị xóa, giống chạy mongorestore."

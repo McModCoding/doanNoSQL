@@ -2,7 +2,7 @@
 
 Ảnh trong app là ảnh minh họa **tạm thời**, lấy từ Wikimedia Commons. Mỗi ảnh dùng theo giấy phép ghi trong bảng:
 - Phạm vi công cộng và CC0: dùng tự do.
-- CC BY và CC BY-SA: phải ghi tác giả, giấy phép và nguồn. App ghi ở trang `/nguon-anh`, có đường dẫn từ trang đầu. Ảnh cắt từ ảnh CC BY-SA vẫn theo giấy phép CC BY-SA của ảnh gốc.
+- CC BY và CC BY-SA: phải ghi tác giả, giấy phép và nguồn. App ghi ở trang `/nguon-anh`. Ảnh cắt từ ảnh CC BY-SA vẫn theo giấy phép CC BY-SA của ảnh gốc.
 
 Ảnh đã được cắt và thu nhỏ. Khi chọn, nhóm bỏ qua ảnh có người và ảnh có logo thương hiệu.
 

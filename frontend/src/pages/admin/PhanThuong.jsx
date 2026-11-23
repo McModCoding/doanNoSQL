@@ -28,19 +28,10 @@ function TonKho({ soLuong }) {
 export default function PhanThuongAdmin() {
   const ds = useApi(() => layDsPhanThuong({}), [])
   const data = ds.data ?? []
-  const soHet = data.filter((p) => p.SoLuongTon <= 0).length
 
   return (
     <div className="qt-trang" style={{ gap: 24 }}>
-      <div className="cap">
-        <h1>Phần thưởng</h1>
-        {ds.data && (
-          <p>
-            {data.length} phần thưởng, {soHet ? `${soHet} đang hết quà` : 'tất cả còn quà'}. Khách đổi bằng điểm, voucher có
-            hạn dùng tính từ ngày đổi.
-          </p>
-        )}
-      </div>
+      <h1>Phần thưởng</h1>
 
       {ds.error && !ds.data ? (
         <ErrorState error={ds.error} onRetry={ds.reload} />

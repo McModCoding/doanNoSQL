@@ -37,7 +37,7 @@ Cách làm song song:
    VITE_USE_MOCK=false
    VITE_API_TARGET=http://localhost:3000
    ```
-   Sau đó chạy lại `npm run dev`. Trên thanh tiêu đề Admin sẽ đổi từ nhãn "Dữ liệu giả (mock)" sang **"API thật"**.
+   Sau đó chạy lại `npm run dev`. Khi đã nối API thật, thanh tiêu đề Admin không còn nút "Khôi phục dữ liệu mẫu".
 3. Đi lần lượt các màn hình theo bảng endpoint ★ trong hợp đồng. Màn hình báo lỗi nào thì xem thông báo, vì frontend hiển thị đúng `message` backend trả về.
 4. Nếu **tên trường lệch** so với hợp đồng: sửa `frontend/src/api/mappers.js`, hoặc cả nhóm sửa hợp đồng cho thống nhất.
 5. Cập nhật danh sách SĐT tài khoản demo trong `frontend/src/config.js` (`DEMO_ACCOUNTS`) cho khớp dữ liệu thật.

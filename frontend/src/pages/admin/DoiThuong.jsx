@@ -23,12 +23,7 @@ export default function DoiThuongAdmin() {
 
   return (
     <div className="qt-trang" style={{ gap: 24 }}>
-      <div className="cap">
-        <h1>Đổi thưởng</h1>
-        <p>
-          Mỗi lượt đổi trừ điểm của khách, giảm tồn kho phần thưởng và ghi một dòng REDEEM vào bien_dong_diem.
-        </p>
-      </div>
+      <h1>Đổi thưởng</h1>
 
       <div className="hang-loc">
         <div className="cuon-ngang">

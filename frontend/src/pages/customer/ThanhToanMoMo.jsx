@@ -168,10 +168,7 @@ export default function ThanhToanMoMo() {
         <button type="button" className="nut-link" onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>
           <ArrowLeftOutlined /> Quay lại
         </button>
-        <div className="cap">
-          <h1>Thanh toán qua MoMo</h1>
-          <small>Màn hình mô phỏng ví MoMo cho đồ án, không phát sinh giao dịch thật.</small>
-        </div>
+        <h1>Thanh toán qua MoMo</h1>
 
         {/* Tờ hóa đơn như một tấm vé: thân vé (các dòng tiền) và cuống (QR, đồng hồ) ngăn bằng đường răng cưa.
             Điện thoại: cuống nằm dưới thân vé. Màn lớn: cuống nằm bên phải, nút đặt dưới cuống. */}
@@ -210,7 +207,7 @@ export default function ThanhToanMoMo() {
               <QRCode type="svg" value={`MOMO-SIM|${gd.MaGiaoDich}|${gd.TongTien}`} size={112} bordered={false} color={MAU.chu} bgColor={MAU.nen} />
             </div>
             <div className="cap">
-              <small>Quét bằng ứng dụng MoMo (mô phỏng) hoặc bấm xác nhận bên dưới.</small>
+              <small>Quét bằng ứng dụng MoMo hoặc bấm xác nhận bên dưới.</small>
               <div className="dong-ho cap">
                 <small>Hết hạn sau</small>
                 <Statistic.Timer type="countdown" value={hanThanhToan} format="mm:ss" onFinish={khiHetHan} />

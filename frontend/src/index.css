@@ -986,12 +986,6 @@ a.ten-thuong-hieu {
 .trang-dau__lua-chon .hang-viec:hover .anticon {
   color: var(--chu);
 }
-.trang-dau__chan {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
 @media (max-width: 767px) {
   .trang-dau {
     --h2: 24px;
